@@ -34,7 +34,7 @@ Deadline: 20th of May
 
 ## Milestone 2: Experiments
 
-Goal: 3 experiments
+Goal: 3 experiments + method section
 
 Deadline: 30th of June
 
