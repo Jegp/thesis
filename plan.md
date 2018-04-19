@@ -42,13 +42,28 @@ Deadline: 30th of June
 
 ### Part 2: NEST - until 10/6
 
+* 5/6: Spike encoding of maze
+* 6/6: Write reward network
+* 7/6: Configure network
+* 8/6: Document
+* 9/6: Run experiment
+* 10/6: Document - send to Martin
+
 ### Part 3: Wafer - until 24/6
+
+* Spike encoding on chip over UDP
+* Rewards and encodings over UDP, online
+* Adapt to fit on wafer
 
 ### Part 4: Writeup - until 30/6
 
+* Document all experiment setups
+* Compare setups
+* Explain relation to theory and whether the setups are relevant/correct
+
 ## Milestone 3: Experiments
 
-Goal: Evaluate and analyse experiments
+Goal: Run, evaluate and analyse experiments + analysis section
 
 Deadline: 31st of July
 
