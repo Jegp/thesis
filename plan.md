@@ -12,7 +12,7 @@ Deadline: 20th of May
 * 23/4: TN: Chapter 2
 * 24/4: Write 2 pages - send to Martin
 * 29/4: TN: Chapter 3
-* 30/4: TN: Chapter 4
+* 30/4: TN: Chapter 4, Meet Martin, NEST support
 * 1/5: TN: Chapter 5
 * 2/5: TN: Chapter 6
 * 4/5: Write 2 pages - send to Martin + NEST abstract to Pehle
@@ -51,6 +51,7 @@ Deadline: 30th of June
 
 ### Part 3: Wafer - until 24/6
 
+* Rewrite maze in C++ - ask Eric
 * Spike encoding on chip over UDP
 * Rewards and encodings over UDP, online
 * Adapt to fit on wafer

@@ -1,0 +1,170 @@
+\documentclass[a4paper,oneside]{memoir}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{wallpaper}
+\usepackage{palatino}
+\usepackage{hyperref}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{wrapfig}
+\restylefloat{figure}
+%linespacing
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.5}
+
+% Bibliography
+\usepackage[style=authoryear]{biblatex}
+\addbibresource{bib.bib}
+\bibliography{bib}
+
+% Promote sections and subsections
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{1mm}{*}
+% \chapterstyle{plain} % needed?
+\checkandfixthelayout
+
+% Glossary
+\usepackage[numberedsection=nameref]{glossaries}
+\renewcommand{\glossarypreamble}{\label{glos}}
+\makeglossaries
+\include{glossary}
+\makeglossaries
+% Setup captions
+\captionstyle[\centering]{\centering}
+\changecaptionwidth
+\captionwidth{0.8\linewidth}
+
+% Protect against widows and orphans
+%\clubpenalty=10000
+%\widowpenalty=10000
+
+%\linespread{1.2}
+
+\raggedbottom
+
+\chapterstyle{ger}
+
+\maxsecnumdepth{subsection}
+
+% Change memoir chapter margins
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{5pt}{\Huge}
+\titlespacing*{\chapter}{10pt}{10pt}{10pt}
+
+%%  Setup fancy style quotation
+%%  ==================================================================
+%\usepackage{tikz}
+%\usepackage{framed}
+
+%\newcommand*\quotefont{\fontfamily{fxl}} % selects Libertine for quote font
+
+% Make commands for the quotes
+%\newcommand*{\openquote}{\tikz[remember picture,overlay,xshift=-15pt,yshift=-10pt]
+%     \node (OQ) {\quotefont\fontsize{60}{60}\selectfont``};\kern0pt}
+%\newcommand*{\closequote}{\tikz[remember picture,overlay,xshift=15pt,yshift=5pt]
+%     \node (CQ) {\quotefont\fontsize{60}{60}\selectfont''};}
+
+% select a colour for the shading
+%\definecolor{shadecolor}{rgb}{1,1,1}
+
+% wrap everything in its own environment
+%\newenvironment{shadequote}%
+%{\begin{snugshade}\begin{quote}\openquote}
+%{\hfill\closequote\end{quote}\end{snugshade}}
+
+%%  Begin document
+%%  ==================================================================
+\begin{document}
+
+%%  Begin title page
+%%  ==================================================================
+    \thispagestyle{empty}
+    \ULCornerWallPaper{1}{ku-coverpage/nat-farve.pdf}
+    \ULCornerWallPaper{1}{ku-coverpage/diku-en.pdf}
+    \begin{adjustwidth}{-3cm}{-1.5cm}
+    %\vspace*{-1cm}
+    %\textbf{\Huge Free topic} \\
+    \vspace*{2.5cm}
+    \textbf{\Huge Modelling learning systems} \\
+    \vspace*{.8cm}
+    {\huge Modelling learning in spiking neural networks}\\
+    \begin{tabbing}
+    % adjust the hspace below for the longest author name
+    Jens Egholm Pedersen \hspace{1cm} \= \texttt{<xtp778@alumni.ku.dk>} \\
+    \\[11cm]
+
+    \textbf{\Large Supervisor} \\
+    Martin Elsman \hspace{1cm} \texttt{<mael@di.ku.dk>}
+    \end{tabbing}
+    \end{adjustwidth}
+
+    \newpage
+
+    \ClearWallPaper
+%%  ==================================================================
+%%  End title page
+
+\renewcommand\cftchapteraftersnumb{\normalfont}
+\renewcommand\cftbeforechapterskip{5pt plus 1pt}
+
+\frontmatter
+\setcounter{tocdepth}{2}
+\tableofcontents*
+\newpage
+
+\mainmatter
+\chapter{Introduction}
+
+  \section{Cognitive neuroscience}
+  \section{Neuromorphic hardware}
+  % Motivation: platform for simulation
+  \section{Hypothesis}
+  This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
+
+\chapter{Theory}
+
+  \section{The biological brain}
+  \subsection{Plasticity in the brain}
+  \subsection{REF model}
+
+  \subsection{Learning in the brain}
+  \subsubsection{Hebbian learning}
+  \subsubsection{Evolutionary optimisation}
+
+  \section{Artificial intelligence}
+  \subsection{Neural networks}
+  \subsection{Learning in neural networks}
+  \subsubsection{Backpropagation}
+
+  \section{Neuromorphic computing}
+  \subsection{Spiking neural networks}
+  \subsection{Learning in SNN}
+  \subsection{Neuromorphic platforms}
+
+\chapter{Experiment}
+  \section{Krechevky maze experiment}
+  \section{Futhark}
+  \section{NEST}
+  \section{BrainScaleS}
+
+\chapter{Analysis}
+  \section{Experiment results}
+  \subsection{Futhark}
+  \subsection{Nest}
+  \subsection{BrainScaleS}
+  \section{Comparison of learning}
+  \section{Adaptability and robustness} % How is this useful for the REF model?
+
+\chapter{Discussion}
+  \section{Validity}
+  \section{REF similarity}
+  \section{Future work}
+
+\chapter{Conclusion}
+
+%\printbibliography
+
+\end{document}
