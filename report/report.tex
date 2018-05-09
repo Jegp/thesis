@@ -22,7 +22,7 @@
 % Promote sections and subsections
 \setheadfoot{\onelineskip}{2\onelineskip}
 \setheaderspaces{*}{1mm}{*}
-% \chapterstyle{plain} % needed?
+\chapterstyle{plain} % needed?
 \checkandfixthelayout
 
 % Glossary
@@ -121,7 +121,7 @@
   \section{Cognitive neuroscience}
   \section{Neuromorphic hardware}
   % Motivation: platform for simulation
-  \section{Hypothesis}
+  \section{Hypothesis} \label{hypothesis}
   This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
 
 \chapter{Theory}
@@ -135,17 +135,19 @@
   \subsubsection{Evolutionary optimisation}
 
   \section{Artificial intelligence}
-  \subsection{Neural networks}
+  \subsection{Neural networks} \label{sec:NN}
   \subsection{Learning in neural networks}
   \subsubsection{Backpropagation}
 
   \section{Neuromorphic computing}
-  \subsection{Spiking neural networks}
+  \subsection{Spiking neural networks} \label{sec:SNN}
   \subsection{Learning in SNN}
   \subsection{Neuromorphic platforms}
 
-\chapter{Experiment}
-  \section{Krechevky maze experiment}
+\chapter{Experimental setup}
+  \include{experiment}
+
+\chapter{Data collection}
   \section{Futhark}
   \section{NEST}
   \section{BrainScaleS}
