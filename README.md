@@ -23,7 +23,7 @@ The hypothesis drives two outcomes: a spiking neural network representation of t
 The hypothesis will be evaluated based on two criteria: the similarity of the spiking REF model to contemporary neurocognitive theories on the mammalian brain as well as its capacity to learn a given problem.
 
 The thesis will focus on how well the the model describes contemporary neurocognitive theories of learning, keeping the limits of the experimental platforms in mind.
-Because the REF model has not been mapped to its physiological properties, it is outside the scope of this thesis to provide an exact comparison the biological properties.
+Because the REF model has not been mapped to its physiological properties, it is outside the scope of this thesis to provide an exact comparison to the biological properties.
 
 To provide a context for the learning capacity of the spiking neural networks, they will be compared to a regular non-spiking neural network.
 

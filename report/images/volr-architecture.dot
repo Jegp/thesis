@@ -1,0 +1,20 @@
+graph {
+  "Volr DSL"
+  subgraph cluster_ann {
+    label="ANN";
+    OpenCL [shape="box"]
+    Futhark -- OpenCL
+  }
+  subgraph cluster_snn {
+    label="SNN"
+    JSON [shape="diamond"]
+    BrainScaleS [shape="box"]
+    NEST [shape="box"]
+    Myelin -- JSON
+    JSON -- NEST
+    JSON -- BrainScaleS
+  }
+
+  "Volr DSL" -- Myelin
+  "Volr DSL" -- Futhark
+}

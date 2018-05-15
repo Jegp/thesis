@@ -3,7 +3,7 @@
 	title        =	{Cognitive Science},
 	booktitle    =	{The Stanford Encyclopedia of Philosophy},
 	editor       =	{Edward N. Zalta},
-	howpublished =	{\url{https://plato.stanford.edu/archives/fall2014/entries/cognitive-science/}},
+	howpublished =	{https://plato.stanford.edu/archives/fall2014/entries/cognitive-science/},
 	year         =	{2014},
 	edition      =	{Fall 2014},
 	publisher    =	{Metaphysics Research Lab, Stanford University}
@@ -110,6 +110,18 @@ pages = {253--261},
 keywords = {self, conciousness, body, feeling},
 year = {2003},
 }
+@ARTICLE{Davison2009,
+AUTHOR={Davison, Andrew and Brüderle, Daniel and Eppler, Jochen and Kremkow, Jens and Muller, Eilif and Pecevski, Dejan and Perrinet, Laurent and Yger, Pierre},
+TITLE={PyNN: a common interface for neuronal network simulators},
+JOURNAL={Frontiers in Neuroinformatics},
+VOLUME={2},
+PAGES={11},
+YEAR={2009},
+URL={https://www.frontiersin.org/article/10.3389/neuro.11.011.2008},
+DOI={10.3389/neuro.11.011.2008},
+ISSN={1662-5196},
+ABSTRACT={Computational neuroscience has produced a diversity of software for simulations of networks of spiking neurons, with both negative and positive consequences. On the one hand, each simulator uses its own programming or configuration language, leading to considerable difficulty in porting models from one simulator to another. This impedes communication between investigators and makes it harder to reproduce and build on the work of others.  On the other hand, simulation results can be cross-checked between different simulators, giving greater confidence in their correctness, and each simulator has different optimizations, so the most appropriate simulator can be chosen for a given modelling task.   A common programming interface to multiple simulators would reduce or eliminate the problems of simulator diversity while retaining the benefits. PyNN is such an interface, making it possible to write a simulation script once, using the Python programming language, and run it without modification on any supported simulator (currently NEURON, NEST, PCSIM, Brian and the Heidelberg VLSI neuromorphic hardware). PyNN increases the productivity of neuronal network modelling by providing high-level abstraction, by promoting code sharing and reuse, and by  providing a foundation for simulator-agnostic analysis, visualization, and data-management tools. PyNN increases the reliability of modelling studies by making it much easier to check results on multiple simulators. PyNN is open-source software and is available from http://neuralensemble.org/PyNN.}
+}
 @book{dayan2001,
 author = {Dayan, Peter and Abbot, L. F.},
 title = {Theoretical neuroscience - Computational and Mathematical Modeling of Neural Systems},
@@ -140,6 +152,22 @@ ISBN = {978-0-393-24207-2},
   volume = 1,
   pages = "1-17"
 }
+@Article{Djurfeldt2012,
+author="Djurfeldt, Mikael",
+title="The Connection-set Algebra---A Novel Formalism for the Representation of Connectivity Structure in Neuronal Network Models",
+journal="Neuroinformatics",
+year="2012",
+month="Jul",
+day="01",
+volume="10",
+number="3",
+pages="287--304",
+abstract="The connection-set algebra (CSA) is a novel and general formalism for the description of connectivity in neuronal network models, from small-scale to large-scale structure. The algebra provides operators to form more complex sets of connections from simpler ones and also provides parameterization of such sets. CSA is expressive enough to describe a wide range of connection patterns, including multiple types of random and/or geometrically dependent connectivity, and can serve as a concise notation for network structure in scientific writing. CSA implementations allow for scalable and efficient representation of connectivity in parallel neuronal network simulators and could even allow for avoiding explicit representation of connections in computer memory. The expressiveness of CSA makes prototyping of network structure easy. A C+{\thinspace}+ version of the algebra has been implemented and used in a large-scale neuronal network simulation (Djurfeldt et al., IBM J Res Dev 52(1/2):31--42, 2008b) and an implementation in Python has been publicly released.",
+issn="1559-0089",
+doi="10.1007/s12021-012-9146-1",
+url="https://doi.org/10.1007/s12021-012-9146-1"
+}
+
 @online{goh2017,
 author ={Gabriel Goh},
 title = {Decoding the Thought Vector},
@@ -152,6 +180,17 @@ author = {Michael S. A. Graziano},
 title={Consciousness and the Social Brain},
 year = 2013,
 ISBN = {978-0190263195}
+}
+@ARTICLE{Helias2012,
+	AUTHOR={Helias, Moritz and Kunkel, Susanne and Masumoto, Gen and Igarashi, Jun and Eppler, Jochen and Ishii, Shin and Fukai, Tomoki and Morrison, Abigail and Diesmann, Markus},
+	TITLE={Supercomputers Ready for Use as Discovery Machines for Neuroscience},
+	JOURNAL={Frontiers in Neuroinformatics},
+	VOLUME={6},
+	PAGES={26},
+	YEAR={2012},
+	URL={https://www.frontiersin.org/article/10.3389/fninf.2012.00026},
+	DOI={10.3389/fninf.2012.00026},
+	ISSN={1662-5196}
 }
 @article{Henriksen2017,
 author = {Henriksen, Troels and Serup, Niels G. W. and Elsman, Martin and Henglein, Fritz and Oancea, Cosmin E.},
@@ -207,6 +246,17 @@ year = {2009},
    publisher = {Prentice Hall PTR},
    address = {Upper Saddle River, NJ, USA},
 }
+@ARTICLE{Jordan2018,
+	AUTHOR={Jordan, Jakob and Ippen, Tammo and Helias, Moritz and Kitayama, Itaru and Sato, Mitsuhisa and Igarashi, Jun and Diesmann, Markus and Kunkel, Susanne},
+	TITLE={Extremely Scalable Spiking Neuronal Network Simulation Code: From Laptops to Exascale Computers},
+	JOURNAL={Frontiers in Neuroinformatics},
+	VOLUME={12},
+	PAGES={2},
+	YEAR={2018},
+	URL={https://www.frontiersin.org/article/10.3389/fninf.2018.00002},
+	DOI={10.3389/fninf.2018.00002},
+	ISSN={1662-5196}
+}
 
 @article{kouider2010,
 author = {Kouider, Sid and de Gardelle, Vincent and Sackur, Jérôme and Dupoux, Emmanuel},
@@ -223,6 +273,13 @@ year = {2001},
 month = {3},
 title = {The Law of Accelerating Returns},
 url = {http://www.kurzweilai.net/the-law-of-accelerating-returns}
+}
+@misc{Keras2018,
+	author = {Keras},
+	title = {The Python Deep Learning Library},
+	year = {2018},
+	url = {https://keras.io/},
+	note = {[Online; accessed 10-May-2018]}
 }
 @article{Krechevsky1932,
 author = {Krechevsky, I},
@@ -242,6 +299,27 @@ booktitle = {Psychological Review}
  publisher = {Cambridge University Press},
  address = {New York, NY, USA}
 }
+
+@ARTICLE{Neubig2017,
+   author = {{Neubig}, G. and {Dyer}, C. and {Goldberg}, Y. and {Matthews}, A. and
+	{Ammar}, W. and {Anastasopoulos}, A. and {Ballesteros}, M. and
+	{Chiang}, D. and {Clothiaux}, D. and {Cohn}, T. and {Duh}, K. and
+	{Faruqui}, M. and {Gan}, C. and {Garrette}, D. and {Ji}, Y. and
+	{Kong}, L. and {Kuncoro}, A. and {Kumar}, G. and {Malaviya}, C. and
+	{Michel}, P. and {Oda}, Y. and {Richardson}, M. and {Saphra}, N. and
+	{Swayamdipta}, S. and {Yin}, P.},
+    title = "{DyNet: The Dynamic Neural Network Toolkit}",
+  journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+   eprint = {1701.03980},
+ primaryClass = "stat.ML",
+ keywords = {Statistics - Machine Learning, Computer Science - Computation and Language, Computer Science - Mathematical Software},
+     year = 2017,
+    month = jan,
+   adsurl = {http://adsabs.harvard.edu/abs/2017arXiv170103980N},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
 @misc{megaparsec,
 	title = "Megaparsec on GitHub",
 	author = "Karpov, Mark",
@@ -337,32 +415,53 @@ pages = {1-18},
 title = {Attention to Action},
 isbn = {978-1-4757-0631-4}
 }
+@misc{ONNX2018,
+	author = "ONNX",
+	title = "Open neural network exchange format",
+	yearh = 2018,
+	url = {https://onnx.ai/},
+	note = "[Online; accessed 10-May-2018]"
+}
 @misc{Pedersen2017,
   author = {Pedersen, Jens E.},
   title = {Sentiment analysis with linear regression and LSTM},
   year = "2018",
-  url = "\url{https://github.com/Jegp/langprocexam/blob/master/report/report.pdf}"
+  url = {https://github.com/Jegp/langprocexam/blob/master/report/report.pdf}
 }
 @misc{Pedersen2018:futhark,
 	author = {Pedersen, Jens E.},
 	title = "Futhark backend for Volr on GitHub",
 	year = "2018",
-	url = "\url{https://github.com/volr/futhark-backend}",
+	url = {https://github.com/volr/futhark-backend},
 	note = "[Online; accessed 31-March-2018]"
 }
 @misc{Pedersen2018:volr,
 	author = {Pedersen, Jens E.},
 	title = "Volr language implementation",
 	year = "2018",
-	url = "\url{https://github.com/volr/lang}",
+	url = {https://github.com/volr/lang},
 	note = "[Online; accessed 31-March-2018]"
 }
 @misc{Pedersen2018:volr-report,
 	author = {Pedersen, Jens Egholm},
 	title = "Modelling learning systems - a DSL for cognitive neuroscientists",
 	year = "2018",
-	url = "\url{https://github.com/jegp/volr-report}",
+	url = {https://github.com/jegp/volr-report},
 	note = "Copenhagen University [Online; accessed 06-05-2018]"
+}
+@misc{PyNN2018,
+author = {PyNN},
+title = {Documentation: Introduction},
+year = 2018,
+url = {https://neuralensemble.org/docs/PyNN/introduction.html},
+note = "[Online; accessed 10-May-2018]"
+}
+@misc{PyTorch2018,
+	author = "PyTorch",
+	title = "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
+	year = 2018,
+	url = {https://pytorch.org/},
+	note = "[Online; accessed 10-May-2018]"
 }
 @ARTICLE{Robertson1999,
     author = {Robertson, Ian H. and Murre, Jaap M. J.},
@@ -446,12 +545,56 @@ volume = "61",
 doi = "10.1016/j.neunet.2014.09.003",
 note = "Published online 2014; based on TR arXiv:1404.7828 [cs.NE]",
 year = "2015"}
-
+@article{Schmitt2017,
+  author    = {Sebastian Schmitt and
+               Johann Klaehn and
+               Guillaume Bellec and
+               Andreas Gr{\"{u}}bl and
+               Maurice Guettler and
+               Andreas Hartel and
+               Stephan Hartmann and
+               Dan Husmann de Oliveira and
+               Kai Husmann and
+               Vitali Karasenko and
+               Mitja Kleider and
+               Christoph Koke and
+               Christian Mauch and
+               Eric M{\"{u}}ller and
+               Paul M{\"{u}}ller and
+               Johannes Partzsch and
+               Mihai A. Petrovici and
+               Stefan Schiefer and
+               Stefan Scholze and
+               Bernhard Vogginger and
+               Robert A. Legenstein and
+               Wolfgang Maass and
+               Christian Mayr and
+               Johannes Schemmel and
+               Karlheinz Meier},
+  title     = {Neuromorphic Hardware In The Loop: Training a Deep Spiking Network
+               on the BrainScaleS Wafer-Scale System},
+  journal   = {CoRR},
+  volume    = {abs/1703.01909},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1703.01909},
+  archivePrefix = {arXiv},
+  eprint    = {1703.01909},
+  timestamp = {Mon, 06 Nov 2017 12:14:00 +0100},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/SchmittKBGGHHOH17},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
 @book{Sutton2018,
 author = "Sutton, Richard and Barto, Andrew G.",
 title = "Reinforcement Learning: An Introduction",
 year = 2018,
 publisher = "MIT Press"
+}
+@misc{TensorFlow2018,
+	author = "TensorFlow",
+	title = "An open source machine learning framework for everyone",
+	year = 2018,
+	url = {https://www.tensorflow.org/},
+	note = "[Online; accessed 10-May-2018]"
 }
 @Article{Tolman1927,
 author="Edward C. Tolman and Dorothy B. Nyswander",
@@ -474,7 +617,6 @@ issn="1471-2202",
 doi="10.1186/1471-2202-5-42",
 url="https://doi.org/10.1186/1471-2202-5-42"
 }
-
 @article{walter2015,
 title = "Neuromorphic implementations of neurobiological learning algorithms for spiking neural networks",
 journal = "Neural Networks",

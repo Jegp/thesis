@@ -6,26 +6,18 @@ Goal: Theory section
 
 Deadline: 20th of May
 
-### Part 1: Theories on SNN
+### Part 1: Experiment setup
 
-* 22/4: TN: Chapter 1
-* 23/4: TN: Chapter 2
-* 24/4: Write 2 pages - send to Martin
-* 29/4: TN: Chapter 3
-* 30/4: TN: Chapter 4, Meet Martin, NEST support
-* 1/5: TN: Chapter 5
-* 2/5: TN: Chapter 6
-* 4/5: Write 2 pages - send to Martin + NEST abstract to Pehle
-* 7/5: TN: Chapter 7
-* 8/5: Literature review 1/2
-* 9/5: Literature review 2/2 + Write 2 pages
+* 7/5: 2 pages of experiment
+* 8/5: NEST abstract + 2 pages of experiment + multipass
+* 9/5: TN chapter 3 + 2 pages of experiment + send to Martin
 
 ### Part 2: Theories of learning in SNN
 
-* 10/5: TN: Chapter 8
-* 11/5: TN: Chapter 9 - send to Martin
-* 14/5: Write 3 pages
-* 15/5: TN: Chapter 10
+* 10/5: TN: Chapter 4 + 1 page
+* 11/5: TN: Chapter 5 + 1 page
+* 14/5: TN: Chapter 6 + 1 page
+* 15/5: TN: Chapter 7 + 8
 * 16/5: Literature review 1/3
 * 17/5: Literature review 2/3
 * 18/5: Literature review 3/3
