@@ -1,3 +1,5 @@
+% !TEX root = ../report.tex
+
 Before diving into the actual experiment built to test the hypothesis, this
 chapter discusses and describes the method employed to model spiking
 and artificial \gls{NN}s.
@@ -29,8 +31,8 @@ Conversely a number of choices exist for neuromorphic modelling\footnote{
 }, but they exclusively evaluate to neuromorphic or spiking neural network
 backends \autocite{Jordan2018}.
 
-Recently however, a domain-specific language (DSL) called Volr was developed
-to construct reproducible \gls{NN} experiments
+A domain-specific language (DSL) called Volr was recently presented to
+construct reproducible \gls{NN} experiments
 \autocite{Pedersen2018:volr}.
 The DSL allows the modelling of sufficiently complicated models for
 the purpose of this thesis, while providing a set of tools that permits the
@@ -64,32 +66,69 @@ definition of the language can be found in appendix \ref{appendix:volr}.
   \caption{EBNF of Volr}
 \end{figure}
 
-Figure \ref{fig:volr-ebnf} shows how an experiment is constructed. It consists
-of four sub-components: A number of stimuli, neural populations, responses and
-experiment targets.
+Figure \ref{fig:volr-ebnf} shows the constituent parts of an experiment.
+Four sub-components are required:
+  A number of stimuli, neural populations, responses and experiment targets.
+
+\subsubsection{Block grammar}
+The sub-components are constructed using the same declarative \textit{block}
+structure shown in figure \ref{fig:volr-ebnf-block}.
+The block defines its \textit{type} (\texttt{stimulus}, \texttt{population},
+\texttt{response} or \texttt{target}), an optional \textit{name} and lastly
+some block content.
+
+\begin{figure}
+  \label{fig:volr-ebnf-block}
+  \begin{grammar}
+    <block> ::= <block-type> , [ <block-name> ] , { <block-content> } ;
+
+    <block-type> ::= 'stimulus' | 'population' | 'response' | 'target' ;
+
+    <block-name> ::= <string> ;
+
+    <block-content> ::= <stimulus-content> | <population-content>
+    \alt <response-content> | <target-content> ;
+  \end{grammar}
+  \caption{EBNF for the general block structure used for stimuli, populations,
+    responses and targets alike.}
+\end{figure}
+
+The content varies for the different block types, but is restricted to contain
+a number of either key-value pairs (\texttt{field}s) or relations to other
+blocks (\texttt{connection}s).
+Fields are interpreted by the respective targets (see section
+\ref{sec:volr-targets}) and connections are only allowed for
+\texttt{population}s and \texttt{responses} (see figures
+\ref{fig:volr-ebnf-population} and \ref{fig:volr-ebnf-response}).
 
 \subsubsection{Experiment stimuli}
-The stimuli describes the ``input'' of the model, either as data arrays directly
-in the DSL or loaded via an external source.
+The stimuli describes the ``input'' of the model, and only contains the source
+either as data arrays directly in the DSL or as a reference to a file.
 
 \begin{figure}
   \label{fig:volr-ebnf-stimuli}
   \begin{minipage}{0.9\linewidth}
     \begin{grammar}
-      <stimuli>  = <stimulus> , [ <stimuli> ] ;
+      <stimulus-block> ::= <stimulus-source> ;
 
-      <stimulus> = 'stimulus' , [ <label> ] , <stimulus-source> ;
-
-      <stimulus-source> = 'file: ' , <string>
-        \alt 'array: ' , <number-list> ;
+      <stimulus-source> = 'file: ' , <string> | 'array: ' , <number-list> ;
     \end{grammar}
   \end{minipage}
-  \caption{EBNF of Volr}
+  \caption{EBNF of experiment stimuli}
 \end{figure}
 
-
 \subsubsection{Experiment populations}
-The populations describe the architecture of the neural network itself,
+
+\begin{figure}
+  \label{fig:volr-ebnf-population}
+  \begin{minipage}{0.9\linewidth}
+    \begin{grammar}
+      <population> ::=
+    \end{grammar}
+  \end{minipage}
+\end{figure}
+The populations describe the architecture of the neural network itself.
+Like the stimuli, populations
 
 \subsubsection{Experiment responses}
 The responses are the recorded ``output'' of the model.
@@ -102,19 +141,8 @@ stimuli or population.
 Finally the targets describe one or more destination environments on which
 to run the experiment. These are described in detail in section \ref{sec:volr-targets}.
 
-\subsubsection{Block grammar}
-The sub-components are constructed using the same declarative \textit{block}
-structure shown in figure \ref{fig:volr-ebnf-block}.
-
-\begin{figure}
-  \label{fig:volr-ebnf-block}
-  \begin{grammar}
-    <block> ::= <block-type> ','
-  \end{grammar}
-\end{figure}
-
-
-\subsection{Experimental validity}
+\subsection{Syntactical validity}
+... multipass compiler
 ... checks for valid/invalid experiments
 
 \subsection{Volr semantics}
@@ -131,6 +159,8 @@ The parameters are treated differently depending on the experiment target (see
 sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
 
 \section{Neural network simulation targets in Volr} \label{sec:volr-targets}
+
+% TODO :Write how fields are interpreted
 
 Volr exploits the structural similarities between \gls{ANN} and \gls{SNN} to
 translate the model to both spiking and artificial network platforms (back-ends).
