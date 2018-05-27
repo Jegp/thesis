@@ -41,107 +41,161 @@ model be sent and evaluated on both \gls{ANN} and \gls{SNN} targets.
 Some work was required to fully support learning mechanisms on
 neuromorphic hardware, and the DSL, as well as the tooling around it, has been
 extended for the purpose of this thesis (see appendix \ref{appendix:volr})
-The following section describes the architecture and principles of Volr in
-detail.
+The following section describes the grammar and anatomy of Volr in detail.
 
 \section{Volr}
-Volr is a declarative language designed to model \gls{NN}.
-Volr offers a trade-off between complete, but verbose, descriptions of small
-networks and more general designs of large and complex networks, by separating
-the network topologies from the detailed physiological properties of each
-neuron or neuron population.
+Volr is a declarative language designed to model \gls{NN} that seeks a
+trade-off between complete, but verbose, descriptions of small
+networks and more general designs of large and complex networks.
+By separating the network topologies from the detailed physiological properties
+of each neuron or neuron population, the language aims to allow simple
+experiments with few, concise declarations, as well as larger and more
+complicated experiments while retaining readability.
 
 \subsection{Volr syntax}
-This section defines the syntactical concepts of Volr step by step, beginning
-with the general notion of an \textit{experiment}. For completeness the full
-definition of the language can be found in appendix \ref{appendix:volr}.
+This section defines the grammar for Volr step by step, beginning
+with the general notion of an \textit{experiment}.
+The below definitions omit whitespaces for the sake of brevity\footnote{
+Apart from the rules described in section \ref{sec:volr-block}, spaces and
+tabs can be inserted between any two grammatical units, whereas newline
+or carriage return characters only occur after definitions of blocks,
+connections and fields.
+}
+For completeness the full definition of the language can be found in appendix
+\ref{appendix:volr}.
+
+\renewcommand{\syntleft}{}
+\renewcommand{\syntright}{}
 
 \begin{figure}
-  \label{fig:volr-ebnf}
-  \begin{minipage}{0.9\linewidth}
-    \begin{grammar}
-      <experiment> = <stimuli> , <populations> , <responses> , <targets> ;
-    \end{grammar}
-  \end{minipage}
-  \caption{EBNF of Volr}
+  \begin{Verbatim}[commandchars=\\\{\}]
+experiment          ::= stimuli populations responses targets
+
+fields              ::= field [ fields ]
+field               ::= key \textbf{:} value
+
+connections         ::= connnection [ connections ]
+connection          ::= \textbf{from}  name  connection-expr
+connection-expr     ::= connection-term
+                      | connection-expr operator connection-expr
+connection-term     ::= \textbf{all} | \textbf{one} | \textbf{self} | \textbf{random} number
+connection-operator ::= \textbf{+} | \textbf{-} | \textbf{*}
+
+stimuli             ::= stimulus [ stimuli ]
+stimulus            ::= \textbf{stimulus} name fields
+
+populations         ::= population [ populations ]
+population          ::= \textbf{population} name connections fields
+
+responses           ::= response [ responses ]
+response            ::= \textbf{response} connections fields
+
+targets             ::= target [ targets ]
+target              ::= \textbf{target} target-name
+target-name         ::= \textbf{futhark} | \textbf{nest} | \textbf{braincscales}
+
+  \end{Verbatim}
+  \caption{BNF of an experiment in Volr with stimuli, populations, responses and
+           targets. See appendix \ref{appendix:volr} for a full definition.}
+  \label{fig:volr-bnf}
 \end{figure}
 
-Figure \ref{fig:volr-ebnf} shows the constituent parts of an experiment.
-Four sub-components are required:
+Figure \ref{fig:volr-bnf} shows the constituent parts of an experiment.
+Four sub-com\-po\-nents are required:
   A number of stimuli, neural populations, responses and experiment targets.
 
-\subsubsection{Block grammar}
+\subsubsection{Block grammar} \label{sec:volr-block}
 The sub-components are constructed using the same declarative \textit{block}
 structure shown in figure \ref{fig:volr-ebnf-block}.
 The block defines its \textit{type} (\texttt{stimulus}, \texttt{population},
 \texttt{response} or \texttt{target}), an optional \textit{name} and lastly
 some block content.
 
-\begin{figure}
-  \label{fig:volr-ebnf-block}
-  \begin{grammar}
-    <block> ::= <block-type> , [ <block-name> ] , { <block-content> } ;
-
-    <block-type> ::= 'stimulus' | 'population' | 'response' | 'target' ;
-
-    <block-name> ::= <string> ;
-
-    <block-content> ::= <stimulus-content> | <population-content>
-    \alt <response-content> | <target-content> ;
-  \end{grammar}
-  \caption{EBNF for the general block structure used for stimuli, populations,
-    responses and targets alike.}
-\end{figure}
-
 The content varies for the different block types, but is restricted to contain
 a number of either key-value pairs (\texttt{field}s) or relations to other
 blocks (\texttt{connection}s).
 Fields are interpreted by the respective targets (see section
 \ref{sec:volr-targets}) and connections are only allowed for
-\texttt{population}s and \texttt{responses} (see figures
-\ref{fig:volr-ebnf-population} and \ref{fig:volr-ebnf-response}).
+\texttt{population}s and \texttt{responses}.
+
+\subsubsection{Connection-set algebra grammar} \label{sec:volr-csa}
+Connections between blocks are implemented as a subset of the \gls{CSA}
+introduced in section \ref{sec:CSA} \autocite{Djurfeldt2012}.
+Most notably, the notion of \textit{blocks} and \textit{geometric distance} have
+been omitted\footnote{Neither blocks nor distances are required for the
+  experiment in the thesis. It is, however, a necessary element to conduct
+  further experiments, since biological \gls{SNN} are highly influenced by
+  spatial arrangements \autocite{dayan2001}.
+}.
+
+The grammar is presented in figure \ref{fig:volr-ebnf-csa}, and aims to provide
+a flexible way to describe complex connectivity patterns in text.
+The present grammar can be viewed as a basic algebraic tool for set operations.
+Describing full connectivity between two populations, such that all neurons
+in the first population is connected with all neurons in the second population,
+can simply be expressed as `\texttt{all}'.
+Connecting one neuron to one other neuron between two populations are described
+as `\texttt{one}', while random connectivity are described with a probability
+of, say 0.5: `\texttt{random 0.5}'\footnote{
+  This expresses a Bernouilli trial with the given probability
+  \autocite{Djurfeldt2012}.
+}
+As a final example, every neuron in a population connected to every neuron in
+that same population, with the exception of identical neurons, can be described
+as `\texttt{all - self}'.
+%
+% \begin{figure}
+%   \begin{center}
+%     \begin{minipage}{0.8\linewidth}
+%       \begin{grammar}
+%         <connection> ::= 'from' , <block-name> , { <csa-expr> } ;
+%
+%         <csa-expr> ::= <csa-term> | <csa-expr> , <csa-operator> , <csa-expr> ;
+%
+%         <csa-term> ::= 'all' | 'one' | 'self' | 'random' , <number> ;
+%
+%         <csa-operator> ::= '+' | '-' | '*' ;
+%       \end{grammar}
+%     \end{minipage}
+%   \end{center}
+%   \caption{BNF of the connection grammar, describing relations between
+%     blocks through \gls{CSA}.}
+%   \label{fig:volr-bnf-csa}
+% \end{figure}
 
 \subsubsection{Experiment stimuli}
-The stimuli describes the ``input'' of the model, and only contains the source
-either as data arrays directly in the DSL or as a reference to a file.
-
-\begin{figure}
-  \label{fig:volr-ebnf-stimuli}
-  \begin{minipage}{0.9\linewidth}
-    \begin{grammar}
-      <stimulus-block> ::= <stimulus-source> ;
-
-      <stimulus-source> = 'file: ' , <string> | 'array: ' , <number-list> ;
-    \end{grammar}
-  \end{minipage}
-  \caption{EBNF of experiment stimuli}
-\end{figure}
+The stimuli describes the ``input'' of the model.
+Such input is defined either as an array of elements directly in the DSL
+or as a reference to a file.
 
 \subsubsection{Experiment populations}
+The populations describe the topology of the neural network itself.
+As with the stimuli, the populations are built around a block structure that
+contains a number of sub-expressions.
 
-\begin{figure}
-  \label{fig:volr-ebnf-population}
-  \begin{minipage}{0.9\linewidth}
-    \begin{grammar}
-      <population> ::=
-    \end{grammar}
-  \end{minipage}
-\end{figure}
-The populations describe the architecture of the neural network itself.
-Like the stimuli, populations
+The \texttt{connection} defines the source stimulus for the population,
+i.e. the population \textit{from} which action-potentials will be forwarded.
+A population can receive stimulus from more than one source.
+The connections are modelled as per the \gls{CSA} described in section
+\ref{sec:volr-csa}.
+
+% TODO: Describe and invent archetypes... or not?
 
 \subsubsection{Experiment responses}
-The responses are the recorded ``output'' of the model.
-
-Both the populations
-and the responses also describe their connectivity to either one or more
-stimuli or population.
+The responses are the ``output'' of the model to be recorded, and can be
+considered as the outcome of the network for training purposes.
+The response block only contains an optional specification of a location for
+the experiment output data.
 
 \subsubsection{Experiment targets}
-Finally the targets describe one or more destination environments on which
-to run the experiment. These are described in detail in section \ref{sec:volr-targets}.
+The final element in a Volr experiment is its targets.
+A target describe a destination environments on which to run the experiment.
+These are described in detail in section \ref{sec:volr-targets}, and are
+referenced in the grammar as simple strings.
 
-\subsection{Syntactical validity}
+\pagebreak
+\subsection{Volr model validity}
+Not all experiments are
 ... multipass compiler
 ... checks for valid/invalid experiments
 
@@ -161,6 +215,7 @@ sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
 \section{Neural network simulation targets in Volr} \label{sec:volr-targets}
 
 % TODO :Write how fields are interpreted
+% TODO: Write how input is interpreted
 
 Volr exploits the structural similarities between \gls{ANN} and \gls{SNN} to
 translate the model to both spiking and artificial network platforms (back-ends).

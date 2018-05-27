@@ -1,5 +1,6 @@
 \documentclass[a4paper,oneside]{memoir}
 \usepackage[english]{babel}
+\usepackage[margin=1cm]{caption}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{wallpaper}
@@ -15,7 +16,7 @@
 \renewcommand{\baselinestretch}{1.5}
 
 % Grammar
-\usepackage[nounderscore]{syntax}
+\usepackage{fancyvrb}
 
 % References
 \usepackage{cleveref}
@@ -38,11 +39,6 @@
 
 % TOC
 \maxsecnumdepth{subsection}
-
-% Setup captions
-\captionstyle[\centering]{\centering}
-\changecaptionwidth
-\captionwidth{0.8\linewidth}
 
 % \raggedbottom
 
@@ -158,6 +154,8 @@
   \subsection{Spikig neural networks} \label{sec:SNN}
   \subsection{Learning in SNN}
   \subsection{Neuromorphic platforms}
+
+  \section{Connection-set algebra} \label{sec:CSA}
 
 \chapter{Neural network modelling in Volr} \label{sec:volr}
   \include{chapters/volr}
