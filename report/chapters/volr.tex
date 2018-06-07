@@ -64,39 +64,49 @@ connections and fields.
 For completeness the full definition of the language can be found in appendix
 \ref{appendix:volr}.
 
-\renewcommand{\syntleft}{}
-\renewcommand{\syntright}{}
-
 \begin{figure}
   \begin{Verbatim}[commandchars=\\\{\}]
-experiment          ::= stimuli populations responses targets
+experiment  ::= \textit{stimuli populations responses targets}
 
-fields              ::= field [ fields ]
-field               ::= key \textbf{:} value
+connections ::= \textit{connnection} [ \textit{connections} ]
+connection  ::= \textbf{from} \textit{name} \textit{cexpr}
+cexpr       ::= \textit{cterm}
+              | \textit{cexpr} \textit{cop} \textit{cexpr}
+cterm       ::= \textbf{all} | \textbf{one} | \textbf{self} | \textbf{random} \textit{number}
+cop         ::= \textbf{+} | \textbf{-} | \textbf{*}
 
-connections         ::= connnection [ connections ]
-connection          ::= \textbf{from}  name  connection-expr
-connection-expr     ::= connection-term
-                      | connection-expr operator connection-expr
-connection-term     ::= \textbf{all} | \textbf{one} | \textbf{self} | \textbf{random} number
-connection-operator ::= \textbf{+} | \textbf{-} | \textbf{*}
+stimuli     ::= \textit{stimulus} [ stimuli ]
+stimulus    ::= \textbf{stimulus} \textit{name} \textit{fields}
 
-stimuli             ::= stimulus [ stimuli ]
-stimulus            ::= \textbf{stimulus} name fields
+populations ::= \textit{population} [ \textit{populations} ]
+population  ::= \textbf{population} \textit{name} \textit{connections} \textit{fields}
 
-populations         ::= population [ populations ]
-population          ::= \textbf{population} name connections fields
+responses   ::= \textit{response} [ \textit{responses} ]
+response    ::= \textbf{response} \textit{connections} \textit{fields}
 
-responses           ::= response [ responses ]
-response            ::= \textbf{response} connections fields
+targets     ::= \textit{target} [ \textit{targets} ]
+target      ::= \textbf{target} \textit{tname}
+tname       ::= \textbf{futhark} | \textbf{nest} | \textbf{brainscales}
 
-targets             ::= target [ targets ]
-target              ::= \textbf{target} target-name
-target-name         ::= \textbf{futhark} | \textbf{nest} | \textbf{braincscales}
+fields      ::= \textit{field} [ \textit{fields} ]
+field       ::= \textit{name} \textbf{:} \textit{value}
+value       ::= \textbf{[} \textif{namelist} \textbf{]} | \textit{name} | \textit{number}
+
+namelist    ::= \textit{name} [ \textbf{,} \textit{namelist} ]
+name        ::= \textit{letter} \textit{string}
+string      ::= \textit{char} [ \textit{char} ]
+char        ::= \textit{letter} | \textit{digit}
+letter      ::= non-whitespace Unicode character
+
+number      ::= \textit{integer} [ \textbf{.} \textit{nat} ]
+integer     ::= [ \textbf{-} ] \textit{nat}
+nat         ::= \textit{digit} [ \textit{nat} ]
+digit       ::= \textbf{0} | \textbf{1} | \textbf{2} | \textbf{3} | \textbf{4}
+              | \textbf{5} | \textbf{6} | \textbf{7} | \textbf{8} | \textbf{9}
 
   \end{Verbatim}
   \caption{BNF of an experiment in Volr with stimuli, populations, responses and
-           targets. See appendix \ref{appendix:volr} for a full definition.}
+           targets.}
   \label{fig:volr-bnf}
 \end{figure}
 
