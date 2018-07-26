@@ -1,5 +1,6 @@
 \begin{figure}
-  \begin{tabular}{c c}
+  \ContinuedFloat*
+  \begin{tabular}[t]{c c}
     \begin{minipage}{0.5\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
 \textbf{let} s = stim 2 \textbf{in}
@@ -11,8 +12,24 @@
     \end{minipage}
 
   \end{tabular}
-  \caption{Two examples that amounts to the same network topology 
-    where stimulus \texttt{s} is connected to population
-    \texttt{p}.}
-  \caption{}
+  \caption{A textual and visual example of a stimulus with two inputs 
+    that stimulates the same output neuron. This is a simple example 
+    of a T-maze task with two consistent input features.}
+  \label{fig:volr-example1}
+\end{figure}
+
+\begin{figure}
+  \ContinuedFloat*
+  \begin{tabular}[t]{c c}
+    \begin{minipage}{0.5\textwidth}
+      \begin{Verbatim}[mathescape,commandchars=\\\{\}]
+\textbf{let} s = stim 2 \textbf{in}
+  \textbf{let} p = pop 2 1 \textbf{in}
+    s $\otimes$ p
+      \end{Verbatim}
+    \end{minipage} & \begin{minipage}{0.5\textwidth}
+      Hello
+    \end{minipage}
+  \end{tabular}
+\label{fig:volr-examples}
 \end{figure}

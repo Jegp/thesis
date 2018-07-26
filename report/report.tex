@@ -10,8 +10,6 @@
 \usepackage{palatino}
 \usepackage{hyperref}
 \usepackage{csquotes}
-\usepackage{float}
-\usepackage{wrapfig}
 \usepackage{fvextra}
 \usepackage{xpatch}
 \usepackage{amsmath}
@@ -30,7 +28,14 @@
 % Proofs
 \usepackage{bussproofs}
 
+% Floats and figures
+\usepackage{float}
+\usepackage{wrapfig}
 \restylefloat{figure}
+\usepackage{caption}
+\DeclareCaptionLabelFormat{cont}{#1~#2\alph{ContinuedFloat}}
+\captionsetup[ContinuedFloat]{labelformat=cont}
+
 %linespacing
 \usepackage{setspace}
 \renewcommand{\baselinestretch}{1.5}

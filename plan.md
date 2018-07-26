@@ -25,6 +25,7 @@ Goal: ~50 pages
 * Send to Martin: 20. September
 * Introduction: 22. September
 * Read through (consistency): 23. September
+  * https://lemire.me/blog/rules-to-write-a-good-research-paper/
 * Abstract: 25. September
 * Read through (learning goals): 27. September
 * Send to Martin: 28. September
