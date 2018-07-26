@@ -1,4 +1,7 @@
 \documentclass[a4paper,oneside]{memoir}
+% Divide report into subfiles
+\usepackage{subfiles}
+
 \usepackage[english]{babel}
 \usepackage[margin=1cm]{caption}
 \usepackage[T1]{fontenc}
@@ -7,9 +10,26 @@
 \usepackage{palatino}
 \usepackage{hyperref}
 \usepackage{csquotes}
-\usepackage{listings}
 \usepackage{float}
 \usepackage{wrapfig}
+\usepackage{fvextra}
+\usepackage{xpatch}
+\usepackage{amsmath}
+
+% tikz drawing
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+% Listings
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+
+% Proofs
+\usepackage{bussproofs}
+
 \restylefloat{figure}
 %linespacing
 \usepackage{setspace}
@@ -158,13 +178,13 @@
   \section{Connection-set algebra} \label{sec:CSA}
 
 \chapter{Neural network modelling in Volr} \label{sec:volr}
-  \include{chapters/volr}
+  \subfile{chapters/volr}
 
 \chapter{Neural network architecture} \label{sec:model}
-  \include{chapters/model}
+  \subfile{chapters/model}
 
 \chapter{Experimental setup} \label{sec:experiment}
-  \include{chapters/experiment}
+  \subfile{chapters/experiment}
 
 \chapter{Data collection}
   \section{Futhark}

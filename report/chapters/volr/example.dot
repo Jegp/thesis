@@ -1,0 +1,10 @@
+digraph example {
+    rankdir = "LR"
+
+    s_0 [texlbl="$s_0$"]
+    s_1 [texlbl="$s_1$"]
+    p [texlbl="$p$"]
+    s_0 -> p
+    s_1 -> p
+
+}

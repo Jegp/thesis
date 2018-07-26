@@ -1,5 +1,5 @@
-% !TEX root = ../report.tex
-
+\documentclass{report.tex}{subfiles}
+\begin{document}
 Before diving into the actual experiment built to test the hypothesis, this
 chapter discusses and describes the method employed to model spiking
 and artificial \gls{NN}s.
@@ -38,13 +38,14 @@ The DSL allows the modelling of sufficiently complicated models for
 the purpose of this thesis, while providing a set of tools that permits the
 model be sent and evaluated on both \gls{ANN} and \gls{SNN} targets.
 
+
 Some work was required to fully support learning mechanisms on
 neuromorphic hardware, and the DSL, as well as the tooling around it, has been
 extended for the purpose of this thesis (see appendix \ref{appendix:volr})
 The following section describes the grammar and anatomy of Volr in detail.
 
 \section{Volr}
-Volr is a declarative language designed to model \gls{NN} that seeks a
+Volr is a declarative DSL designed to model \gls{NN} that seeks a
 trade-off between complete, but verbose, descriptions of small
 networks and more general designs of large and complex networks.
 By separating the network topologies from the detailed physiological properties
@@ -52,64 +53,19 @@ of each neuron or neuron population, the language aims to allow simple
 experiments with few, concise declarations, as well as larger and more
 complicated experiments while retaining readability.
 
-\subsection{Volr syntax}
-This section defines the grammar for Volr step by step, beginning
-with the general notion of an \textit{experiment}.
-The below definitions omit whitespaces for the sake of brevity\footnote{
-Apart from the rules described in section \ref{sec:volr-block}, spaces and
-tabs can be inserted between any two grammatical units, whereas newline
-or carriage return characters only occur after definitions of blocks,
-connections and fields.
-}
-For completeness the full definition of the language can be found in appendix
-\ref{appendix:volr}.
+Figure \ref{fig:volr-expr} shows the BNF form of expressions, values and types
+in Volr, while figure \ref{fig:volr-rules} lists evaluation rules to apply
+when evaluating the expressions.
+Finally the \ref{fig:volr-examples} shows an example network that solves
+a rudimentary maze task.
+% Expressions, evaluation rules and examples
+\input{chapters/volr/expr.tex}
+\input{chapters/volr/evaluation.tex}
+\input{chapters/volr/example.tex}
 
-\begin{figure}
-  \begin{Verbatim}[commandchars=\\\{\}]
-experiment  ::= \textit{stimuli populations responses targets}
-
-connections ::= \textit{connnection} [ \textit{connections} ]
-connection  ::= \textbf{from} \textit{name} \textit{cexpr}
-cexpr       ::= \textit{cterm}
-              | \textit{cexpr} \textit{cop} \textit{cexpr}
-cterm       ::= \textbf{all} | \textbf{one} | \textbf{self} | \textbf{random} \textit{number}
-cop         ::= \textbf{+} | \textbf{-} | \textbf{*}
-
-stimuli     ::= \textit{stimulus} [ stimuli ]
-stimulus    ::= \textbf{stimulus} \textit{name} \textit{fields}
-
-populations ::= \textit{population} [ \textit{populations} ]
-population  ::= \textbf{population} \textit{name} \textit{connections} \textit{fields}
-
-responses   ::= \textit{response} [ \textit{responses} ]
-response    ::= \textbf{response} \textit{connections} \textit{fields}
-
-targets     ::= \textit{target} [ \textit{targets} ]
-target      ::= \textbf{target} \textit{tname}
-tname       ::= \textbf{futhark} | \textbf{nest} | \textbf{brainscales}
-
-fields      ::= \textit{field} [ \textit{fields} ]
-field       ::= \textit{name} \textbf{:} \textit{value}
-value       ::= \textbf{[} \textif{namelist} \textbf{]} | \textit{name} | \textit{number}
-
-namelist    ::= \textit{name} [ \textbf{,} \textit{namelist} ]
-name        ::= \textit{letter} \textit{string}
-string      ::= \textit{char} [ \textit{char} ]
-char        ::= \textit{letter} | \textit{digit}
-letter      ::= non-whitespace Unicode character
-
-number      ::= \textit{integer} [ \textbf{.} \textit{nat} ]
-integer     ::= [ \textbf{-} ] \textit{nat}
-nat         ::= \textit{digit} [ \textit{nat} ]
-digit       ::= \textbf{0} | \textbf{1} | \textbf{2} | \textbf{3} | \textbf{4}
-              | \textbf{5} | \textbf{6} | \textbf{7} | \textbf{8} | \textbf{9}
-
-  \end{Verbatim}
-  \caption{BNF of an experiment in Volr with stimuli, populations, responses and
-           targets.}
-  \label{fig:volr-bnf}
-\end{figure}
-
+\newpage\null\thispagestyle{empty}\newpage
+\newpage\null\thispagestyle{empty}\newpage
+\pagebreak
 Figure \ref{fig:volr-bnf} shows the constituent parts of an experiment.
 Four sub-com\-po\-nents are required:
   A number of stimuli, neural populations, responses and experiment targets.
@@ -203,12 +159,6 @@ A target describe a destination environments on which to run the experiment.
 These are described in detail in section \ref{sec:volr-targets}, and are
 referenced in the grammar as simple strings.
 
-\pagebreak
-\subsection{Volr model validity}
-Not all experiments are
-... multipass compiler
-... checks for valid/invalid experiments
-
 \subsection{Volr semantics}
 In practice a network is built by describing a graph.
 The nodes in the graph consist of \texttt{populations} of neurons and the edges
@@ -221,6 +171,7 @@ Both the connections and the \texttt{populations} can be annotated with features
 such as connection weight and neuron parameters (see \nameref{appendix:volr}).
 The parameters are treated differently depending on the experiment target (see
 sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
+
 
 \section{Neural network simulation targets in Volr} \label{sec:volr-targets}
 
@@ -305,3 +256,4 @@ experiment environments in \gls{NEST} and \gls{BrainScaleS}.
 ... To be continued ...
 \subsubsection{Translation to BrainScaleS} \label{sec:volr-BrainScaleS}
 ... To be continued ...
+\end{document}

@@ -1,0 +1,37 @@
+\begin{figure}
+\begin{prooftree}
+  \AxiomC{}
+  \UnaryInfC{$\Gamma \vdash n : \mathbf{int}$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{$\Gamma (x) = \tau$}
+  \UnaryInfC{$\Gamma \vdash x : \tau$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{}
+  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{popt}\ 1\ n$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{}
+  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n\ m : \mathbf{popt}\ n\ m$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{stimt}\ m$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{popt}\ m\ n$}
+  \BinaryInfC{$\Gamma \vdash e_1 \otimes e_2 : \mathbf{popt}\ m\ n$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{popt}\ l\ m$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{popt}\ m\ n$}
+  \BinaryInfC{$\Gamma \vdash e_1 \otimes e_2 : \mathbf{popt}\ l\ n$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{$\Gamma \vdash e : \tau$}
+  \AxiomC{$\Gamma [v : \tau] \vdash e' : \tau$}
+  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \tau$}
+\end{prooftree}
+
+  \caption{Evaluation rules in Volr.}
+  \label{fig:volr-rules}
+\end{figure}
+
