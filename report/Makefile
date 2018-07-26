@@ -4,16 +4,18 @@ BIB_SOURCE := bib.bib
 
 DOTFILE_DIRS := chapters/volr
 
-.PHONY: all clean $(DOTFILE_DIRS)
+.PHONY: all clean graphs $(DOTFILE_DIRS)
 all: build
 
-build: $(DOTFILE_DIRS)
+build: graphs
 	rm report.pdf -f
 	latexmk -pdf ${SOURCE_IN}
 
+graphs: $(DOTFILE_DIRS)
+
 $(DOTFILE_DIRS): 
 	$(foreach f,$(wildcard $@/*.dot), \
-		dot2tex $f --figonly -f tikz > $(basename $f).tex \
+		dot -Efontname="Latin Modern Math" -Tpdf $f > $(basename $f).pdf \
 	) 
 
 clean:

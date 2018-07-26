@@ -1,10 +1,15 @@
-digraph example {
-    rankdir = "LR"
+digraph example1 {
+    rankdir = "LR";
+    graph [margin=0];
+    edge [arrowsize=0.7]
+    node [shape=circle, width=0.3, fixedsize=true];
 
-    s_0 [texlbl="$s_0$"]
-    s_1 [texlbl="$s_1$"]
-    p [texlbl="$p$"]
-    s_0 -> p
-    s_1 -> p
+    s_0, s_1, o [color=white, width=0.1 label=""];
+    p_0, p_1, p_2, o [label=" "];
+    s_0 -> p_0 [label="Input 1"];
+    s_1 -> p_1 [label="Input 2"];
+    p_0 -> p_2;
+    p_1 -> p_2;
+    p_2 -> o [label="Output"]
 
 }
