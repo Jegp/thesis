@@ -4,26 +4,28 @@
   \UnaryInfC{$\Gamma \vdash n : \mathbf{int}$}
 \end{prooftree}
 \begin{prooftree}
+  \AxiomC{}
+  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{layer}\ n$}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{}
+  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{layer}\ n$}
+\end{prooftree}
+\begin{prooftree}
   \AxiomC{$\Gamma (x) = \tau$}
   \UnaryInfC{$\Gamma \vdash x : \tau$}
 \end{prooftree}
 \begin{prooftree}
-  \AxiomC{}
-  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{popt}\ 1\ n$}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{layer}\ n$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{layer}\ m$}
+  \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
+  \TrinaryInfC{$\Gamma \vdash \otimes\ e_1\ e_2\ w : \mathbf{con}\ n\ m$}
 \end{prooftree}
 \begin{prooftree}
-  \AxiomC{}
-  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n\ m : \mathbf{popt}\ n\ m$}
-\end{prooftree}
-\begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{stimt}\ m$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{popt}\ m\ n$}
-  \BinaryInfC{$\Gamma \vdash e_1 \otimes e_2 : \mathbf{popt}\ m\ n$}
-\end{prooftree}
-\begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{popt}\ l\ m$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{popt}\ m\ n$}
-  \BinaryInfC{$\Gamma \vdash e_1 \otimes e_2 : \mathbf{popt}\ l\ n$}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{layer}\ n$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{layer}\ m$}
+  \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
+  \TrinaryInfC{$\Gamma \vdash \ominus\ e_1\ e_2\ w : \mathbf{con}\ n\ m$}
 \end{prooftree}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \tau$}

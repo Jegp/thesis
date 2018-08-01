@@ -1,15 +1,15 @@
 digraph example1 {
     rankdir = "LR";
+    ratio=0.25;
     graph [margin=0];
-    edge [arrowsize=0.7]
-    node [shape=circle, width=0.3, fixedsize=true];
+    edge [arrowsize=0.3, labelfontsize=8];
+    node [shape=point, width=0.05];
 
-    s_0, s_1, o [color=white, width=0.1 label=""];
-    p_0, p_1, p_2, o [label=" "];
-    s_0 -> p_0 [label="Input 1"];
-    s_1 -> p_1 [label="Input 2"];
-    p_0 -> p_2;
-    p_1 -> p_2;
-    p_2 -> o [label="Output"]
+    s_0, s_1, o_1 [color=white, label=" "];
+
+    s_0 -> p_0 [taillabel="Input +", labelangle=20, labeldistance=2.7];
+    s_1 -> p_0 [taillabel="Input -", labelangle=-20, labeldistance=2.7];
+
+    p_0 -> o_1 [headlabel="Output", labelangle=-15, labeldistance=2];
 
 }

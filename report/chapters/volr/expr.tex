@@ -6,19 +6,28 @@
     & \begin{minipage}{0.6\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
     | \textbf{stim} $n$
-    | \textbf{pop} $n\ m$
-    | \textbf{tar} $n$
-    | $e \otimes e$
+    | \textbf{pop} $n$
+    | $\otimes\ e\ e\ n$
+    | $\ominus\ e\ e\ n$
     | \textbf{let} $x = e$ \textbf{in} $e'$
       \end{Verbatim} 
     \end{minipage} \\
+
     & \\ % Empty space
+    
     values
     & \texttt{$v$ ::= $n$} \\
+    
     & \\ % Empty space
 
     types
-    & \texttt{$\tau$ ::= \textbf{group} $n\ m$ | \textbf{stimt} $n$ | \textbf{int} }
+    & \texttt{$\tau$ ::= \textbf{int} | \textbf{float}} \\
+    & \begin{minipage}{0.6\textwidth}
+      \begin{Verbatim}[mathescape,commandchars=\\\{\}]
+    | \textbf{layer} $n$
+    | \textbf{con} $n\ m$
+      \end{Verbatim}
+    \end{minipage}
   \end{tabular}
 
   \caption{Expressions, values and types of the Volr language.}
