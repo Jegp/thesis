@@ -10,9 +10,9 @@ Deadline: 22nd of October
 
 Goal: Three experiments
 
-* NEST: 20th of July
-* Futhark: 5th of August
-* BrainScaleS: 20th of August
+* Futhark: 20th of August
+* NEST: 25th of July
+* BrainScaleS: 31st of August
 
 ## Milestone 2: Writing
 

@@ -34,10 +34,10 @@
       \includegraphics[width=\textwidth]{chapters/volr/example1.pdf}
     \end{minipage}
   \end{tabular}
-  \caption{An illustration of a simple network that can solve a simple
+  \caption{An illustration of a simple network that can solve a
     T-maze task. A single population (\texttt{\textbf{p}}) is 
-    excited and inhibited by two different stimulus channels.
-    The weights are initialised to the value of 1.}
+    excited and inhibited by two different stimulus channels, initialised
+    to the value of 1 and -1 respectively.}
   \label{fig:volr-example2}
 \end{figure}
 
@@ -56,10 +56,10 @@
       \includegraphics[width=\textwidth]{chapters/volr/example3.pdf}
     \end{minipage}
   \end{tabular}
-  \caption{A more advanced example where the nodes are no longer single
-    neurons, but populations of neurons. 
-    This network can process the MNIST dataset as 16x16 images and
-    infer the displayed number. Here the input is connected one-to-one
+  \caption{A more advanced example, that can process the MNIST dataset
+    as 16x16 pixel images. 
+    The nodes are no longer single neurons, but populations of neurons,
+    where the input (16x16 = 256) is connected one-to-one
     with the first population (256), which is connected all-to-all to the 
     output population (9).}
   \label{fig:volr-example2}

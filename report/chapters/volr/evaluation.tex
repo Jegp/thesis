@@ -1,35 +1,42 @@
 \begin{figure}
 \begin{prooftree}
   \AxiomC{}
+  \RightLabel{\hskip10pt($e1$)}
   \UnaryInfC{$\Gamma \vdash n : \mathbf{int}$}
 \end{prooftree}
 \begin{prooftree}
   \AxiomC{}
-  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{layer}\ n$}
+  \RightLabel{\hskip10pt($e2$)}
+  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{net}\ 1\ n$}
 \end{prooftree}
 \begin{prooftree}
   \AxiomC{}
-  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{layer}\ n$}
+  \RightLabel{\hskip10pt($e3$)}
+  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{net}\ 1\ n$}
 \end{prooftree}
 \begin{prooftree}
   \AxiomC{$\Gamma (x) = \tau$}
+  \RightLabel{\hskip10pt($e4$)}
   \UnaryInfC{$\Gamma \vdash x : \tau$}
 \end{prooftree}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{layer}\ n$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{layer}\ m$}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{net}\ l\ m$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{net}\ n\ q$}
   \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \TrinaryInfC{$\Gamma \vdash \otimes\ e_1\ e_2\ w : \mathbf{con}\ n\ m$}
+  \RightLabel{\hskip10pt($e5$)}
+  \TrinaryInfC{$\Gamma \vdash \otimes\ e_1\ e_2\ w : \mathbf{net}\ l\ q$}
 \end{prooftree}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{layer}\ n$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{layer}\ m$}
+  \AxiomC{$\Gamma \vdash e_1 : \mathbf{net}\ l\ m$}
+  \AxiomC{$\Gamma \vdash e_2 : \mathbf{net}\ m\ n$}
   \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \TrinaryInfC{$\Gamma \vdash \ominus\ e_1\ e_2\ w : \mathbf{con}\ n\ m$}
+  \RightLabel{\hskip10pt($e6$)}
+  \TrinaryInfC{$\Gamma \vdash \ominus\ e_1\ e_2\ w : \mathbf{net}\ l\ n$}
 \end{prooftree}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \tau$}
   \AxiomC{$\Gamma [v : \tau] \vdash e' : \tau$}
+  \RightLabel{\hskip10pt($e7$)}
   \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \tau$}
 \end{prooftree}
 
