@@ -23,4 +23,4 @@ clean:
 	@rm -f *.log *.aux *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.glg *.glo *.gls *.ist *.out *.run.xml *.synctex.gz ${SOURCE_OUT}
 
 watch:
-	while inotifywait -e modify -r chapters/**/*.tex ; do $(MAKE) ; done
+	while inotifywait -e modify -r **/*.tex ; do $(MAKE) ; done

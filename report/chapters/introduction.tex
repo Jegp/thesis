@@ -1,0 +1,57 @@
+
+\documentclass[report.tex]{subfiles}
+\begin{document}
+
+Building on research from cognitive and computational neuroscience, deep
+learning is evolving rapidly and has even surpassed humans in some
+recognition tasks \cite{Schmidhuber2015}.
+Contemporary theories from cognitive neuroscience however, tell us
+that learning in the biological brain occurs in spiking neural networks
+instead of the layered neural networks used in machine learning
+\cite{Dayan2001}.
+
+\textcite{Pfeil2013}, , Tavanaei and Maida [4] and Walter et al. [5] have
+shown that spiking neural networks are capable of solving a wide range
+of learning tasks.
+The neuromorphic hardware platform BrainScaleS has even been showed to
+learn classification tasks [6]. Such platforms however, require
+considerable configuration in both hardware and software [5, 6, 7].
+
+Because of their biological similarities neuromorphic hardware is of
+great interest to neuroscientists [7].
+The programming and configuration needed to setup neuromorphic
+experiments are however inaccessible to most neuroscientists.
+
+Based on a Krechevky maze-learning task [8] and the theory of Reorganisation of Elementary Funtions (REF) [9], this thesis sets out to explore how a more accessible domain specific language (Volr) [10] can help to build and evaluate experiments in neuromorphic hardware.
+By building on the REF model, the setup can be transferred to other learning tasks, if successful, and could lay the foundation for a robust neuromorphic experimental framework for cognitive neuroscientists.
+
+\section{Hypothesis}
+This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
+
+The hypothesis drives two outcomes: a spiking neural network representation of the REF model and a Krechevky maze experiment.
+
+\subsection{Scope}
+The hypothesis will be evaluated based on two criteria: the similarity of the spiking REF model to contemporary neurocognitive theories on the mammalian brain as well as its capacity to learn a given problem.
+
+The thesis will focus on how well the the model describes contemporary neurocognitive theories of learning, keeping the limits of the experimental platforms in mind.
+Because the REF model has not been mapped to its physiological properties, it is outside the scope of this thesis to provide an exact comparison to the biological properties.
+
+To provide a context for the learning capacity of the spiking neural networks, they will be compared to a regular non-spiking neural network.
+
+\section{Experimental setup}
+Three models will be built: a spiking neural network simulation via NEST [11], a spiking neural network emulation via BrainScaleS [6] and a layered non-spiking neural network written in Futhark [12].
+All three models will be trained to perform the same Krechevky maze task.
+
+Since the neuromorphic hardware is significantly more performant than the software simulation, it is desirable to run it on chip.
+It is however, important to retain the simulation as a baseline, because of unexpected analogue effects of the neuromorphic hardware.
+
+The non-spiking neural network will be written in Futhark and executed using OpenCL.
+\section{Cognitive neuroscience}
+\section{Neuromorphic hardware}
+% Motivation: platform for simulation
+\section{Hypothesis} \label{sec:hypothesis}
+This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
+\subsection{Evaluation criteria} \label{sec:hypothesis-criteria}
+
+
+\end{document}
