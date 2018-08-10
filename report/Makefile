@@ -10,7 +10,6 @@ graphs: DOT = dot
 all: build
 
 build: 
-	rm report.pdf -f
 	latexmk $(FLAGS) ${SOURCE_IN}
 
 graphs: $(DOTFILE_DIRS)
