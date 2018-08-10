@@ -2,6 +2,7 @@ SOURCE_IN := report.tex
 SOURCE_OUT := report.pdf
 BIB_SOURCE := bib.bib
 DOTFILE_DIRS := chapters/volr
+FLAGS ?= -pdf
 
 graphs: DOT = dot
 
@@ -10,7 +11,7 @@ all: build
 
 build: 
 	rm report.pdf -f
-	latexmk -f -pdf ${SOURCE_IN}
+	latexmk $(FLAGS) ${SOURCE_IN}
 
 graphs: $(DOTFILE_DIRS)
 
@@ -20,7 +21,8 @@ $(DOTFILE_DIRS):
 	) 
 
 clean:
+	latexmk -c
 	@rm -f *.log *.aux *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.glg *.glo *.gls *.ist *.out *.run.xml *.synctex.gz ${SOURCE_OUT}
 
 watch:
-	while inotifywait -e modify -r **/*.tex report.tex ; do $(MAKE) ; done
+	FLAGS="-pvc -pdf -f" ${MAKE}
