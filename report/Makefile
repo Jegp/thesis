@@ -10,7 +10,7 @@ all: build
 
 build: 
 	rm report.pdf -f
-	latexmk -pdf ${SOURCE_IN}
+	latexmk -f -pdf ${SOURCE_IN}
 
 graphs: $(DOTFILE_DIRS)
 
@@ -23,4 +23,4 @@ clean:
 	@rm -f *.log *.aux *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.glg *.glo *.gls *.ist *.out *.run.xml *.synctex.gz ${SOURCE_OUT}
 
 watch:
-	while inotifywait -e modify -r **/*.tex ; do $(MAKE) ; done
+	while inotifywait -e modify -r **/*.tex report.tex ; do $(MAKE) ; done

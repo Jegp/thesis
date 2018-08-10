@@ -1,40 +1,93 @@
-
 \documentclass[report.tex]{subfiles}
 \begin{document}
 
-Building on research from cognitive and computational neuroscience, deep
-learning is evolving rapidly and has even surpassed humans in some
-recognition tasks \cite{Schmidhuber2015}.
-Contemporary theories from cognitive neuroscience however, tell us
-that learning in the biological brain occurs in spiking neural networks
-instead of the layered neural networks used in machine learning
-\cite{Dayan2001}.
+The field of machine learning is rapidly evolving, and have in
+some recognition tasks surpassed human-level precision
+\autocite{Schmidhuber2014}.
+This acceleration is propelled by the advanced in artificial neural
+networks \autocite{Rumelhart1988, Schmidhuber2014, Nilsson2009}, or
+so-called \textit{second} generation networks \cite{Maass1997}.
+The architecture behind these networks developed from the neuroscientific
+idea of a neuron \autocite{Nilsson2009, Russel2007}.
+Contemporary cognitive neuroscience however, tells us that learning in
+the biological brain occurs in spiking neural networks, that emits
+signals in \textit{spikes} over time \cite{Dayan2001, Eliasmith2004}.
+This \textit{third} generation of neural networks permits the encoding
+of information over time, but at the cost of stability and 
+noise \autocite{Maass1997}.
 
-\textcite{Pfeil2013}, , Tavanaei and Maida [4] and Walter et al. [5] have
-shown that spiking neural networks are capable of solving a wide range
-of learning tasks.
-The neuromorphic hardware platform BrainScaleS has even been showed to
-learn classification tasks [6]. Such platforms however, require
-considerable configuration in both hardware and software [5, 6, 7].
+Because of their biological similarities, this third generation of
+networks are of great interest to neuroscientists
+\autocite{Dayan2001,Bruderle2011,Eliasmith2015}.
+%Currently the networks are explored either as pure simulations
+%\autocite{Davison2009} or as analogue circuits
+%that resemble the physical structure of neural networks
+%\autocite{Walter2015, Schmitt2017}, 
+Compared to experimental studies on living neural substrate,
+they provide a cheap and efficient way to experiment with cognitive 
+models \autocite{Eliasmith2015}.
+However, the programming knowledge required to construct and conduct
+such experiments are beyond the reach for most neuroscientists.
+% TODO: Cite
 
-Because of their biological similarities neuromorphic hardware is of
-great interest to neuroscientists [7].
-The programming and configuration needed to setup neuromorphic
-experiments are however inaccessible to most neuroscientists.
+Parallel to the advancements in computer science and machine learning,
+efforts have been made to map the functional connectivity of the mammalian
+brain (the connectome) to the processes of cognition \autocite{Mogensen2018}.
+The model for the \textit{reorganisation of elementary functions} (REF)
+is presented by \textcite{Mogensen2017} as an initial step towards
+relating conscious states to neural matter.
 
-Based on a Krechevky maze-learning task [8] and the theory of Reorganisation of Elementary Funtions (REF) [9], this thesis sets out to explore how a more accessible domain specific language (Volr) [10] can help to build and evaluate experiments in neuromorphic hardware.
-By building on the REF model, the setup can be transferred to other learning tasks, if successful, and could lay the foundation for a robust neuromorphic experimental framework for cognitive neuroscientists.
+% It is unclear whether the advances in layered neural networks can 
+% reproduce the complicated mechanisms for learning and cognition,
+% brought about in neurobiological systems \autocite{Eliasmith2015, Pearl2018}.
+
+% \textcite{Eliasmith2015} have implemented von Neumann style computation 
+% in neurobiological systems, and a number of studies
+% have shown that spiking neural networks are capable of solving a wide
+% range of learning tasks \autocite{Pfeil2013, Tavanei2015, Walter2015},
+% proving that their .
+\vskip10pt
+Realising the importance of accessible, realistic \textit{third} 
+generation neural simulations for the cognitive sciences, this thesis
+sets out to build a domain-specific language.
+The language prototypes the translation of cognitive concepts 
+such as learning into neural network topologies, that, in turn,
+translates to either spiking or layered neural networks.
+
+Guided by the REF model, a neural network capable of solving a simple
+maze-task will be modelled as a use-case.
+The network will be evaluated in both simulated and analogue
+third generation neural network environments as well as a single second
+generation neural network. 
+
+% explore the behaviour of neural network models in 
+%spiking and layered architecture.
+%Based on a Krechevky maze-learning task and the theory of
+%the reorganisation of elementary Funtions (REF), this thesis sets out
+%to explore how a more accessible domain specific language (Volr)
+%can help to build and evaluate experiments in neuromorphic hardware.
+The goal is to lay the foundation for a robust experimental framework
+for third generation neural networks, accessible to cognitive and 
+computer scientists alike.
 
 \section{Hypothesis}
-This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
+This thesis examines the hypothesis that *the model for the Reorganisation
+of Elementary Functions can be implemented using spiking neural networks*.
 
-The hypothesis drives two outcomes: a spiking neural network representation of the REF model and a Krechevky maze experiment.
+The hypothesis drives two outcomes: a spiking neural network
+representation of the REF model and a Krechevky maze experiment.
 
 \subsection{Scope}
-The hypothesis will be evaluated based on two criteria: the similarity of the spiking REF model to contemporary neurocognitive theories on the mammalian brain as well as its capacity to learn a given problem.
+The hypothesis will be evaluated based on two criteria: the similarity of
+the spiking REF model to contemporary neurocognitive theories on the
+mammalian brain as well as its capacity to learn a given problem.
 
-The thesis will focus on how well the the model describes contemporary neurocognitive theories of learning, keeping the limits of the experimental platforms in mind.
-Because the REF model has not been mapped to its physiological properties, it is outside the scope of this thesis to provide an exact comparison to the biological properties.
+The thesis will focus on how well the the model describes contemporary
+neurocognitive theories of learning, keeping the limits of the
+experimental platforms in mind.
+Because the REF model has not been mapped to its physiological
+properties, it is outside the scope of this thesis to provide an exact
+comparison to the biological properties.
 
 To provide a context for the learning capacity of the spiking neural networks, they will be compared to a regular non-spiking neural network.
 
