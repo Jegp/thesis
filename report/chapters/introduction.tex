@@ -60,7 +60,7 @@ that is capable of solving a simple Krechevsky maze task
 
 The model will be evaluated based on two parameters: 
 its ability to  learn the maze task and its relevance to the 
-\gls{REF} model (see section \ref{sec:ref}).
+\gls{REF} model (see section \ref{sec:scope}).
 This evaluation will happen in both simulated and analogue
 third generation neural network environments, building on the
 work of particularly two contemporary third generation simulation
@@ -70,14 +70,55 @@ a second generation neural network will be built using the
 data-parallel functional language Futhark \autocite{Henriksen2017}.
 
 \section{Hypothesis}
-This thesis examines the hypothesis that *the model for the Reorganisation
-of Elementary Functions can be implemented using spiking neural networks*.
+The thesis examines the hypothesis that 
+\textit{the theory for the Reorganisation of Elementary Functions
+(\gls{REF}) can be implemented using the DSL \index{Volr}}.
 
-The hypothesis drives two outcomes: a spiking neural network
-representation of the REF model and a Krechevky maze experiment.
+Before the hypothesis can be formally tested, it is necessary to
+present a method to translate
+the constituent parts of the \gls{REF} theory
+into neural network components.
+This is the role of the \gls{DSL}, which will be elaborated
+in the first part of the thesis.
+The second part drives two outcomes: 
+\begin{itemize}
+  \item a neural network model built with the 
+    \gls{DSL} and based on the principles of the \gls{REF} model
+  \item a Krechevsky T-maze experiment that frames the environment in
+    which the neural model can be validated
+\end{itemize}
 
-\subsection{Scope}
-The hypothesis will be evaluated based on two criteria: the similarity of
+Finally, the thesis will reflect on the success of the experiment, 
+based on a) its ability to learn the maze problem as well as 
+b) the proximity of the neural model to the components of \gls{REF}.
+
+The hypothesis is considered falsified if either of the following 
+conditions are met: 
+\begin{itemize}
+  \item A higher degree of accuracy in the baseline second generation
+    networks compared to third generation models.
+    In this case the third generation models failed to describe the
+    learning principles inherent in the \gls{REF} model.
+    This can only be described as deviations from the biological
+    counterparts, indicating an error in the translation of the
+    \gls{DSL}\footnote{It could also be ascribed to a flaw in the 
+    \gls{REF} model, see \ref{sec:scope}.}.
+  \item A significant dissimilarity\footnote{See \ref{sec:ref} for 
+    a definition of ``dissimilar''.} between the neural network models
+    and the components between the \gls{REF} model. 
+    In that case the \gls{DSL} is unable to accurately describe the
+    necessary components of the theoretical framework.
+    This is a requirement of the \gls{DSL} and necessary for the 
+    continued work on cognitive simulations.
+\end{itemize}
+
+If the experiment is able to adapt to the problem, while retaining some
+degree of similarity to the theoretical neurocognitive concepts, 
+the hypothesis stands.
+
+\subsection{Scope} \label{sec:scope}
+The hypothesis will be evaluated based on two criteria: its 
+capacity to learn and adapt to a given problem and its similarity of
 the spiking REF model to contemporary neurocognitive theories on the
 mammalian brain as well as its capacity to learn a given problem.
 

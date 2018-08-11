@@ -55,6 +55,10 @@
 \setheadfoot{\onelineskip}{2\onelineskip}
 \setheaderspaces{*}{1mm}{*}
 
+% Index 
+\usepackage{makeidx}
+\makeindex
+
 % Glossary
 \usepackage[numberedsection=nameref]{glossaries}
 \renewcommand{\glossarypreamble}{\label{glos}}
@@ -184,6 +188,9 @@
 \chapter{Conclusion}
 
 \printbibliography
+
+\printglossary
+\printindex
 
 \appendix
 \chapter{Volr} \label{appendix:volr}
