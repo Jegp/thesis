@@ -10,8 +10,8 @@ so-called \textit{second} generation networks \cite{Maass1997}.
 The architecture behind these networks developed from the neuroscientific
 idea of a neuron \autocite{Nilsson2009, Russel2007}.
 Contemporary cognitive neuroscience however, tells us that learning in
-the biological brain occurs in spiking neural networks, that emits
-signals in \textit{spikes} over time \cite{Dayan2001, Eliasmith2004}.
+the biological brain occurs in spiking neural networks, where neurons
+communicates in \textit{spikes} over time \cite{Dayan2001, Eliasmith2004}.
 This \textit{third} generation of neural networks permits the encoding
 of information over time, but at the cost of stability and 
 noise \autocite{Maass1997}.
@@ -19,24 +19,20 @@ noise \autocite{Maass1997}.
 Because of their biological similarities, this third generation of
 networks are of great interest to neuroscientists
 \autocite{Dayan2001,Bruderle2011,Eliasmith2015}.
-%Currently the networks are explored either as pure simulations
-%\autocite{Davison2009} or as analogue circuits
-%that resemble the physical structure of neural networks
-%\autocite{Walter2015, Schmitt2017}, 
 Compared to experimental studies involving living neural substrate,
-they provide a cheap and efficient way to experiment with cognitive 
-models \autocite{Eliasmith2015}.
+it is significantly cheaper and faster to build cognitive 
+models \autocite{Eliasmith2015}; either as pure simulations
+\autocite{Davison2009} or as analogue circuits
+that resemble the physical structure of neural networks
+\autocite{Walter2015, Schmitt2017}.
 
-However, the programming knowledge required to construct and conduct
-such experiments are beyond the reach for most neuroscientists.
-% TODO: Cite
+% One example where simulations could support the research efforts, is
+% the mapping of functional connectivity (the connectome) to the processes
+% of cognition \autocite{Eliasmith2015, Mogensen2011}. 
+% \textcite{Mogensen2017} presented a model for the 
+% \textit{reorganisation of elementary functions} (REF) as an attempt
+% to relating conscious states to neural matter.
 
-Parallel to the advancements in computer science and machine learning,
-efforts have been made to map the functional connectivity of the mammalian
-brain (the connectome) to the processes of cognition \autocite{Mogensen2018}.
-The model for the \textit{reorganisation of elementary functions} (REF)
-is presented by \textcite{Mogensen2017} as an initial step towards
-relating conscious states to neural matter.
 
 % It is unclear whether the advances in layered neural networks can 
 % reproduce the complicated mechanisms for learning and cognition,
@@ -47,29 +43,31 @@ relating conscious states to neural matter.
 % have shown that spiking neural networks are capable of solving a wide
 % range of learning tasks \autocite{Pfeil2013, Tavanei2015, Walter2015},
 % proving that their .
-\vskip10pt
-Realising the importance of accessible, realistic \textit{third} 
-generation neural simulations for the cognitive sciences, this thesis
-sets out to build a domain-specific language.
-The language prototypes the translation of cognitive concepts 
-such as learning into neural network topologies, that, in turn,
-translates to either spiking or layered neural networks.
+Acknowledging the importance of accessible and realistic \textit{third} 
+generation neural simulations for the cognitive sciences, the first
+part of this thesis
+sets out to build a \gls{DSL} that prototypes the translation of
+abstract neural networks into computational structures that
+can be evaluated either as second or third generation neural networks.
 
-Guided by the REF model, a neural network capable of solving a simple
-maze-task will be modelled as a use-case.
-The network will be evaluated in both simulated and analogue
-third generation neural network environments as well as a single second
-generation neural network. 
+To validate the applicability of the \gls{DSL} the second part of 
+the thesis focuses on the modelling of a neural network that follows
+the principles of the cognitive theory by \textcite{Mogensen2011} of
+reorganising elementary functions (\gls{REF}).
+The \gls{REF} model guides the description of a neural network
+that is capable of solving a simple Krechevsky maze task 
+\autocite{Krechevsky1932}.
 
-% explore the behaviour of neural network models in 
-%spiking and layered architecture.
-%Based on a Krechevky maze-learning task and the theory of
-%the reorganisation of elementary Funtions (REF), this thesis sets out
-%to explore how a more accessible domain specific language (Volr)
-%can help to build and evaluate experiments in neuromorphic hardware.
-The goal is to lay the foundation for a robust experimental framework
-for third generation neural networks, accessible to cognitive and 
-computer scientists alike.
+The model will be evaluated based on two parameters: 
+its ability to  learn the maze task and its relevance to the 
+\gls{REF} model (see section \ref{sec:ref}).
+This evaluation will happen in both simulated and analogue
+third generation neural network environments, building on the
+work of particularly two contemporary third generation simulation
+frameworks: NEST and PyNN \autocite{Davison2009}.
+To provide a means of comparing the quality of the spiking models,
+a second generation neural network will be built using the
+data-parallel functional language Futhark \autocite{Henriksen2017}.
 
 \section{Hypothesis}
 This thesis examines the hypothesis that *the model for the Reorganisation
