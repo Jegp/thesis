@@ -24,4 +24,4 @@ clean:
 	@rm -f *.log *.aux *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.glg *.glo *.gls *.ist *.out *.run.xml *.synctex.gz ${SOURCE_OUT}
 
 watch:
-	FLAGS="-pvc -pdf -f" ${MAKE}
+	FLAGS="-pvc -pdf -interaction=nonstopmode" ${MAKE}

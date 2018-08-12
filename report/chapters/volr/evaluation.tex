@@ -1,45 +1,72 @@
 \begin{figure}
-\begin{prooftree}
-  \AxiomC{}
-  \RightLabel{\hskip10pt($e1$)}
-  \UnaryInfC{$\Gamma \vdash n : \mathbf{int}$}
-\end{prooftree}
-\begin{prooftree}
-  \AxiomC{}
-  \RightLabel{\hskip10pt($e2$)}
-  \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{net}\ 1\ n$}
-\end{prooftree}
-\begin{prooftree}
-  \AxiomC{}
-  \RightLabel{\hskip10pt($e3$)}
-  \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{net}\ 1\ n$}
-\end{prooftree}
+\newcounter{ProofCounter}
+\stepcounter{ProofCounter}
+\begin{minipage}{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash n : \mathbf{int}$}
+  \end{prooftree}
+\end{minipage}
+\stepcounter{ProofCounter}
+\begin{minipage}{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash n : \mathbf{float}$}
+  \end{prooftree}
+\end{minipage}
+\stepcounter{ProofCounter}
+\vskip7pt
+\begin{minipage}{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{net}\ 0\ n$}
+  \end{prooftree}
+\end{minipage}
+\stepcounter{ProofCounter}
+\begin{minipage}{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{net}\ n\ n$}
+  \end{prooftree}
+\end{minipage}
+\stepcounter{ProofCounter}
 \begin{prooftree}
   \AxiomC{$\Gamma (x) = \tau$}
-  \RightLabel{\hskip10pt($e4$)}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
   \UnaryInfC{$\Gamma \vdash x : \tau$}
 \end{prooftree}
+\stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{net}\ l\ m$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{net}\ n\ q$}
+  \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
+  \AxiomC{$\Gamma \vdash e' : \mathbf{net}\ l'\ r'$}
   \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \RightLabel{\hskip10pt($e5$)}
-  \TrinaryInfC{$\Gamma \vdash \otimes\ e_1\ e_2\ w : \mathbf{net}\ l\ q$}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+  \TrinaryInfC{$\Gamma \vdash \otimes\ e\ e'\ w : \mathbf{net}\ l\ r'$}
 \end{prooftree}
+\stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e_1 : \mathbf{net}\ l\ m$}
-  \AxiomC{$\Gamma \vdash e_2 : \mathbf{net}\ m\ n$}
+  \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
   \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \RightLabel{\hskip10pt($e6$)}
-  \TrinaryInfC{$\Gamma \vdash \ominus\ e_1\ e_2\ w : \mathbf{net}\ l\ n$}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+  \BinaryInfC{$\Gamma \vdash \otimes\ e\ e\ w : \mathbf{net}\ l\ r$}
 \end{prooftree}
+\stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e : \tau$}
-  \AxiomC{$\Gamma [v : \tau] \vdash e' : \tau$}
-  \RightLabel{\hskip10pt($e7$)}
-  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \tau$}
+  \AxiomC{$\Gamma \vdash e : \textbf{net}\ n\ m$}
+  \AxiomC{$\Gamma [x : \textbf{net}\ n\ m] \vdash e' : \textbf{net}\ n'\ m'$}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \textbf{net}\ n'\ m'$}
 \end{prooftree}
-
+\stepcounter{ProofCounter}
+\begin{prooftree}
+  \AxiomC{$\Gamma \vdash e : \textbf{net}\ n\ m$}
+  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ n'\ m$}
+  \BinaryInfC{$e\ \textbf{,}\ e' : \textbf{net}\ (n + n')\ m$}
+\end{prooftree}
   \caption{Evaluation rules in Volr.}
   \label{fig:volr-rules}
 \end{figure}

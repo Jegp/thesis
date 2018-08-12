@@ -1,25 +1,23 @@
 % Expression figure
 \begin{figure}
   \begin{tabular}[t]{l l}
-    expressions 
-    & \texttt{$e$ ::= $n$} \\
+    expressions & \texttt{$e$ ::= $n$} \\
     & \begin{minipage}{0.6\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
     | \textbf{stim} $n$
     | \textbf{pop} $n$
-    | $\otimes\ e\ e\ n$
-    | $\ominus\ e\ e\ n$
     | \textbf{let} $x = e$ \textbf{in} $e'$
+    | $\otimes\ e\ e'\ w$
+    | $e\ \textbf{,}\ e'$
       \end{Verbatim} 
-    \end{minipage} \\
+      \end{minipage} \\
 
-    & \\ % Empty space
-    
+    & \\ % Empty space 
+
     values
-    & \texttt{$v$ ::= $n$} \\
+    & \texttt{$v$ ::= $n$ | $\textbf{net}\ n\ m$} \\
     
     & \\ % Empty space
-
     types
     & \texttt{$\tau$ ::= \textbf{int} | \textbf{float}} \\
     & \begin{minipage}{0.6\textwidth}

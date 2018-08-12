@@ -21,130 +21,94 @@ networks are of great interest to neuroscientists
 \autocite{Dayan2001,Bruderle2011,Eliasmith2015}.
 Compared to experimental studies involving living neural substrate,
 it is significantly cheaper and faster to build cognitive 
-models \autocite{Eliasmith2015}; either as pure simulations
-\autocite{Davison2009} or as analogue circuits
+models either as pure simulations
+\autocite{Davison2009, Eliasmith2015} or as analogue circuits
 that resemble the physical structure of neural networks
 \autocite{Walter2015, Schmitt2017}.
+Furthermore, virtual models are under the complete control
+of the researcher and can be paused, lesioned or even
+disassembled.
 
-% One example where simulations could support the research efforts, is
-% the mapping of functional connectivity (the connectome) to the processes
-% of cognition \autocite{Eliasmith2015, Mogensen2011}. 
-% \textcite{Mogensen2017} presented a model for the 
-% \textit{reorganisation of elementary functions} (REF) as an attempt
-% to relating conscious states to neural matter.
+This is particularly interesting for the efforts done in the
+mapping of functional connectivity (the human connectome) to the
+processes of cognition \autocite{Eliasmith2015, Mogensen2011}. 
+\textcite{Mogensen2011} presented a model for the 
+\textit{reorganisation of elementary functions} (REF), based on
+numerous clinical trials and lesion studies.
+However, the theory is challenging to verify in vivo because of
+the high level of interconnectivity in the mammalian brain
+\autocite{Hohwy2009, Mogensen2017}.
 
+The present study attempts to extend the innovations within
+third generation neural networks to the field of cognitive 
+neuroscience. 
+By constructing a means to translate higher-order neural
+concepts into neural network simulations, the aim is to allow
+the .
+To verify this claim, a small neural model based on the the
+\gls{REF} theory is built and asked to solve a small maze task.
+The model will be implemented in spiking and non-spiking
+substrates to test its relevance to the domain of neuroscience.
 
-% It is unclear whether the advances in layered neural networks can 
-% reproduce the complicated mechanisms for learning and cognition,
-% brought about in neurobiological systems \autocite{Eliasmith2015, Pearl2018}.
-
-% \textcite{Eliasmith2015} have implemented von Neumann style computation 
-% in neurobiological systems, and a number of studies
-% have shown that spiking neural networks are capable of solving a wide
-% range of learning tasks \autocite{Pfeil2013, Tavanei2015, Walter2015},
-% proving that their .
-Acknowledging the importance of accessible and realistic \textit{third} 
-generation neural simulations for the cognitive sciences, the first
-part of this thesis
-sets out to build a \gls{DSL} that prototypes the translation of
-abstract neural networks into computational structures that
-can be evaluated either as second or third generation neural networks.
-
-To validate the applicability of the \gls{DSL} the second part of 
-the thesis focuses on the modelling of a neural network that follows
-the principles of the cognitive theory by \textcite{Mogensen2011} of
-reorganising elementary functions (\gls{REF}).
-The \gls{REF} model guides the description of a neural network
-that is capable of solving a simple Krechevsky maze task 
-\autocite{Krechevsky1932}.
-
-The model will be evaluated based on two parameters: 
-its ability to  learn the maze task and its relevance to the 
-\gls{REF} model (see section \ref{sec:scope}).
-This evaluation will happen in both simulated and analogue
-third generation neural network environments, building on the
-work of particularly two contemporary third generation simulation
-frameworks: NEST and PyNN \autocite{Davison2009}.
-To provide a means of comparing the quality of the spiking models,
-a second generation neural network will be built using the
-data-parallel functional language Futhark \autocite{Henriksen2017}.
-
-\section{Hypothesis}
+\section{Hypothesis} \label{ref:hypothesis}
 The thesis examines the hypothesis that 
 \textit{the theory for the Reorganisation of Elementary Functions
-(\gls{REF}) can be implemented using the DSL \index{Volr}}.
+(\gls{REF}) can be implemented using the Volr DSL for third generation
+neural networks}.
 
 Before the hypothesis can be formally tested, it is necessary to
-present a method to translate
-the constituent parts of the \gls{REF} theory
+present a method to translate the constituent parts of the \gls{REF} theory
 into neural network components.
 This is the role of the \gls{DSL}, which will be elaborated
 in the first part of the thesis.
-The second part drives two outcomes: 
-\begin{itemize}
-  \item a neural network model built with the 
-    \gls{DSL} and based on the principles of the \gls{REF} model
-  \item a Krechevsky T-maze experiment that frames the environment in
-    which the neural model can be validated
-\end{itemize}
+The following second part sets out to define a neural network
+model built with the above \gls{DSL} as well as a small T-maze experiment. 
+The model acts as a translation of the concepts of the \gls{REF} model,
+to the delimited maze task.
+The third part will translate the neural network model 
+into one second generation based on Futhark, and two third
+generation implementations based on the neural simulator \index{NEST} and 
+the neuromorphic hardware platform \index{BrainScaleS} respectively.
+All three implementations will be benchmarked based on their ability 
+to solve the maze task.
+The results of the benchmark will be presented and discussed in the the
+fourth and final part of the thesis.
+This part will also relate the experimental results to the
+hypothesis and reflect on their implications as well as future work.
 
-Finally, the thesis will reflect on the success of the experiment, 
-based on a) its ability to learn the maze problem as well as 
-b) the proximity of the neural model to the components of \gls{REF}.
+Specifically the hypothesis will be tested based on
+a) the ability of the model to learn the maze problem as well as 
+b) the proximity of the neural model to the components of the
+\gls{REF} theory.
 
-The hypothesis is considered falsified if either of the following 
-conditions are met: 
-\begin{itemize}
-  \item A higher degree of accuracy in the baseline second generation
-    networks compared to third generation models.
-    In this case the third generation models failed to describe the
-    learning principles inherent in the \gls{REF} model.
-    This can only be described as deviations from the biological
-    counterparts, indicating an error in the translation of the
-    \gls{DSL}\footnote{It could also be ascribed to a flaw in the 
-    \gls{REF} model, see \ref{sec:scope}.}.
-  \item A significant dissimilarity\footnote{See \ref{sec:ref} for 
-    a definition of \enquote{dissimilar}.} between the neural network models
-    and the components between the \gls{REF} model. 
-    In that case the \gls{DSL} is unable to accurately describe the
-    necessary components of the theoretical framework.
-    This is a requirement of the \gls{DSL} and necessary for the 
-    continued work on cognitive simulations.
-\end{itemize}
+Regarding a) it is entirely possible that the second generation networks prove
+to be better at adapting to the domain compared to the third generation
+implementations.
+If that is the case, the \gls{DSL} has failed to translate
+the learning capacities of the second generation networks, disproving the
+hypothesis.
 
-If the experiment is able to adapt to the problem, while retaining some
-degree of similarity to the theoretical neurocognitive concepts, 
-the hypothesis stands.
+Another way to falsify the hypothesis is a significant
+dissimilarity\footnote{See \ref{sec:ref} for a definition of
+\enquote{dissimilar}.} between the neural network implementations 
+and the abstract \gls{REF} model. 
+In that case the \gls{DSL} is unable to accurately translate the
+necessary components of the theoretical framework.
 
 \subsection{Scope} \label{sec:scope}
-The hypothesis will be evaluated based on two criteria: its 
-capacity to learn and adapt to a given problem and its similarity of
-the spiking REF model to contemporary neurocognitive theories on the
-mammalian brain as well as its capacity to learn a given problem.
+While this thesis will employ similar mechanisms for learning, 
+it is outside the scope of this thesis to provide an exact 1:1 mapping
+between the implementations.
+This will naturally have consequences for the subsequent analysis of the
+later experimental results (see section \ref{sec:discussion}).
 
-The thesis will focus on how well the the model describes contemporary
-neurocognitive theories of learning, keeping the limits of the
-experimental platforms in mind.
-Because the REF model has not been mapped to its physiological
-properties, it is outside the scope of this thesis to provide an exact
-comparison to the biological properties.
-
-To provide a context for the learning capacity of the spiking neural networks, they will be compared to a regular non-spiking neural network.
-
-\section{Experimental setup}
-Three models will be built: a spiking neural network simulation via NEST [11], a spiking neural network emulation via BrainScaleS [6] and a layered non-spiking neural network written in Futhark [12].
-All three models will be trained to perform the same Krechevky maze task.
-
-Since the neuromorphic hardware is significantly more performant than the software simulation, it is desirable to run it on chip.
-It is however, important to retain the simulation as a baseline, because of unexpected analogue effects of the neuromorphic hardware.
-
-The non-spiking neural network will be written in Futhark and executed using OpenCL.
-\section{Cognitive neuroscience}
-\section{Neuromorphic hardware}
-% Motivation: platform for simulation
-\section{Hypothesis} \label{sec:hypothesis}
-This thesis examines the hypothesis that *the model for the Reorganisation of Elementary Functions can be implemented using spiking neural networks*.
-\subsection{Evaluation criteria} \label{sec:hypothesis-criteria}
-
+The \gls{REF} model is a general and abstract description of cognitive
+processes, and no attempts have as of yet been made to map it to
+computational models.
+This first attempt is only made feasible by focusing on select parts
+of the \gls{REF} model. 
+Specifically higher-order cognitive functions as well as detailed 
+biological similarities requires much more extensive studies, and are
+considered to be outside the scope of this thesis.
 
 \end{document}
