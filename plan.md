@@ -2,73 +2,47 @@
 
 Deadline: 22nd of October
 
-* Experiment phase: 1. July - 1. September
-* Writing phase: 1. September - 1. October
-* Polishing phase: 1. October - 14. October
+* DSL phase: 1. July - 1. September (Chapter 1)
+* Experiment phase: 1. September - 16. September (Chapter 2)
+* Writing phase: 24. September - 7. October (Chapter 3)
+* Polishing phase: 7. October - 14. October
 
-## Milestone 1: Experiment
-
-Goal: Three experiments
+## Milestone 1: DSL
+Goal: A DSL that can translate to three backends + a chapter
 
 * Futhark: 20th of August
-* NEST: 25th of July
-* BrainScaleS: 31st of August
+* NEST: 27th of August
+* BrainScaleS: 1st of September
 
-## Milestone 2: Writing
+## Milestone 2: Experiment
 
-Goal: ~50 pages
+Goal: A maze experiment + a chapter
 
-* Analysis: 7. September
-* Theory: 14. September
-* Discussion: 18. September
-* Conclusion: 20. September
-* Send to Martin: 20. September
-* Introduction: 22. September
-* Read through (consistency): 23. September
+* Initial writing: 5th of September
+* Maze experiment both in 2nd and 3rd generation: 9th of September
+* Experimental data: 
+  * Futhark: 11th of September
+  * NEST: 13th of September
+  * BrainScaleS: 15th of September
+
+## Milestone 3: Writing
+
+Goal: Chapter 3 + revisions of 1, 2
+
+* Experimental analysis: 28th of September
+* Discussion: 30th of September
+* Read through (consistency): 3rd of October
   * https://lemire.me/blog/rules-to-write-a-good-research-paper/
-* Abstract: 25. September
-* Read through (learning goals): 27. September
-* Send to Martin: 28. September
-* Polish: 30. September
+* Abstract: 4th of October
+* Read through (learning goals): 7th of October
+  * See https://www.science.ku.dk/studerende/studieordninger/kandidat/datalogi/Sto_datalogi_2009.pdf
+* Send to Martin: 7th of October
 
-## Milestone 3: Polishing phase
+## Milestone 4: Polishing phase
 
 Goal: Finished thesis
 
-* Read through (language): 5. October
-* Read through (learning goals): 8. October
-* Read through (literature): 10. October
-* Read through (visuals): 12. October
-
--------
-
-### Experiment 1: NEST (20th of July)
-
-* 5/7: Spike encoding of maze
-* 8/7: Write reward network
-* 10/7: Configure network
-* 15/7: Document
-* 16/7: Run experiment
-* 20/7: Document - send to Martin
-
-### Experiment 2: Futhark (5th of August)
-
-* 23/7: Skeleton for SNN recurrent framework
-* 27/7: Volr wrapper
-* 30/7: Learning
-* 1/8: Documentation
-* 2/8: Run experiment
-* 5/8: Document - send to Martin
-
-### Experiment 3: BrainScaleS (20th of August)
-
-* Rewrite maze in C++ - ask Eric
-* Spike encoding on chip over UDP
-* Rewards and encodings over UDP, online
-* Adapt to fit on wafer
-
-### Writeup (1. October)
-
-* Document all experiment setups
-* Compare setups
-* Explain relation to theory and whether the setups are relevant/correct
+* Read through (language): 9th of October
+* Read through (learning goals): 12th of October
+* Read through (literature): 13th of October
+* Read through (visuals): 14th of October

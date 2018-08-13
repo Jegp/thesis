@@ -39,7 +39,6 @@
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
   \UnaryInfC{$\Gamma \vdash x : \tau$}
 \end{prooftree}
-\stepcounter{ProofCounter}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
   \AxiomC{$\Gamma \vdash e' : \mathbf{net}\ l'\ r'$}
@@ -48,11 +47,13 @@
   \TrinaryInfC{$\Gamma \vdash \otimes\ e\ e'\ w : \mathbf{net}\ l\ r'$}
 \end{prooftree}
 \stepcounter{ProofCounter}
+\stepcounter{ProofCounter}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
+  \AxiomC{$\Gamma \vdash e' : \mathbf{net}\ l'\ r'$}
   \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \BinaryInfC{$\Gamma \vdash \otimes\ e\ e\ w : \mathbf{net}\ l\ r$}
+  \TrinaryInfC{$\Gamma \vdash \ominus\ e\ e'\ w : \mathbf{net}\ l\ r'$}
 \end{prooftree}
 \stepcounter{ProofCounter}
 \begin{prooftree}
