@@ -1,11 +1,9 @@
 \begin{figure}
   \ContinuedFloat*
   \begin{tabular}[t]{c c}
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.4\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-\textbf{let} s = stim 2 \textbf{in}
-  \textbf{let} p = pop 2 \textbf{in}
-      $\otimes$ s p 1
+\textbf{dense} 2 2
       \end{Verbatim}
     \end{minipage} & \begin{minipage}{0.5\textwidth}
       \includegraphics[width=\textwidth]{chapters/volr/example2.pdf}
@@ -22,12 +20,11 @@
 \begin{figure}
   \ContinuedFloat
   \begin{tabular}[t]{c c}
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.4\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-\textbf{let} s1 = stim 1 \textbf{in}
-  \textbf{let} s2 = stim 1 \textbf{in}
-    \textbf{let} p = pop 1 \textbf{in}
-      $\ominus$ s1 p 1 \textbf{,} $\ominus$ s2 p -1
+\textbf{let} s$_1$ = \textbf{dense} 1 1 \textbf{in}
+\textbf{let} s$_2$ = $\neg$ \textbf{dense} 1 1 \textbf{in}
+(s$_1$ $\ominus$ s$_2$) $\obar$ \textbf{dense 2 1}
       \end{Verbatim}
     \end{minipage} & \begin{minipage}{0.5\textwidth}
       \includegraphics[width=\textwidth]{chapters/volr/example1.pdf}
@@ -44,11 +41,8 @@
   \begin{tabular}[t]{c c}
     \begin{minipage}{0.4\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-\textbf{let} s = stim 256 \textbf{in}
-  \textbf{let} p = pop 256 \textbf{in}
-    \textbf{let} o = pop 10 \textbf{in}
-      $\ominus$ s p 1
-      $\otimes$ p o 1
+\textbf{dense} 256 256 
+  $\obar$ \textbf{dense} 256 10
       \end{Verbatim}
     \end{minipage} & \begin{minipage}{0.6\textwidth}
       \includegraphics[width=\textwidth]{chapters/volr/example3.pdf}
@@ -67,12 +61,11 @@
   \begin{tabular}[t]{c c}
     \begin{minipage}{0.45\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-\textbf{let} s = stim 2 \textbf{in}
-\textbf{let} l$_1$ = pop 4 \textbf{in} $\otimes$ s l$_1$ 1
-\textbf{let} l$_2$ = pop 4 \textbf{in} $\otimes$ s l$_1$ 1
-
-\textbf{let} o = pop 1 \textbf{in} 
-  $\otimes$ l$_1$ o 1 \textbf{,} $\otimes$ l$_2$ o -1
+\textbf{let} s = \textbf{dense} 2 4 \textbf{in}
+\textbf{let} l$_1$ = \textbf{dense} 2 4 \textbf{in}
+\textbf{let} l$_2$ = \textbf{dense} 2 4 \textbf{in}
+\textbf{let} o = \textbf{dense} 8 1 \textbf{in} 
+  s $\obar$ (l$_1$ $\ominus$ $\neg$ l$_2$) $\obar$ o
       \end{Verbatim}
     \end{minipage} & \begin{minipage}{0.55\textwidth}
        \includegraphics[width=\textwidth]{chapters/volr/example4.pdf}

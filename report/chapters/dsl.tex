@@ -1,0 +1,48 @@
+\documentclass[report.tex]{subfiles}
+\begin{document}
+
+This first part of the thesis will develop a \gls{DSL} for
+the modelling of general \gls{NN}s.
+Before diving in to such an implementation it is necessary
+to explain the theory behind second and third generation
+\gls{NN}s as well as how they are interpreted within cognitive
+neuroscience, so as to posit formal requirements for the language. 
+Finally this chapter will present the \gls{DSL} \index{Volr},
+which aims to translate the requirements defined
+above into computational \gls{NN} models.
+
+\section{Neural networks}
+% Both types of network are architecturally similar, and both are conceived from
+% the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
+% The implementations, however, vary greatly.
+
+% To ensure internal and external validity in and between the two network types,
+% it is desirable that the models are as closely related from a theoretical and
+% practical perspective as possible.
+% Additionally, to test the hypothesis, it is required that both the artificial
+% and spiking models can be simulated on regular machine architecture, while
+% the spiking model requires a neuromorphic hardware platform.
+
+% An optimal approach would be to find a tool that leverages the similarities
+% of the network types, while integrating with the diverse simulated or emulated
+% targets.
+% That is, an abstract model of neural networks that can translate into
+% heterogeneous back-ends, while retaining a high degree of inter-model validity.
+
+% A number of general frameworks for artificial neural networks
+% exist\footnote{
+%   Among others, see \autocite{ONNX2018}, \autocite{PyTorch2018}, \autocite{TensorFlow2018},
+%   \autocite{Keras2018} and DyNet \autocite{Neubig2017}.
+% }, but none of them extend to the spiking domain.
+% Conversely a number of choices exist for neuromorphic modelling\footnote{
+%   %TODO: Find sources on internal IBM/Intel stuff
+% }, but they exclusively evaluate to neuromorphic or spiking neural network
+% backends \autocite{Jordan2018}.
+
+\subsection{Learning in neural networks}
+
+\subsubsection{Backpropagation}
+
+
+\include{chapters/volr/volr}
+\end{document}

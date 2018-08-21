@@ -4,28 +4,23 @@
     expressions & \texttt{$e$ ::= $n$} \\
     & \begin{minipage}{0.6\textwidth}
       \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-    | \textbf{stim} $n$
-    | \textbf{pop} $n$
+    | \textbf{dense} $n\ m$
+    | \textbf{sparse} $n\ m$
     | \textbf{let} $x = e$ \textbf{in} $e'$
-    | $\otimes\ e\ e'\ w$
-    | $\ominus\ e\ e'\ w$
-    | $e\ \textbf{,}\ e'$
+    | $e\ \obar\ e'$
+    | $e\ \ominus\ e'$
+    | $\neg e$
       \end{Verbatim} 
       \end{minipage} \\
 
     & \\ % Empty space 
 
     values
-    & \texttt{$v$ ::= $n$ | $\textbf{net}\ n\ m$} \\
+    & \texttt{$v$ ::= $\textbf{net}\ n\ m$} \\
     
     & \\ % Empty space
     types
-    & \texttt{$\tau$ ::= \textbf{int} | \textbf{float}} \\
-    & \begin{minipage}{0.6\textwidth}
-      \begin{Verbatim}[mathescape,commandchars=\\\{\}]
-    | \textbf{net} $n\ m$
-      \end{Verbatim}
-    \end{minipage}
+    & \texttt{$\tau$ ::= \textbf{int} | \textbf{net} $n\ m$} \\
   \end{tabular}
 
   \caption{Expressions, values and types of the Volr language.}

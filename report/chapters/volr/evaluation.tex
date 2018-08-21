@@ -1,5 +1,6 @@
 \begin{figure}
 \newcounter{ProofCounter}
+
 \stepcounter{ProofCounter}
 \begin{minipage}{0.5\textwidth}
   \begin{prooftree}
@@ -16,13 +17,13 @@
     \UnaryInfC{$\Gamma \vdash n : \mathbf{float}$}
   \end{prooftree}
 \end{minipage}
+\vskip10pt
 \stepcounter{ProofCounter}
-\vskip7pt
 \begin{minipage}{0.5\textwidth}
   \begin{prooftree}
     \AxiomC{}
     \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash \mathbf{stim}\ n : \mathbf{net}\ 0\ n$}
+    \UnaryInfC{$\Gamma \vdash \mathbf{dense}\ l\ r : \mathbf{net}\ l\ r$}
   \end{prooftree}
 \end{minipage}
 \stepcounter{ProofCounter}
@@ -30,43 +31,46 @@
   \begin{prooftree}
     \AxiomC{}
     \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash \mathbf{pop}\ n : \mathbf{net}\ n\ n$}
+    \UnaryInfC{$\Gamma \vdash \mathbf{sparse}\ l\ r : \mathbf{net}\ l\ r$}
+  \end{prooftree}
+\end{minipage}
+\vskip10pt
+\begin{minipage}{0.5\textwidth}
+  \stepcounter{ProofCounter}
+  \begin{prooftree}
+    \AxiomC{$\Gamma (x) = \tau$}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash x : \tau$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+  \stepcounter{ProofCounter}
+  \begin{prooftree}
+    \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
+    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+    \UnaryInfC{$\Gamma \vdash \neg e : \textbf{net}\ l\ r$}
   \end{prooftree}
 \end{minipage}
 \stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma (x) = \tau$}
+  \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ m$}
+  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ m\ n$}
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \UnaryInfC{$\Gamma \vdash x : \tau$}
-\end{prooftree}
-\begin{prooftree}
-  \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
-  \AxiomC{$\Gamma \vdash e' : \mathbf{net}\ l'\ r'$}
-  \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \TrinaryInfC{$\Gamma \vdash \otimes\ e\ e'\ w : \mathbf{net}\ l\ r'$}
-\end{prooftree}
-\stepcounter{ProofCounter}
-\stepcounter{ProofCounter}
-\begin{prooftree}
-  \AxiomC{$\Gamma \vdash e : \mathbf{net}\ l\ r$}
-  \AxiomC{$\Gamma \vdash e' : \mathbf{net}\ l'\ r'$}
-  \AxiomC{$\Gamma \vdash w : \mathbf{float}$}
-  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \TrinaryInfC{$\Gamma \vdash \ominus\ e\ e'\ w : \mathbf{net}\ l\ r'$}
+  \BinaryInfC{$\Gamma \vdash e\ \obar\ e' : \textbf{net}\ l\ n$}
 \end{prooftree}
 \stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e : \textbf{net}\ n\ m$}
-  \AxiomC{$\Gamma [x : \textbf{net}\ n\ m] \vdash e' : \textbf{net}\ n'\ m'$}
+  \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
+  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ l'\ r'$}
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \textbf{net}\ n'\ m'$}
+  \BinaryInfC{$\Gamma \vdash e\ \ominus\ e' : \textbf{net}\ (l + l')\ (r + r')$}
 \end{prooftree}
 \stepcounter{ProofCounter}
 \begin{prooftree}
-  \AxiomC{$\Gamma \vdash e : \textbf{net}\ n\ m$}
-  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ n'\ m$}
-  \BinaryInfC{$e\ \textbf{,}\ e' : \textbf{net}\ (n + n')\ m$}
+  \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
+  \AxiomC{$\Gamma [x : \textbf{net}\ l\ r] \vdash e' : \textbf{net}\ l'\ r'$}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \textbf{net}\ l'\ r'$}
 \end{prooftree}
   \caption{Evaluation rules in Volr.}
   \label{fig:volr-rules}

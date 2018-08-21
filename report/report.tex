@@ -116,6 +116,11 @@
 %%  ==================================================================
 \begin{document}
 
+%% Custom commands
+%% ===================================================================
+\newcommand{\obar}{%
+    \mathrel{\reflectbox{\rotatebox[origin=c]{90}{$\ominus$}}}}
+
 %%  Begin title page
 %%  ==================================================================
     \thispagestyle{empty}
@@ -156,10 +161,7 @@
   \subfile{chapters/introduction}
 
 \chapter{A DSL for neural networks modelling} \label{sec:volr}
-  \subfile{chapters/volr}
-
-\chapter{Theory}
-  \subfile{chapters/theory}
+  \subfile{chapters/dsl}
 
 \chapter{Experimental setup} \label{sec:experiment}
   \subfile{chapters/experiment}

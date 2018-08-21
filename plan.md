@@ -10,7 +10,7 @@ Deadline: 22nd of October
 ## Milestone 1: DSL
 Goal: A DSL that can translate to three backends + a chapter
 
-* Futhark: 20th of August
+* Futhark: 22th of August
 * NEST: 27th of August
 * BrainScaleS: 1st of September
 
