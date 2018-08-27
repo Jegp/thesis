@@ -60,8 +60,8 @@
 \makeindex
 
 % Glossary
-\usepackage[numberedsection=nameref]{glossaries}
-\renewcommand{\glossarypreamble}{\label{glos}}
+\usepackage[numberedsection=nameref, toc]{glossaries}
+\renewcommand{\glossarypreamble}{\label{sec:glossary}}
 \makeglossaries
 \include{glossary}
 \makeglossaries
@@ -180,6 +180,7 @@
   \section{Adaptability and robustness} % How is this useful for the REF model?
 
 \chapter{Discussion} \label{sec:discussion}
+  % TODO: Partial training of networks
   \section{Validity}
   \section{REF similarity}
   \section{Future work}

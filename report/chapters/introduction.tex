@@ -1,33 +1,36 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 
-The field of machine learning is rapidly evolving, and have in
+The field of \gls{ml} is rapidly evolving, and have in
 some recognition tasks surpassed human-level precision
 \autocite{Schmidhuber2014}.
-This acceleration is propelled by the advanced in artificial neural
-networks \autocite{Rumelhart1988, Schmidhuber2014, Nilsson2009}, or
-so-called \textit{second} generation networks \cite{Maass1997}.
-The architecture behind these networks developed from the neuroscientific
-idea of a neuron \autocite{Nilsson2009, Russel2007}.
-Contemporary cognitive neuroscience however, tells us that learning in
-the biological brain occurs in spiking neural networks, where neurons
-communicates in \textit{spikes} over time \cite{Dayan2001, Eliasmith2004}.
-This \textit{third} generation of neural networks permits the encoding
+This acceleration is propelled by the advances in \gls{ANN}
+\autocite{Rumelhart1988, Schmidhuber2014, Nilsson2009}, or
+so-called \textit{second} generation \gls{ANN} \cite{Maass1997}\footnote{Not to be 
+understood as more \textit{advanced} than previous generations, see page \pageref{sec:glossary}.}.
+While the first generation networks builds on the \textit{McCulluch-Pitts}
+neuron model that only produces binary outputs (0 or 1), the second
+generation uses a sequential layered approach with a continuous set of 
+possible outcomes \cite{Maass1997, Russel2007}.
+Contemporary cognitive neuroscience however, tells us that the computation
+in the biological brain uses temporally separated \textit{spikes}, 
+dispatched within a highly connected and recurrent architecture 
+\cite{Dayan2001, Eliasmith2004}.
+This \textit{third} generation of \gls{NN} permits the encoding
 of information over time, but at the cost of stability and 
 noise \autocite{Maass1997}.
 
-Because of their biological similarities, this third generation of
+Because of their biological similarities, third generation of
 networks are of great interest to neuroscientists
 \autocite{Dayan2001,Bruderle2011,Eliasmith2015}.
 Compared to experimental studies involving living neural substrate,
-it is significantly cheaper and faster to build cognitive 
+it is significantly cheaper and faster to build \index{cognitive} cognitive
 models either as pure simulations
 \autocite{Davison2009, Eliasmith2015} or as analogue circuits
 that resemble the physical structure of neural networks
 \autocite{Walter2015, Schmitt2017}.
-Furthermore, virtual models are under the complete control
-of the researcher and can be paused, lesioned or even
-disassembled.
+Furthermore, researchers have complete control over virtual models
+to pause, lesion or even disassembled them at will.
 
 This is particularly interesting for the efforts done in the
 mapping of functional connectivity (the human connectome) to the
@@ -40,37 +43,41 @@ the high level of interconnectivity in the mammalian brain
 \autocite{Hohwy2009, Mogensen2017}.
 
 The present study attempts to extend the innovations within
-third generation neural networks to the field of cognitive 
+second and third generation \gls{NN} to the field of cognitive \index{cognitive}
 neuroscience. 
 By constructing a means to translate higher-order neural
 concepts into neural network simulations, the aim is to allow
-the .
-To verify this claim, a small neural model based on the the
-\gls{REF} theory is built and asked to solve a small maze task.
+the construction and verification of clinically relevant neural models.
+To test this claim, a small neural model based on the
+\gls{REF} theory is built and applied to a small maze task.
+The model will undergo several smaller permutations to examine
+how it aligns with theoretical expectations.
 The model will be implemented in spiking and non-spiking
 substrates to test its relevance to the domain of neuroscience.
 
 \section{Hypothesis} \label{ref:hypothesis}
-The thesis examines the hypothesis that 
+The hypothesis is that 
 \textit{the theory for the reorganisation of elementary functions
 (\gls{REF}) can be implemented in third generation \gls{NN}s using
 the Volr DSL}.
 
 Before the hypothesis can be formally tested, it is necessary to
 present a method to translate the constituent parts of the \gls{REF} theory
-into neural network components.
-This is the role of the \gls{DSL}, which will be elaborated
-in the first part of the thesis.
-The following second part sets out to define a neural network
+into \gls{NN} components.
+Such a translation is presented in the form of the \gls{DSL} \textit{Volr} \index{Volr}
+in the first chapter.
+The following second chapter defines a \gls{NN}
 model built with the above \gls{DSL} as well as a small T-maze experiment. 
 The model acts as a translation of the concepts of the \gls{REF} model,
 to the delimited maze task.
 The third part will translate the neural network model 
-into one second generation based on Futhark, and two third
-generation implementations based on the neural simulator \index{NEST} and 
-the neuromorphic hardware platform \index{BrainScaleS} respectively.
+into one second generation based on Futhark \index{Futhark} and two third
+generation implementations based on the neural simulator \gls{NEST} and 
+the neuromorphic hardware platform BrainScaleS \index{BrainScaleS} respectively.
 All three implementations will be benchmarked based on their ability 
-to solve the maze task.
+to solve the maze task, while the two third generation models will be measured
+on how well they capture the concepts of the cognitive \index{cognitive}
+\gls{REF} model.
 The results of the benchmark will be presented and discussed in the the
 fourth and final part of the thesis.
 This part will also relate the experimental results to the

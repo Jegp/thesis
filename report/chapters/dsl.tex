@@ -1,17 +1,48 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 
-This first part of the thesis will develop a \gls{DSL} for
-the modelling of general \gls{NN}s.
-Before diving in to such an implementation it is necessary
-to explain the theory behind second and third generation
-\gls{NN}s as well as how they are interpreted within cognitive
-neuroscience, so as to posit formal requirements for the language. 
+This first chapter of the thesis motivates and defines
+a \gls{DSL} for the modelling of general \gls{NN}s.
+The first part of the chapter presents the theory behind second and third
+generation \gls{NN}s, so as to posit requirements for the language. 
 Finally this chapter will present the \gls{DSL} \index{Volr},
-which aims to translate the requirements defined
-above into computational \gls{NN} models.
+as a means to translate cognitive concepts into computational \gls{NN}
+models.
 
 \section{Neural networks}
+\Gls{NN}s is a broad term that originates in the neuronal models from
+biological brain \cite{Dayan2001}.
+The general architecture of neural systems can be explained as circuits
+of neurons \index{neuron} connected through weighted edges.
+\cite{Russel2007, Dayan2001}.
+In this abstract sense a neuron is defined as a computational unit that
+takes a number of signals (inputs) and processes them through some
+function $f$ that outputs a single value \cite{Eliasmith2004}.
+From that perspective neural networks simply \textit{computes} an 
+output based on some input why neural networks can be understood as
+complex non-linear computations \cite{Eliasmith2004, Dayan2001}.
+
+In a more concrete sense neural networks computes over either
+continuous (e. g. voltage or numbers) or discrete signal, and they
+can be modelled with or without a temporal dimension
+\cite{Eliasmith2004, Nilsson2009}.
+
+Discrete models without a temporal dimension were the foundation for
+the first perceptron models, as seen in equation \ref{eq:perceptron}.
+
+\begin{figure}
+  
+\end{figure}
+
+\gls{ANN} this design has been 
+Several variations of neural models exist within neuroscience, but they
+
+The artificial flavour is 
+circuits of computational
+units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
+
+% TODO: Distributions of properties instead of actual properties
+
 % Both types of network are architecturally similar, and both are conceived from
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
 % The implementations, however, vary greatly.
@@ -43,6 +74,9 @@ above into computational \gls{NN} models.
 
 \subsubsection{Backpropagation}
 
+\section{DSL requirements}
+
+\section{Similar work}
 
 \include{chapters/volr/volr}
 \end{document}
