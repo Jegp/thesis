@@ -23,18 +23,59 @@ output based on some input why neural networks can be understood as
 complex non-linear computations \cite{Eliasmith2004, Dayan2001}.
 
 In a more concrete sense neural networks computes over either
-continuous (e. g. voltage or numbers) or discrete signal, and they
+continuous (e. g. voltage and numbers) or discrete signal, and they
 can be modelled with or without a temporal dimension
-\cite{Eliasmith2004, Nilsson2009}.
+\cite{Eliasmith2004, Russel2007, Schmidhuber2014}.
+
+Common for many of the models are that they enrich the
+input signals ($x$) with a weight as shown in \ref{eq:weightedsum}
+\cite{Schmidhuber2014, Russel2007}. 
+Given $n$ input neurons, the weighted sum is the value of each
+input neuron scaled by a weight for that individual neuron.
+Weights allow the model to adapt the relative importance of each
+input neuron by modifying their weights, thus allowing the
+model to \textit{train} to a given domain \cite{Schmidhuber2014, Russel2007}.
+
+\begin{equation} \label{eq:weightedsum}
+u = w \cdot x = \sum_{i=1}^n w_i x_i
+\end{equation}
 
 Discrete models without a temporal dimension were the foundation for
-the first perceptron models, as seen in equation \ref{eq:perceptron}.
+the first generation of neural networks \cite{Russel2007, Maass1997}.
+They are based on the perceptron model as seen in equation
+\ref{eq:perceptron}, also known as the McCulluch-Pitts neuron model
+\cite{Eliasmith2004}.
+
+\begin{equation} \label{eq:perceptron}
+f(x) = \begin{cases}
+	 1 & \text{if } u > 0\\
+	 0 & \text{otherwise}
+       \end{cases}
+\end{equation}
+
+Second generation neural networks augment the perceptron model by
+a) allowing continuous output values of a neuron and b) parameterising
+the computation of the neuron by adding an \textit{activation function}
+\index{activation function} for when the output ``activates'' 
+\cite{Maass1997}.
+\textit{Sigmoidal} functions are commonly used (see figure \ref{fig:sigmoid})
+for activation functions
+because they resemble the step function from the perceptron while 
+retatining continuity \cite{Maass1997}.
 
 \begin{figure}
-  
+\centering
+\begin{tikzpicture}[domain=-6:7,xscale=0.3]
+  \draw[->] (-6.2,0) -- (7.2,0) node[right] {$x$};
+  \draw[->] (0,-0.2) -- (0,1.2) node[above] {$\sigma(x)$};
+  \draw plot (\x,{1 / (1 + exp(-\x))}) node[right] {$\sigma(x) = {1 \over 1 + e^{-x}}$};
+\end{tikzpicture}
+\caption{A sigmoidal logistic function.}
+\label{fig:sigmoid}
 \end{figure}
 
-\gls{ANN} this design has been 
+A variation of this is based 
+
 Several variations of neural models exist within neuroscience, but they
 
 The artificial flavour is 
