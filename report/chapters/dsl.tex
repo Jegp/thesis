@@ -53,32 +53,91 @@ f(x) = \begin{cases}
        \end{cases}
 \end{equation}
 
+\subsection{Second generation neural networks}
 Second generation neural networks augment the perceptron model by
 a) allowing continuous output values of a neuron and b) parameterising
 the computation of the neuron by adding an \textit{activation function}
 \index{activation function} for when the output ``activates'' 
 \cite{Maass1997}.
-\textit{Sigmoidal} functions are commonly used (see figure \ref{fig:sigmoid})
-for activation functions
-because they resemble the step function from the perceptron while 
-retatining continuity \cite{Maass1997}.
+\textit{Sigmoidal} functions are commonly used for activation functions
+because they resemble the perceptron step function while 
+retatining continuity (see figure \ref{fig:sigmoid})
+\cite{Maass1997}.
 
 \begin{figure}
 \centering
-\begin{tikzpicture}[domain=-6:7,xscale=0.3]
-  \draw[->] (-6.2,0) -- (7.2,0) node[right] {$x$};
+\begin{tikzpicture}[domain=-6:6,xscale=0.3]
+  \draw[->] (-6.2,0) -- (6.2,0) node[right] {$x$};
   \draw[->] (0,-0.2) -- (0,1.2) node[above] {$\sigma(x)$};
   \draw plot (\x,{1 / (1 + exp(-\x))}) node[right] {$\sigma(x) = {1 \over 1 + e^{-x}}$};
 \end{tikzpicture}
-\caption{A sigmoidal logistic function.}
+\caption{A sigmoidal (soft step) function.}
 \label{fig:sigmoid}
 \end{figure}
 
-A variation of this is based 
+A number of variations for sigmoidal activation functions exist such as $tanh$ and
+the rectified linear unit \index{ReLU} (ReLU, see equation \ref{eq:ReLU}). 
+They are applied either in a feedforward or recurrent (cyclic) manor, where
+the recurrent variant are forced to cope with temporal transformations to
+terminate\footnote{It is possible to \textit{unfold} recurrent
+networks to resemble the circular processes until a certain point, achieving
+a similar effect to temporal signal transformation, see \cite{Mozer1995}.}
+\cite{Schmidhuber2014}.
 
-Several variations of neural models exist within neuroscience, but they
+\begin{equation} \label{eq:ReLU}
+f(x) = \begin{cases}
+         0 & \text{if } x < 0 \\
+	 x & \text{otherwise}
+       \end{cases}
+\end{equation}
 
-The artificial flavour is 
+\subsection{Third generation neural networks}
+Constructing a network of neuron models essentially creates a non-linear
+response to a given numerical vector \cite{Russel2007}.
+This transformative view can be adopted to biological \gls{NN}, where
+the data being transferred are no longer vectors, but discrete
+\textit{spikes} of electrical current \cite[p. 32]{Dayan2001, Eliasmith2004}.
+In this case the activation of a spike can be understood as a function
+of the electric current to the neuron cell along with the cell weights,
+similar to the weighted sum in equation \ref{eq:weightedsum}
+\cite[p. 234]{Dayan2001}.
+
+There is a temporal dimension to this because signals in biological 
+networks arrive from multiple sources in parallel \cite{Eliasmith2004}.
+Lapicque presented the first model of conductance over time in 1907,
+dubbed the \texit{integrate-and-fire} model, because neurons essentially
+integrate received current over time to determine whether they should fire 
+\cite{Dayan2001, Eliasmith2004}.
+This understanding is the foundation for the \textit{third} generation
+neural networks, where the computations occur in spikes over time 
+\cite{Maass1997}.
+Lapicque's model has been elaborated in the \texit{leaky
+integrate-and-fire} model, which introduces a numerical ``leak''
+into the model, that acts as a \textit{weight} for the neuron integration
+\cite{Eliasmith2004, Eliasmith2015}.
+
+\subsubsection{Encoding and decoding in spiking neural networks}
+To align the bitwise numerical representation with the neural spikes
+it is necessary to encode and decode the signals.
+Because of the temporal nature of spiking neural networks, probability
+distributions are commonly used to describe 
+Given a current for background firing rates
+Assuming there are $n$ inputs to a neuron with $i$ bits of information,
+an encoder kk
+
+
+An example of a network is shown in 
+
+\begin{figure}
+\centering
+\begin{tikzpicture}{x=1.5cm, y=1.5cm}
+  \foreach \m/\l [count=\y] in {1, 2, 3}
+    \node [every neuron/.try, neuron\m/.try] (input-\m) at (0,2.5-\y) {};
+\end{tikzpicture}
+\caption{An example neural network with a single hidden layer.}
+\label{fig:nn-example}
+\end{figure}
+
 circuits of computational
 units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
 
