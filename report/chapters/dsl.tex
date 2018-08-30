@@ -174,9 +174,62 @@ units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
 
 \subsubsection{Backpropagation}
 
-\section{DSL requirements}
+\subsubsection{Auto-differentiation}
+% TODO: Write about autodiff
 
 \section{Similar work}
+A vast amount of work has been put into the development of software for simulating
+neural networks.
+This section covers the most popular and recent projects for both second and third
+generation frameworks, and extracts relevant
+features for use in the requirements section \ref{sec:requirements}.
+
+\subsection{Second generation software}
+The perhaps most noteable product for this type of networks is the Tensorflow \index{Tensorflow}
+framework \cite{Abadi2016}.
+Tensorflow is essentially an infrastructure for the description and execution of directed graph 
+structures,
+that connects varying activation functions and learning mechanisms through the common abstraction
+of tensors \cite{Abadi2015}.
+It is a large collaboration of multiple companies and organisations, who have
+grown a comprehensive library of both code as well as infrastructure, and they
+provide extensive hardware acceleration \cite{Abadi2015}.
+
+The primary advantage of Tensorflow \index{Tensorflow} arrives from 
+its foundation in tensors as a general abstraction that
+can be applied to a wide array of problems \cite{Abadi2016}.
+Other frameworks have adapted a similar approach, such as PyTorch \cite{PyTorch2018}, 
+scikit-learn \cite{Sklearn2018}, Microsoft Cognitive Toolkit (CNTK) \cite{CNTK2018},
+Caffe \cite{Caffe2018} and Theano \cite{Theano2018}.
+The mentioned products differ slightly in terms of syntax and objective\footnote{Especially
+PyTorch and Caffe targets \gls{DL}} as well as integrations for data and services, but
+all rely on second generation \gls{NN} architecture.
+
+Lasagne and Keras are examples of products that works with higher-level abstractions,
+building on Theano and Tensorflow respectively \cite{Lasagne2018, Keras2018}.
+They both provide imperative \gls{API}s for constructing models in steps, while
+including useful utilities for the molding of data to fit the underlying tensor structures.
+
+In terms of learning the frameworks are diverse, although gradient descent 
+and auto-differentiation are among the most common features 
+(seen in Tensorflow, PyTorch, CNTK, Theano
+and Caffe). 
+% TODO: Write about unsupervised/reinforcement learning?
+
+The Open Neural Network Exchange Format (ONNX) is an open data format for the representation
+of \gls{DL} learning models \cite{ONNX2018}. 
+ONNX is interesting in this context because it attempts to describe the networks as 
+a directed graph, like Tensorflow, proving that the directed graph approach is 
+sufficiently generic to model the domain of second generation networks.
+
+\subsection{Third generation software}
+
+
+PyNN is a simulator-independent
+
+\section{DSL requirements} \label{sec:requirements}
+
+
 
 \include{chapters/volr/volr}
 \end{document}
