@@ -75,9 +75,10 @@ retatining continuity (see figure \ref{fig:sigmoid})
 \label{fig:sigmoid}
 \end{figure}
 
-A number of variations for sigmoidal activation functions exist such as $tanh$ and
+A number of variations for sigmoidal activation functions exist such as the 
+hyperbolic tangent ($tanh$) and
 the rectified linear unit \index{ReLU} (ReLU, see equation \ref{eq:ReLU}). 
-They are applied either in a feedforward or recurrent (cyclic) manor, where
+They are applied either in a feedforward or recurrent (cyclic) manner, where
 the recurrent variant are forced to cope with temporal transformations to
 terminate\footnote{It is possible to \textit{unfold} recurrent
 networks to resemble the circular processes until a certain point, achieving
@@ -105,13 +106,13 @@ similar to the weighted sum in equation \ref{eq:weightedsum}
 There is a temporal dimension to this because signals in biological 
 networks arrive from multiple sources in parallel \cite{Eliasmith2004}.
 Lapicque presented the first model of conductance over time in 1907,
-dubbed the \texit{integrate-and-fire} model, because neurons essentially
+dubbed the \textit{integrate-and-fire} model, because neurons essentially
 integrate received current over time to determine whether they should fire 
 \cite{Dayan2001, Eliasmith2004}.
 This understanding is the foundation for the \textit{third} generation
 neural networks, where the computations occur in spikes over time 
 \cite{Maass1997}.
-Lapicque's model has been elaborated in the \texit{leaky
+Lapicque's model has been elaborated in the \textit{leaky
 integrate-and-fire} model, which introduces a numerical ``leak''
 into the model, that acts as a \textit{weight} for the neuron integration
 \cite{Eliasmith2004, Eliasmith2015}.
@@ -123,16 +124,50 @@ Because of the temporal nature of spiking neural networks, probability
 distributions are commonly used to describe 
 Given a current for background firing rates
 Assuming there are $n$ inputs to a neuron with $i$ bits of information,
-an encoder kk
+an encoder
 
 
 An example of a network is shown in 
 
 \begin{figure}
 \centering
+\tikzset{%
+  every neuron/.style={
+    circle, draw, minimum size=0.5cm
+  },
+  neuron dots/.style={
+    draw=none,
+    scale=1.5,
+    text height=0.3cm,
+    execute at begin node=\color{black}$\vdots$
+  }
+}
 \begin{tikzpicture}{x=1.5cm, y=1.5cm}
-  \foreach \m/\l [count=\y] in {1, 2, 3}
-    \node [every neuron/.try, neuron\m/.try] (input-\m) at (0,2.5-\y) {};
+  \foreach \m [count=\y] in {1,2,dots,n}
+    \node [every neuron/.try, neuron \m/.try](input-\m) at (0, 2.5-\y) {};
+  \foreach \m [count=\y] in {1, dots, n}
+    \node [every neuron/.try, neuron \m/.try](hidden-\m) at (2, 2-\y) {};
+  \foreach \m [count=\y] in {1, dots, n}
+    \node [every neuron/.try, neuron \m/.try](output-\m) at (4, 2-\y) {};
+
+  \foreach \l [count=\i] in {1, 2, n}
+    \draw [<-] (input-\l) -- ++ (-1, 0)
+      node [above, midway] {$I_{\l}$};
+  \foreach \l [count=\i] in {1, n}
+    \node [above] at (hidden-\l.north) {$H_{\l}$};
+
+  \foreach \f in {1, 2, n}
+    \foreach \t in {1, n}
+      \draw [->] (input-\f) -- (hidden-\t);
+  \foreach \f in {1, n}
+    \foreach \t in {1, n}
+      \draw [->] (hidden-\f) -- (output-\t);
+  \foreach \l [count=\i] in {1,n}
+    \draw [->] (output-\l) -- ++(1,0)
+	node [above, midway] {$O_\l$};
+
+  \foreach \l [count=\x from 0] in {Input, Hidden, Output}
+    \node [align=center, above] at (\x*2,2) {\l};
 \end{tikzpicture}
 \caption{An example neural network with a single hidden layer.}
 \label{fig:nn-example}
@@ -172,11 +207,12 @@ units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
 
 \subsection{Learning in neural networks}
 
+
 \subsubsection{Backpropagation}
 
 \subsubsection{Auto-differentiation}
 % TODO: Write about autodiff
-
+\pagebreak
 \section{Similar work}
 A vast amount of work has been put into the development of software for simulating
 neural networks.
@@ -218,11 +254,17 @@ and Caffe).
 
 The Open Neural Network Exchange Format (ONNX) is an open data format for the representation
 of \gls{DL} learning models \cite{ONNX2018}. 
-ONNX is interesting in this context because it attempts to describe the networks as 
-a directed graph, like Tensorflow, proving that the directed graph approach is 
-sufficiently generic to model the domain of second generation networks.
+In this context ONNX is interesting because it attempts to describe the networks as 
+a directed graph, just like Tensorflow.
+ONNX is supported by Caffe, CNTK and Pytorch, and translate to Tensorflow,
+indicating that a directed graph is 
+sufficiently generic to model the structure and learning tasks within 
+second generation networks.
 
 \subsection{Third generation software}
+The landscape for third generation software is less uniform, because the products target
+wider applications.
+In general 
 
 
 PyNN is a simulator-independent
