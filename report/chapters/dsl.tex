@@ -130,8 +130,12 @@ it reaches a threshold voltage ($V_{th}$) and produces a single spike
 \cite{Dayan2001, Eliasmith2004}.
 In a brief period after the activation the neuron enters a period of
 refraction, where injected voltage is not accumulated, denoted by 
+<<<<<<< HEAD
 $\tau_{ref}$, illustrated in figure \ref{fig:spiking}
 \cite[p. 82]{Eliasmith2004}.
+=======
+$\tau_{ref}$, illustrated in figure \ref{fig:spiking}.
+>>>>>>> 021f9f3b13083c52e3890429da7b5e53e7aead2d
 
 \begin{figure}
 \centering
@@ -148,22 +152,39 @@ $\tau_{ref}$, illustrated in figure \ref{fig:spiking}
 \node [rotate=90] at (-0.25, 0.5) {\text{voltage (V)}};
 \node at (1, -0.2) {\text{time (ms)}};
 
+<<<<<<< HEAD
 \draw [thick] (0,0) .. controls (12/50,0.50) and (36/50,0.6) .. (67/50, 0.639);
+=======
+\draw [thick] (0,0) .. controls (22/50,0.50) and (40/50,0.6) .. (67/50, 0.64);
+>>>>>>> 021f9f3b13083c52e3890429da7b5e53e7aead2d
 \draw [thick] (67/50,0) -- (67/50,1);
 \draw [dashed] (0,0.64) -- (2,0.64) node [right] {\scriptsize $V_{th}$};
 \node at (67/50, -0.1) {\scriptsize $t_n$};
 \draw [thick] (67/50,0) -- ++ (0.1,0);
 \node at (80/50,0.85) {\scriptsize $\delta(t-t_n)$};
+<<<<<<< HEAD
 \draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.35) .. (2, 0.42);
+=======
+\draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.4) .. (2, 0.5);
+>>>>>>> 021f9f3b13083c52e3890429da7b5e53e7aead2d
 \node at (75/50,0.3) {\scriptsize $\tau_{ref}$};
 \draw (70/50,0.03) .. controls (71/50,0.13) .. (74.5/50,0.24);
 
 \end{tikzpicture}
+<<<<<<< HEAD
 \caption{The voltage buildup, spiking, refractory period and continued buildup
          of a neuron with constant current input.}
 \label{fig:spiking}
 \end{figure}
 
+=======
+\caption{The voltage buildup, spiking and refractory period of a neuron with
+	 constant current input.}
+\label{fig:spiking}
+\end{figure}
+
+
+>>>>>>> 021f9f3b13083c52e3890429da7b5e53e7aead2d
 Lapicque's model has been elaborated in the \textit{leaky
 integrate-and-fire} model, which introduces a numerical ``leak''
 into the model, that acts as a \textit{weight} for the neuron integration
