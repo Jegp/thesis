@@ -109,17 +109,73 @@ Lapicque presented the first model of conductance over time in 1907,
 dubbed the \textit{integrate-and-fire} model, because neurons essentially
 integrate received current over time to determine whether they should fire 
 \cite{Dayan2001, Eliasmith2004}.
-This understanding is the foundation for the \textit{third} generation
-neural networks, where the computations occur in spikes over time 
-\cite{Maass1997}.
+The Dirac ($\delta$) function in figure \ref{eq:dirac} shows an idealised
+version of this \cite[p. 404]{Dayan2001}.
+For all values it approaches 0, except when its argument is
+0 where it will grow infinitely.
+The total area of these 'spikes' sum together to 1 over time $t$.
+
+\begin{equation} \label{eq:dirac}
+\int dt\ \delta(t) = 1
+\end{equation}
+
+This idealised representation is a common mathematical approximation of
+a sequence of activation functions \cite{Dayan2001, Eliasmith2004},
+and the foundation for the \textit{third} generation
+neural networks, where the computations are understood as spikes over
+time \cite{Maass1997}.
+In this model the neurons receive a voltage that builds over time, until
+it reaches a threshold voltage ($V_{th}$) and produces a single spike
+\mbox{($\delta(t-t_n)$)}
+\cite{Dayan2001, Eliasmith2004}.
+In a brief period after the activation the neuron enters a period of
+refraction, where injected voltage is not accumulated, denoted by 
+$\tau_{ref}$, illustrated in figure \ref{fig:spiking}.
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}[scale=3]
+\pgfkeys{/pgf/number format/precision=1}
+\draw (0,0) -- (2, 0);
+\draw (0,0) -- (0, 1);
+\foreach \i in {0,0.2,...,1}
+  \draw (0,\i) -- (0.02,\i) node [left] {\scriptsize \pgfmathroundtozerofill{\i}\pgfmathresult};
+\foreach \i in {0,20,...,100}
+  \draw (\i/50,0) -- (\i/50,0.02) node [below] {\scriptsize \i};
+
+\node [rotate=90] at (-0.25, 0.5) {\text{voltage (V)}};
+\node at (1, -0.2) {\text{time (ms)}};
+
+\draw [thick] (0,0) .. controls (22/50,0.50) and (40/50,0.6) .. (67/50, 0.64);
+\draw [thick] (67/50,0) -- (67/50,1);
+\draw [dashed] (0,0.64) -- (2,0.64) node [right] {\scriptsize $V_{th}$};
+\node at (67/50, -0.1) {\scriptsize $t_n$};
+\draw [thick] (67/50,0) -- ++ (0.1,0);
+\node at (80/50,0.85) {\scriptsize $\delta(t-t_n)$};
+\draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.4) .. (2, 0.5);
+\node at (75/50,0.3) {\scriptsize $\tau_{ref}$};
+\draw (70/50,0.03) .. controls (71/50,0.13) .. (74.5/50,0.24);
+
+\end{tikzpicture}
+\caption{The voltage buildup, spiking and refractory period of a neuron with
+	 constant current input.}
+\label{fig:spiking}
+\end{figure}
+
+
 Lapicque's model has been elaborated in the \textit{leaky
 integrate-and-fire} model, which introduces a numerical ``leak''
 into the model, that acts as a \textit{weight} for the neuron integration
 \cite{Eliasmith2004, Eliasmith2015}.
 
+Integrating the values over time, k
+
+
 \subsubsection{Encoding and decoding in spiking neural networks}
-To align the bitwise numerical representation with the neural spikes
-it is necessary to encode and decode the signals.
+To align digital representations with neural spikes,
+signals are encoded and decoded when entering and leaving the system
+respectively \cite{Dayan2001}.
 Because of the temporal nature of spiking neural networks, probability
 distributions are commonly used to describe 
 Given a current for background firing rates
@@ -153,8 +209,8 @@ An example of a network is shown in
   \foreach \l [count=\i] in {1, 2, n}
     \draw [<-] (input-\l) -- ++ (-1, 0)
       node [above, midway] {$I_{\l}$};
-  \foreach \l [count=\i] in {1, n}
-    \node [above] at (hidden-\l.north) {$H_{\l}$};
+  \node [above] at (hidden-1.north) {$H_1$};
+  \node [below] at (hidden-n.south) {$H_n$};
 
   \foreach \f in {1, 2, n}
     \foreach \t in {1, n}
@@ -177,33 +233,6 @@ circuits of computational
 units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
 
 % TODO: Distributions of properties instead of actual properties
-
-% Both types of network are architecturally similar, and both are conceived from
-% the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
-% The implementations, however, vary greatly.
-
-% To ensure internal and external validity in and between the two network types,
-% it is desirable that the models are as closely related from a theoretical and
-% practical perspective as possible.
-% Additionally, to test the hypothesis, it is required that both the artificial
-% and spiking models can be simulated on regular machine architecture, while
-% the spiking model requires a neuromorphic hardware platform.
-
-% An optimal approach would be to find a tool that leverages the similarities
-% of the network types, while integrating with the diverse simulated or emulated
-% targets.
-% That is, an abstract model of neural networks that can translate into
-% heterogeneous back-ends, while retaining a high degree of inter-model validity.
-
-% A number of general frameworks for artificial neural networks
-% exist\footnote{
-%   Among others, see \autocite{ONNX2018}, \autocite{PyTorch2018}, \autocite{TensorFlow2018},
-%   \autocite{Keras2018} and DyNet \autocite{Neubig2017}.
-% }, but none of them extend to the spiking domain.
-% Conversely a number of choices exist for neuromorphic modelling\footnote{
-%   %TODO: Find sources on internal IBM/Intel stuff
-% }, but they exclusively evaluate to neuromorphic or spiking neural network
-% backends \autocite{Jordan2018}.
 
 \subsection{Learning in neural networks}
 
@@ -271,7 +300,32 @@ PyNN is a simulator-independent
 
 \section{DSL requirements} \label{sec:requirements}
 
+% Both types of network are architecturally similar, and both are conceived from
+% the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
+% The implementations, however, vary greatly.
 
+% To ensure internal and external validity in and between the two network types,
+% it is desirable that the models are as closely related from a theoretical and
+% practical perspective as possible.
+% Additionally, to test the hypothesis, it is required that both the artificial
+% and spiking models can be simulated on regular machine architecture, while
+% the spiking model requires a neuromorphic hardware platform.
+
+% An optimal approach would be to find a tool that leverages the similarities
+% of the network types, while integrating with the diverse simulated or emulated
+% targets.
+% That is, an abstract model of neural networks that can translate into
+% heterogeneous back-ends, while retaining a high degree of inter-model validity.
+
+% A number of general frameworks for artificial neural networks
+% exist\footnote{
+%   Among others, see \autocite{ONNX2018}, \autocite{PyTorch2018}, \autocite{TensorFlow2018},
+%   \autocite{Keras2018} and DyNet \autocite{Neubig2017}.
+% }, but none of them extend to the spiking domain.
+% Conversely a number of choices exist for neuromorphic modelling\footnote{
+%   %TODO: Find sources on internal IBM/Intel stuff
+% }, but they exclusively evaluate to neuromorphic or spiking neural network
+% backends \autocite{Jordan2018}.
 
 \include{chapters/volr/volr}
 \end{document}
