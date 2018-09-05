@@ -55,7 +55,7 @@ f(x) = \begin{cases}
 
 \subsection{Second generation neural networks}
 Second generation neural networks augment the perceptron model by
-a) allowing continuous output values of a neuron and b) parameterising
+a) allowing continuous output values of a neuron and b) parametrising
 the computation of the neuron by adding an \textit{activation function}
 \index{activation function} for when the output ``activates'' 
 \cite{Maass1997}.
@@ -78,7 +78,7 @@ retatining continuity (see figure \ref{fig:sigmoid})
 A number of variations for sigmoidal activation functions exist such as the 
 hyperbolic tangent ($tanh$) and
 the rectified linear unit \index{ReLU} (ReLU, see equation \ref{eq:ReLU}). 
-They are applied either in a feedforward or recurrent (cyclic) manner, where
+They are applied either in a feed-forward or recurrent (cyclic) manner, where
 the recurrent variant are forced to cope with temporal transformations to
 terminate\footnote{It is possible to \textit{unfold} recurrent
 networks to resemble the circular processes until a certain point, achieving
@@ -106,14 +106,17 @@ similar to the weighted sum in equation \ref{eq:weightedsum}
 There is a temporal dimension to this because signals in biological 
 networks arrive from multiple sources in parallel \cite{Eliasmith2004}.
 Lapicque presented the first model of conductance over time in 1907,
-dubbed the \textit{integrate-and-fire} model, because neurons essentially
+dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and-fire}
+\index{integrate-and-fire|see {neuron model}}
+model, because neurons essentially
 integrate received current over time to determine whether they should fire 
 \cite{Dayan2001, Eliasmith2004}.
-The Dirac ($\delta$) function in figure \ref{eq:dirac} shows an idealised
+The Dirac ($\delta$) function \index{Dirac function}
+in equation \ref{eq:dirac} shows an idealised
 version of this \cite[p. 404]{Dayan2001}.
 For all values it approaches 0, except when its argument is
 0 where it will grow infinitely.
-The total area of these 'spikes' sum together to 1 over time $t$.
+The total area of these 'spikes' sum together to 1 over time $t$ \index{neuron spike}.
 
 \begin{equation} \label{eq:dirac}
 \int dt\ \delta(t) = 1
@@ -123,15 +126,22 @@ This idealised representation is a common mathematical approximation of
 a sequence of activation functions \cite{Dayan2001, Eliasmith2004},
 and the foundation for the \textit{third} generation
 neural networks, where the computations are understood as spikes over
-time \cite{Maass1997}.
+time \cite{Maass1997}. \index{neuron spike} \index{spike|see {neuron spike}}
 In this model the neurons receive a voltage that builds over time, until
 it reaches a threshold voltage ($V_{th}$) and produces a single spike
 \mbox{($\delta(t-t_n)$)}
 \cite{Dayan2001, Eliasmith2004}.
 In a brief period after the activation the neuron enters a period of
-refraction, where injected voltage is not accumulated, denoted by 
+refraction, \index{refraction period}
+where injected voltage is not accumulated, denoted by 
 $\tau_{ref}$, illustrated in figure \ref{fig:spiking}
 \cite[p. 82]{Eliasmith2004}.
+
+A more realistic neuron model was developed by Hodgkin
+and Huxley in 1952 dubbed the Hudgkin-Huxley model \cite{Dayan2001}.
+While it is more precise than integrate-and-fire models, it is
+more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
+\cite{Albada2018, Dayan2001, Eliasmith2015}.
 
 \begin{figure}
 \centering
@@ -148,7 +158,6 @@ $\tau_{ref}$, illustrated in figure \ref{fig:spiking}
 \node [rotate=90] at (-0.25, 0.5) {\text{voltage (V)}};
 \node at (1, -0.2) {\text{time (ms)}};
 
-<<<<<<< HEAD
 \draw [thick] (0,0) .. controls (12/50,0.50) and (36/50,0.6) .. (67/50, 0.639);
 \draw [thick] (67/50,0) -- (67/50,1);
 \draw [dashed] (0,0.64) -- (2,0.64) node [right] {\scriptsize $V_{th}$};
@@ -157,23 +166,35 @@ $\tau_{ref}$, illustrated in figure \ref{fig:spiking}
 \node at (80/50,0.85) {\scriptsize $\delta(t-t_n)$};
 \draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.35) .. (2, 0.42);
 \node at (75/50,0.3) {\scriptsize $\tau_{ref}$};
-\draw (70/50,0.03) .. controls (71/50,0.13) .. (74.5/50,0.24);
+\draw (70/50,0.03) .. controls (71.5/50,0.13) .. (74.5/50,0.24);
 
 \end{tikzpicture}
-\caption{The voltage buildup, spiking, refractory period and continued buildup
-         of a neuron with constant current input.}
+\caption{A model of the voltage buildup, spiking and refractory period
+         of an integrate-and-fire \index{neuron model!integrate-and-fire} 
+         neuron with constant current influx.}
 \label{fig:spiking}
 \end{figure}
 
 Lapicque's model has been elaborated in the \textit{leaky
-integrate-and-fire} model, which introduces a numerical ``leak''
-into the model, that acts as a \textit{weight} for the neuron integration
-\cite{Eliasmith2004, Eliasmith2015}.
+integrate-and-fire} (LIF) \index{neuron model!leaky-integrate-and-fire}
+model, which introduces a numerical ``leak''
+into the model, that acts as a type of memory \index{memory}
+for the neuron integration \cite{Eliasmith2004, Eliasmith2015}.
+Input voltages decays exponentially over time, meaning that the
+present voltage depends more strongly on recent input voltages
+\cite[p. 86]{Eliasmith2004}.
+By controlling the resistance (or leak), it is possible to
+control the time with which previous voltages are 'forgotten'
+\cite{Eliasmith2004}.
 
-Integrating the values over time, k
-
+% TODO: Present how spike rates are represented
+% TODO: Write about noise
+\subsubsection{Neuron spike rates}
+...
 
 \subsubsection{Encoding and decoding in spiking neural networks}
+...
+\begin{comment}
 To align digital representations with neural spikes,
 signals are encoded and decoded when entering and leaving the system
 respectively \cite{Dayan2001}.
@@ -182,9 +203,18 @@ distributions are commonly used to describe
 Given a current for background firing rates
 Assuming there are $n$ inputs to a neuron with $i$ bits of information,
 an encoder
+\end{comment}
 
-
-An example of a network is shown in 
+\subsection{\Gls{NN}s as directed graphs}
+Following the above descriptions, \gls{NN}s can be abstracted as a 
+directed graph: circuits of computational units connected through
+weighted, directed edges \cite{Dayan2001, Eliasmith2004, Russel2007}.
+Figure \ref{fig:nn-example} illustrates such a network.
+The layered design is typical for first and second generation networks, but 
+can be generalised to the third generation as well, despite their parallel
+nature.
+The second layer is traditionally denoted as `hidden' because it is only
+stimulated indirectly \cite{Russel2007}.
 
 \begin{figure}
 \centering
@@ -230,12 +260,55 @@ An example of a network is shown in
 \label{fig:nn-example}
 \end{figure}
 
-circuits of computational
-units connected through weighted edges \cite{Dayan2001, Eliasmith2004}.
+In this representation an `input' is a stimulus vector, whose
+length is equal to the number of neurons in the first layer.
+Conversely, an `output' is a stimulus vector whose length
+is controlled by the number of output neurons.
+A \gls{NN} can then be understood as a function $f$ that 
+maps an input vector to an output vector.
 
-% TODO: Distributions of properties instead of actual properties
+\subsection{Learning} \index{learning}
+Within the cognitive sciences learning within an \texit{agent} \gls{agent}
+refers to ``the process of gaining
+information through observation'' \cite{sep:learning-formal}.
+Following the above abstraction of neural networks, ``learning'' in this 
+thesis \index{learning}
+simply refers to the development of consistent patterns, given the same input.
+These patterns can be understood as general functions or rules, which
+may, of course, prove to be incorrect \cite[p. 704.]{Russel2007}. 
 
-\subsection{Learning in neural networks}
+Within machine learning \index{machine learning} three types of
+learning exists: supervised, \index{learning!supervised}
+unsupervised \index{learning!unsupervised} and reinforced.
+\index{learning!reinforcement}
+
+\textit{Supervised} learning relies on a set of expected outputs which 
+the learning \gls{agent} must predict, given some input \cite{Russel2007}.
+The \gls{agent} is told how `wrong' it was, so it can adapt accordingly.
+This learning typically happens in a \textit{training} and \textit{testing}
+phase, where the \gls{agent} is allowed to builds its internal representation
+which is later tested previously unseen data \cite{Russel2007}.
+
+\textit{Unsupervised} learning asks the \gls{agent} to learn without
+having any idea of error margin \cite{Russel2007}.
+Rather, the \gls{agent} is asked to \textit{explore} a domain in search of
+patterns, which then form the basis for future predictions or classifications
+\cite{Russel2007}.
+
+\textit{Reinforcement} learning the \gls{agent} is reinforced through
+rewards and discouraged through punishments \cite{Russel2007}.
+Contrary to supervised learning the rewards and punishments are not
+instructing the agent on what the output should be, but rather how well
+it performed the task, leaving the \gls{agent} to infer rules or
+behaviours by itself \cite[p. 873]{Russel2007}.
+
+Further, the process of learning can either be \textit{inductive}
+\index{learning!induction}
+or \textit{deductive} \index{learning!deduction} \cite[p. 704]{Russel2007}.
+The latter requires a basis in rule-based systems from which new knowledge can
+be deduced, while the former requires a measurement of success \cite[p. 705]{Russel2007}.
+
+\subsubsection{Learning in second generation \gls{NN}}
 
 
 \subsubsection{Backpropagation}
@@ -251,7 +324,7 @@ generation frameworks, and extracts relevant
 features for use in the requirements section \ref{sec:requirements}.
 
 \subsection{Second generation software}
-The perhaps most noteable product for this type of networks is the Tensorflow \index{Tensorflow}
+The perhaps most notable product for this type of networks is the Tensorflow \index{Tensorflow}
 framework \cite{Abadi2016}.
 Tensorflow is essentially an infrastructure for the description and execution of directed graph 
 structures,
@@ -300,6 +373,9 @@ In general
 PyNN is a simulator-independent
 
 \section{DSL requirements} \label{sec:requirements}
+
+Because \gls{NN}s are not directly rule-based knowledge representations,
+this thesis focuses on induction learning, and since 
 
 % Both types of network are architecturally similar, and both are conceived from
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
