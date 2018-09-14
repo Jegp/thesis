@@ -127,16 +127,17 @@
     \ULCornerWallPaper{1}{ku-coverpage/nat-farve.pdf}
     \ULCornerWallPaper{1}{ku-coverpage/diku-en.pdf}
     \begin{adjustwidth}{-3cm}{-1.5cm}
-      \vspace*{1cm}
+      \vspace*{3cm}
       \textbf{\Huge Modelling neural learning systems} \\
-      \\[0.5cm]
-      \vspace*{1cm}
+      \\[0.2cm]
       {\huge Cognitive models in third generation neural networks}\\
+      \\[1.6cm]
+      {\Large MSc thesis in Computer Science}
+      \\[9cm]
       \begin{tabbing}
-      \\
       \textbf{\Large Author} \\
       Jens Egholm Pedersen \hspace{1cm} \= \texttt{<xtp778@alumni.ku.dk>} \\
-      \\[13cm]
+      \\[1cm]
       \textbf{\Large Supervisor} \\
       Martin Elsman \hspace{1cm} \= \texttt{<mael@di.ku.dk>}
       \end{tabbing}
@@ -152,40 +153,53 @@
 \renewcommand\cftbeforechapterskip{5pt plus 1pt}
 
 \frontmatter
+
+\begin{abstract}
+TODO
+\end{abstract}
+
+\pagebreak
+
 \setcounter{tocdepth}{2}
 \tableofcontents*
 \newpage
 
 \mainmatter
+
+\chapter{How to read this thesis}
+TODO
 \chapter{Introduction} \label{sec:intro}
   \subfile{chapters/introduction}
+
+%\chapter{Theory} \label{sec:theory}
+%  \subfile{chapters/theory}
 
 \chapter{A DSL for neural networks modelling} \label{sec:volr}
   \subfile{chapters/dsl}
 
-\chapter{Experimental setup} \label{sec:experiment}
-  \subfile{chapters/experiment}
+%\chapter{Experimental setup} \label{sec:experiment}
+%  \subfile{chapters/experiment}
 
-\chapter{Data collection}
-  \section{Futhark}
-  \section{NEST}
-  \section{BrainScaleS}
+%\chapter{Data collection}
+%  \section{Futhark}
+%  \section{NEST}
+%  \section{BrainScaleS}
 
-\chapter{Analysis}
-  \section{Experiment results}
-  \subsection{Futhark}
-  \subsection{Nest}
-  \subsection{BrainScaleS}
-  \section{Comparison of learning}
-  \section{Adaptability and robustness} % How is this useful for the REF model?
+%\chapter{Analysis}
+%  \section{Experiment results}
+%  \subsection{Futhark}
+%  \subsection{Nest}
+%  \subsection{BrainScaleS}
+%  \section{Comparison of learning}
+%  \section{Adaptability and robustness} % How is this useful for the REF model?
 
-\chapter{Discussion} \label{sec:discussion}
-  % TODO: Partial training of networks
-  \section{Validity}
-  \section{REF similarity}
-  \section{Future work}
+%\chapter{Discussion} \label{sec:discussion}
+%  % TODO: Partial training of networks
+%  \section{Validity}
+%  \section{REF similarity}
+%  \section{Future work}
 
-\chapter{Conclusion}
+%\chapter{Conclusion}
 
 \printbibliography
 \printglossary

@@ -7,7 +7,7 @@ some recognition tasks surpassed human-level precision
 This acceleration is propelled by the advances in \gls{ANN}
 \autocite{Rumelhart1988, Schmidhuber2014, Nilsson2009}, or
 so-called \textit{second} generation \gls{ANN}\footnote{Not to be 
-understood as more \textit{advanced} than previous generations, see definition on page
+understood as more advanced than previous generations, see definition on page
 \pageref{sec:glossary}.} \cite{Maass1997}.
 While the first generation networks builds on the \textit{McCulluch-Pitts}
 neuron model that only produces binary outputs (0 or 1), the second
@@ -44,23 +44,25 @@ the high level of interconnectivity in the mammalian brain
 \autocite{Hohwy2009, Mogensen2017}.
 
 The present study attempts to extend the innovations within
-second and third generation \gls{NN} to the field of cognitive \index{cognitive}
-neuroscience. 
-By constructing a means to translate higher-order neural
+second and third generation \gls{NN} to the field of
+cognitive \index{cognitive} neuroscience. 
+By constructing a \gls{DSL} as a means to translate higher-order neural
 concepts into neural network simulations, the aim is to allow
-the construction and verification of clinically relevant neural models.
-To test this claim, a small neural model based on the
+the construction and verification of relevant neural models.
+To explore this translation, a neural model based on the
 \gls{REF} theory is built and applied to a small maze task.
-The model will undergo several smaller permutations to examine
-how it aligns with theoretical expectations.
-The model will be implemented in spiking and non-spiking
-substrates to test its relevance to the domain of neuroscience.
+The model undergoes several smaller permutations, similar
+to brain lesions, to examine how it aligns with the theoretical
+expectations.
+To test the relevance to the domain of neuroscience, the model
+is implemented and compared across spiking and non-spiking
+substrates.
 
 \section{Hypothesis} \label{ref:hypothesis}
 The hypothesis is that 
 \textit{the theory for the reorganisation of elementary functions
 (\gls{REF}) can be implemented in third generation \gls{NN}s using
-the Volr DSL}.
+the Volr \gls{DSL}}.
 
 Before the hypothesis can be formally tested, it is necessary to
 present a method to translate the constituent parts of the \gls{REF} theory
@@ -79,7 +81,7 @@ All three implementations will be benchmarked based on their ability
 to solve the maze task, while the two third generation models will be measured
 on how well they capture the concepts of the cognitive \index{cognitive}
 \gls{REF} model.
-The results of the benchmark will be presented and discussed in the the
+The results of the benchmark will be presented and discussed in the 
 fourth and final part of the thesis.
 This part will also relate the experimental results to the
 hypothesis and reflect on their implications as well as future work.
@@ -96,27 +98,32 @@ If that is the case, the \gls{DSL} has failed to translate
 the learning capacities of the second generation networks, disproving the
 hypothesis.
 
-Another way to falsify the hypothesis is a significant
-dissimilarity\footnote{See \ref{sec:ref} for a definition of
+Another falsification criteria is the presence of significant
+dissimilarities\footnote{See \ref{sec:ref} for a definition of
 \enquote{dissimilar}.} between the neural network implementations 
 and the abstract \gls{REF} model. 
 In that case the \gls{DSL} is unable to accurately translate the
 necessary components of the theoretical framework.
 
 \subsection{Scope} \label{sec:scope}
-While this thesis will employ similar mechanisms for learning, 
-it is outside the scope of this thesis to provide an exact 1:1 mapping
-between the implementations.
+While this thesis aims to build models that shows some of the same
+properties that are present in the biological brain,  
+it is not the goal to provide a mapping between the
+implementations and their neurophysiological equivalent.
+Neither is it a goal to translate the \gls{DSL} into exact replicas
+of second and third generation networks, for the reason that the
+two modelling paradigms are vastly different\footnote{See \ref{sec:nn}
+for a detailed description of the dissimilarities.}.
 This will naturally have consequences for the subsequent analysis of the
-later experimental results (see section \ref{sec:discussion}).
+experimental results (see section \ref{sec:discussion}).
 
-The \gls{REF} model is a general and abstract description of cognitive
+The \gls{REF} model is a general and abstract blueprint of cognitive
 processes, and no attempts have as of yet been made to map it to
 computational models.
 This first attempt is only made feasible by focusing on select parts
-of the \gls{REF} model. 
-Specifically higher-order cognitive functions as well as detailed 
-biological similarities requires much more extensive studies, and are
-considered to be outside the scope of this thesis.
+of the \gls{REF} model, explained in section \ref{sec:ref}.
+Specifically it is outside the scope of this thesis to examine
+higher-order cognitive functions as well as detailed biological
+similarities.
 
 \end{document}
