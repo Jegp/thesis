@@ -102,7 +102,7 @@ For each neuron $j$ the output $x$ can be derived as shown in
 \subsection{Third generation neural networks}
 Constructing a network of neuron models essentially creates a non-linear
 response to a given numerical vector \cite{Russel2007}.
-This transformative view can be adopted to biological \gls{NN}, where
+This transformative view can be adopted to biological \gls{SNN}, where
 the data being transferred are no longer vectors, but discrete
 \textit{spikes} of electrical current \cite[p. 32]{Dayan2001, Eliasmith2004}.
 In this case the activation of a spike can be understood as a function
@@ -355,14 +355,14 @@ To avoid this, it is customary to only train the network
 on a part of the available data, only to test it on 
 the remaining data \cite{Russel2007, Schmidhuber2014}.
 
+\subsection{Backpropagation}
+
 \subsection{Learning in second generation \gls{NN}}
+\subsection{Learning in third generation \gls{NN}}
 
-
-%\subsection{Backpropagation}
-
-\subsubsection{Auto-differentiation}
+%\subsubsection{Auto-differentiation}
 % TODO: Write about autodiff
-\pagebreak
+
 \section{Similar work}
 A vast amount of work has been put into the development of software for simulating
 neural networks.
@@ -400,7 +400,6 @@ In terms of learning the frameworks are diverse, although gradient descent
 and auto-differentiation are among the most common features 
 (seen in Tensorflow, PyTorch, CNTK, Theano
 and Caffe). 
-% TODO: Write about unsupervised/reinforcement learning?
 
 The Open Neural Network Exchange Format (ONNX) is an open data format for the representation
 of \gls{DL} learning models \cite{ONNX2018}. 
@@ -411,18 +410,40 @@ indicating that a directed graph is
 sufficiently generic to model the structure and learning tasks within 
 second generation networks.
 
-%\subsection{Third generation software}
-%The landscape for third generation software is less uniform, because the products target
-%wider applications.
-%In general 
+\subsection{Third generation software}
+The landscape for third generation software is less homogeneous, first and
+foremost because the field is still young \cite{Maass1991}.
+Secondly there are two different approaches to constructing \gls{SNN}s:
+physical or virtual \cite{Maass1997, Davison2009, Albada2018}. %TODO: Check citation
 
-
+\subsubsection{\Gls{SNN} simulators}
+\subsubsection{Neuromorphic hardware}
 %PyNN is a simulator-independent
 
-%\section{DSL requirements} \label{sec:requirements}
+\subsection{Third generation modelling tools}
+Before proceeding to the DSL requirements, it is worth introducing
+the PyNN \index{PyNN} project \cite{Davison2009}. 
+PyNN is a modelling \gls{API} for \gls{Python} that to some degree translates
+third generation topologies and physiological descriptors into both simulated
+and analogue backends \cite{Davison2009}.
+In theory PyNN can target any third generation backend, but has chosen to focus
+on projects associated with the \gls{HBP}: NEST, BrainScaleS and SpiNNaker
+\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
+\cite{Davison2009} %TODO: Check source
+It offers decent support for many of the NEST simulation features, but
+requires significant amount of programming to post-fit the models to 
+run on SpinNaker and BrainScales. %TODO: Add source
+This is partly due to the heterogeneous architectures of the backends, but
+also because projects such as PyNN faces a difficult trade-off; ease-of-use
+versus specificity. %TODO: Add source
+PyNN is an attempt to bridge the gap between the vastly different backends
+for \gls{SNN}, similar to the Keras and Lasagne projects, but both these
+projects have made significant simplifications to broaden their audiences
+%TODO: Add source
 
-%Because \gls{NN}s are not directly rule-based knowledge representations,
-%this thesis focuses on induction learning, and since 
+%TODO: Finish this
+
+\section{DSL requirements} \label{sec:requirements}
 
 % Both types of network are architecturally similar, and both are conceived from
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
