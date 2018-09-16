@@ -96,7 +96,7 @@ For each neuron $j$ the output $x$ can be derived as shown in
 \ref{eq:weightedoutput}.
 
 \begin{equation} \label{eq:weightedoutput}
-  x_j = \sigma(u_j) = \sum_{i=1}^n w_{i,j} x_i
+  x_j = \sigma(u_j) = \sigma(\sum_{i=1}^n w_{i,j} x_i)
 \end{equation}
 
 \subsection{Third generation neural networks}
@@ -194,6 +194,7 @@ By controlling the resistance (or leak), it is possible to
 control the time with which previous voltages are 'forgotten'
 \cite{Eliasmith2004}.
 
+Todo: present 3rd gen NN as a function of previous inputs and weights
 % TODO: Present how spike rates are represented
 % TODO: Write about noise
 %\subsubsection{Neuron spike rates}
@@ -272,17 +273,19 @@ length is equal to the number of neurons in the first layer.
 Conversely, an `output' is a stimulus vector whose length
 is controlled by the number of output neurons.
 A \gls{NN} can then be understood as a function $f$ that 
-maps an input vector to an output vector \cite{Russel2007}
+maps an input vector to an output vector \cite{Russel2007}.
 
 \section{Learning} \index{learning}
-Within the cognitive sciences learning within an \texit{agent} \gls{agent}
+Within the cognitive sciences learning in the context of an \texit{agent} \gls{agent}
 refers to ``the process of gaining
 information through observation'' \cite{sep:learning-formal}.
-Following the above abstraction of neural networks, ``learning'' in this 
-thesis \index{learning}
-simply refers to the development of consistent patterns, given the same input.
-These patterns can be understood as general functions or rules, which
-may, of course, prove to be incorrect \cite[p. 704.]{Russel2007}. 
+Following the above abstraction of neural networks as computations over vectors,
+``learning'' in this thesis \index{learning}
+refers to the development of consistent patterns, given the same input.
+Within the \gls{ml} litterature, this is commonly referred to as 
+\textit{predicting} \index{predict} the expected output.
+In practice this is expressed in terms of general functions or
+\textit{rules} \index{rule} in a network \cite[p. 704.]{Russel2007}.
 
 Within machine learning \gls{ml} three types of
 learning exists: supervised, \index{learning!supervised}
@@ -314,11 +317,48 @@ The process of learning can either be \textit{inductive}
 or \textit{deductive} \index{learning!deduction} \cite[p. 704]{Russel2007}.
 The latter requires a basis in rule-based systems from which new knowledge can
 be deduced, while the former requires a measurement of success \cite[p. 705]{Russel2007}.
+Such a measurement is typically referred to as the \textit{error} or \textit{loss}
+function\index{loss function}\index{error function|see {loss function}}
+because it shows how much the prediction deviated from the expectation (success)
+\cite{Russel2007}.
 
-\subsubsection{Learning in second generation \gls{NN}}
+Learning within neural networks have shown to be possible within all three
+types of learning \cite{Schmidhubner2014, Russel2007}, but deduction is rarely
+seen in the \gls{NN} literature, because it is cumbersome to express neural
+networks through logic transformations 
+%TODO: Check citation; write about Eliasmith and DTU logics guy
+Because of its simplicity and widespread use, this thesis will focus on supervised
+inductive learning.
+
+\subsection{Errors in learning}
+It is worth noting that \gls{NN}s may \textit{learn} \index{learn}
+rules \index{rule} that are not optimal \cite{Russel2007}.
+This can happen in one of two ways: either the
+network is structurally incapable of learning the domain, 
+or the learned rule is incorrect \cite{Russel2007, Eliasmith2015}.
+
+A \gls{NN} is limited in complexity by its number of nodes,
+because one neuron is only capable of describing a binary
+outcome \cite{Dayan2001, Russel2007}.
+This is sufficient to model a dichotomy, but insufficient
+to explain, say, numbers bigger than 1.
+Such a structural limit cannot be solved by any other means
+than augmenting the network \cite{Russel2007}.
+
+Provided that the network is sufficiently complex, the 
+learned rules can still be incorrect.
+In inductive processes this is due to a misrepresentation
+of data, where the data on which the network bases its
+predictions, fails to capture the expectations of the
+trainer \cite{Russel2007}.
+To avoid this, it is customary to only train the network
+on a part of the available data, only to test it on 
+the remaining data \cite{Russel2007, Schmidhuber2014}.
+
+\subsection{Learning in second generation \gls{NN}}
 
 
-%\subsubsection{Backpropagation}
+%\subsection{Backpropagation}
 
 \subsubsection{Auto-differentiation}
 % TODO: Write about autodiff
