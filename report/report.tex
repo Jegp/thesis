@@ -154,9 +154,9 @@
 
 \frontmatter
 
-\begin{abstract}
-TODO
-\end{abstract}
+%\begin{abstract}
+%TODO
+%\end{abstract}
 
 \pagebreak
 
@@ -164,15 +164,19 @@ TODO
 \tableofcontents*
 \newpage
 
-\mainmatter
+\begin{comment}
 
-\chapter{How to read this thesis}
-TODO
+\section{How to read this thesis}
+\section{Acknowledgements}
+Kerem for providing internet.
+\end{comment}
+
+\mainmatter
 \chapter{Introduction} \label{sec:intro}
   \subfile{chapters/introduction}
 
-%\chapter{Theory} \label{sec:theory}
-%  \subfile{chapters/theory}
+\chapter{Theory} \label{sec:theory}
+  \subfile{chapters/theory}
 
 \chapter{A DSL for neural networks modelling} \label{sec:volr}
   \subfile{chapters/dsl}
