@@ -326,38 +326,40 @@ because it shows how much the prediction deviated from the expectation (success)
 Learning within neural networks have shown to be possible within all three
 types of learning \cite{Schmidhuber2014, Russel2007}, but deduction is rarely
 seen in the \gls{NN} literature, because it is cumbersome to express neural
-networks through logic transformations 
+networks through logic transformations \cite{Pearl2018}.
 %TODO: Check citation; write about Eliasmith and DTU logics guy
 Because of its simplicity and widespread use, this thesis will focus on supervised
 inductive learning.
 
 \subsection{Errors in learning}
-It is worth noting that \gls{NN}s may \textit{learn} \index{learn}
+It is worth noting that \gls{NN}s may learn \index{learn}
 rules \index{rule} that are not optimal \cite{Russel2007}.
 This can happen in one of two ways: either the
 network is structurally incapable of learning the domain, 
 or the learned rule is incorrect \cite{Russel2007, Eliasmith2015}.
 
 A \gls{NN} is limited in complexity by its number of nodes,
-because one neuron is only capable of describing a binary
+because one neuron is only capable of describing a limited
 outcome \cite{Dayan2001, Russel2007}.
-This is sufficient to model a dichotomy, but insufficient
-to explain, say, numbers bigger than 1.
+This is sufficient to model a linear correlation, but insufficient
+to explain, complex dependencies by itself.
 Such a structural limit cannot be solved by any other means
 than augmenting the network \cite{Russel2007}.
 
 Provided that the network is sufficiently complex, the 
-learned rules can still be incorrect.
-In inductive processes this is due to a misrepresentation
-of data, where the data on which the network bases its
-predictions, fails to capture the expectations of the
-trainer \cite{Russel2007}.
+learned rules can still be incorrect if the data, on which
+the network bases its predictions, fails to capture the 
+expectations of the trainer.
+In other words the data can fail to represent the problem 
+correctly \cite{Russel2007}.
 To avoid this, it is customary to only train the network
 on a part of the available data, only to test it on 
 the remaining data \cite{Russel2007, Schmidhuber2014}.
+The limits between data for training and data for testing
+are not agreed upon, but a 80\%/20\% split seems to be
+the default \cite{Russel2007, Schmidhuber2014}.
 
 \subsection{Backpropagation}
-
 
 \subsection{Learning in second generation \gls{NN}}
 \subsection{Learning in third generation \gls{NN}}
@@ -372,8 +374,5 @@ the remaining data \cite{Russel2007, Schmidhuber2014}.
 \subsection{REF model} \label{sec:ref}
 
 \section{Neuromorphic computing}
-\subsection{Spikig neural networks} \label{sec:SNN}
-\subsection{Learning in SNN}
-\subsection{Neuromorphic platforms}
 
 \end{document}
