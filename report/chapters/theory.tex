@@ -3,9 +3,9 @@
 
 This first chapter presents the theoretical foundation for the thesis.
 The theory is grouped in four categories: \gls{NN}s, learning,
-the cognitive theory of Reorganising Elementary Functions
-(\gls{REF}) and finally neuromorphic hardware
-\index{neuromorphic}.
+neuromorphic hardware, \index{neuromorphic} and finally
+the cognitive theory of the Reorganisation of Elementary Functions
+(\gls{REF}).
 
 \section{Neural networks} \label{sec:nn}
 \Gls{NN}s is a broad term that originates in the neuronal models from
@@ -268,20 +268,23 @@ stimulated indirectly \cite{Russel2007}.
 
 In this representation an `input' is a stimulus vector, whose
 length is equal to the number of neurons in the first layer.
-Conversely, an `output' is a stimulus vector whose length
+Conversely, an `output' is a vector whose length
 is controlled by the number of output neurons.
 A \gls{NN} can then be understood as a function $f$ that 
-maps an input vector to an output vector \cite{Russel2007}.
+maps an input vector to an output vector of arbitrary size
+\cite{Russel2007}.
 
-\section{Learning} \index{learning}
-Within the cognitive sciences learning in the context of an \texit{agent} \gls{agent}
+\section{Learning} \index{learning} \label{sec:learnin}
+Defining an \gls{agent} as a system that can act on previous knowledge
+\cite{Russel2007}, learning in the context of an \gls{agent}
 refers to ``the process of gaining
 information through observation'' \cite{sep:learning-formal}.
+
 Following the above abstraction of neural networks as computations over vectors,
-``learning'' in this thesis \index{learning}
-refers to the development of consistent patterns, given the same input.
-Within the \gls{ml} litterature, this is commonly referred to as 
-\textit{predicting} \index{predict} the expected output.
+``learning'' \index{learning} can be understood as the development of consistent
+patterns, given the same input.
+Within the \gls{ml} literature, this is commonly referred to as 
+\textit{prediction}. \index{predict}
 In practice this is expressed in terms of general functions or
 \textit{rules} \index{rule} in a network \cite[p. 704.]{Russel2007}.
 
@@ -321,7 +324,7 @@ because it shows how much the prediction deviated from the expectation (success)
 \cite{Russel2007}.
 
 Learning within neural networks have shown to be possible within all three
-types of learning \cite{Schmidhubner2014, Russel2007}, but deduction is rarely
+types of learning \cite{Schmidhuber2014, Russel2007}, but deduction is rarely
 seen in the \gls{NN} literature, because it is cumbersome to express neural
 networks through logic transformations 
 %TODO: Check citation; write about Eliasmith and DTU logics guy
@@ -354,6 +357,7 @@ on a part of the available data, only to test it on
 the remaining data \cite{Russel2007, Schmidhuber2014}.
 
 \subsection{Backpropagation}
+
 
 \subsection{Learning in second generation \gls{NN}}
 \subsection{Learning in third generation \gls{NN}}
