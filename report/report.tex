@@ -20,8 +20,11 @@
 
 % Listings
 \usepackage{listings}
+\usepackage{color}
 \lstset{
-  basicstyle=\ttfamily,
+  basicstyle=\small \ttfamily,
+  numbers=left,
+  frame=tb,
   mathescape
 }
 
@@ -178,7 +181,7 @@ Kerem for providing internet.
 \chapter{Theory} \label{sec:theory}
   \subfile{chapters/theory}
 
-\chapter{A DSL for neural networks modelling} \label{sec:volr}
+\chapter{A DSL for neural networks modelling} \label{sec:dsl}
   \subfile{chapters/dsl}
 
 \chapter{Experiment} \label{sec:experiment}
