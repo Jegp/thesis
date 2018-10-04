@@ -220,6 +220,41 @@ $\sim1.3 \cdot 10^5$ synapses, but with fixed synaptic weights
 %run on SpinNaker and BrainScales.
 
 \section{DSL requirements} \label{sec:requirements}
+This section sketches four functional requirements for a \gls{DSL} that 
+fulfils the necessary conditions to allow testing the thesis hypothesis.
+The requirements steers the specification as defined in section 
+\ref{ref:volr} and later the implementation details in section
+\ref{ref:implementation}.
+
+\paragraph{1. Semantic equality}
+The overarching goal of the \gls{DSL} is to allow the translation 
+of \gls{NN} descriptions into semantically similar backend constructs.
+In other words a network described in the \gls{DSL} should carry
+the same semantic meaning when translated to second or third generation
+implementations. 
+
+Because of the diverse and incompatible this is a non-trivial requirement,
+but a necessity to validate models across \gls{NN} paradigms.
+This requirement is approached empirically, by illustrating examples in
+both generations and validate whether they achieved the desired degree
+of external validity.
+
+\paragraph{2. DSL translation}
+A second requirement is the translation of the \gls{DSL} into
+one second generation model, one simulated third generation model
+and one neuromorphic third generation model.
+
+\paragraph{3. Learning}
+A further requirement is that the \gls{DSL} support a form of
+learning, to illustrate the expected theoretical adaptation.
+The \gls{DSL} solves this by implementing supervised 
+learning through backpropagation \index{backpropagation} for each
+of the three backends.
+
+\paragraph{4. Consistent}
+As a final functional requirement the \gls{DSL} is designed to ensure
+consistency and disallow any networks that are not well-formed at
+compile time.
 
 % Both types of network are architecturally similar, and both are conceived from
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
