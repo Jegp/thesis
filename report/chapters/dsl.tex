@@ -114,57 +114,90 @@ The landscape for third generation software is less homogeneous, first and
 foremost because the field is still young \cite{Maass1997}.
 Secondly there are two different approaches to the evaluation of \gls{SNN}s:
 through simulation on general purpose hardware or specialised analogue
-hardware \cite{Maass1997, Davison2009, Albada2018}.
+(neuromorphic\index{neuromorphic}) hardware \cite{Maass1997, Davison2009, Albada2018}.
 
 For each platform---digital or otherwise---a complete programming environment
 is developed from scratch, because of the degree of specialisation
 \cite{Walter2015, Lin2018}.
-Two attempts exist to converge the platform differences into one single API:
-PyNN \cite{Davison2009} and Nengo \cite{Eliasmith2015}.
+This section covers the most important technical details of
+the environments.
 
-PyNN approaches this by offering a ``simulator-independent language''
+\subsubsection{\Gls{SNN} simulators}
+Based on the review of \textcite{Blundell2018} this paper will discuss
+the following third generation \gls{SNN} simulators: PyNN \cite{Davison2009},
+NEST \cite{Gewaltig2007}, NEURON \cite{Carnevale2007},
+Brian \cite{Goodman2013} and Nengo \cite{Eliasmith2015}.
+
+PyNN is a ``simulator-independent language''
 \cite{PyNN2018} that compiled to both simulated and
 accelerated architectures \cite{Davison2009}.
-In theory the PyNN model is sufficiently general to target any third generation
-backend, but has chosen to focus on projects associated with the
-\gls{HBP}: NEST, BrainScaleS and SpiNNaker.
-\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
-This is partly due to the heterogeneous architectures of the neuromorphic
-platforms, but also because projects such as PyNN faces a difficult
-trade-off: ease-of-use versus specificity \cite{PyNN2018}.
+Technically PyNN is not a simulator but acts as interface to any third generation
+backend, but currently supports Brian, NEST, BrainScaleS and SpiNNaker.
+\index{Brian}\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
+PyNN is more than 10 years old, \cite{Davison2009} older
+than most neuromorphic chips. 
+Their \gls{API}s were designed a priori and lacked a number of crucial
+elements\footnote{In particular in relation to the mapping of neuron population
+onto the physical chip, see \ref{sec:Cairo}.}, which the hardware designers sought
+to resolve by augmenting the interface \cite{Pfeil2013, PyNN2018}.
+The result is a fragmented environment where basic morphologies are supported, 
+but where each experiment needs retrofitting to correctly evaluate on all
+backends \cite{PyNN2018}.
 
+Nengo is a neural simulation environment for large-scale neural models, with
+a focus on graphical modelling \cite{Eliasmith2015}. 
 The Nengo project bases itself on the Neural Engineering Framework (NEF)
 \index{Neural Engineering Framework} that offers a concise language for
 describing third generation simulations \cite{Bekolay2014}, and that
 offers limited rendering of traditional computations into approximated
-\gls{NN} structures\footnote{The most common example is the XOR boolean 
-operation, which can be approximated in neural systems, as seen in figure
-\ref{fig:XOR}.}
-\cite{Eliasmith2004, Eliasmith2015}.
-Nengo however does not offer a single language like PyNN, meaning
+\gls{NN} structures \cite{Eliasmith2004, Eliasmith2015}.
+Nengo supports a wide range a backends---non-spiking networks through Tensorflow,
+simulated spiking networks through its custom \gls{OpenCL} engine and 
+hardware accelerated networks through the neuromorphic platform SpiNNaker---
+but have a limited repertoire of models compared to other simulators
+\cite{Nengo2018}.
+
+\lstset{caption={A simple LIF MNIST population network in Nengo.}}
+\begin{lstlisting}
+pop_1 = nengo.Ensemble(nengo.LIF(100), 2)
+pop_2 = nengo.Ensemble(nengo.LIF(10), 1)
+nengo.Connection(pop_1, pop_2)
+\end{lstlisting} \label{code:nengo}
+
+\lstset{caption={A simple LIF MNIST network in PyNN.}}
+\begin{lstlisting}
+pop_1 = nest.Create('iaf_exp_cond', 100)
+pop_2 = nest.Create('iaf_exp_cond', 100)
+nest.Connect(pop_1, pop_2, 'all_to_all', syn = {'weight': 20})
+\end{lstlisting} \label{code:nengo}
+
+PyNN and Nengo are both examples of
+attempts to converge platform differences into one single \gls{API}.
+Nengo also offers an approximated model that can be evaluated in Tensorflow
+\cite{Hunsberger2015}, but it does not have a language like PyNN, meaning
 that the models written for one simulator cannot be interpreted by other
 backends \cite{Nengo2018}.
 
-\subsubsection{\Gls{SNN} simulators}
-Based on the review of \textcite{Blundell2018} this paper will discuss
-the following third generation \gls{SNN} simulators:
-NEST \cite{Gewaltig2007}, NEURON \cite{Carnevale2007},
-Brian \cite{Goodman2013} and Nengo \cite{Eliasmith2015}.
-
-NEST focuses on neurons that does not extend in space, \index{neuron!point}
+The NEST simulator focuses on neurons that do not extend in space, \index{neuron!point}
 but also supports compartmentalised models \cite{Gewaltig2007}.
 It focuses on the ``dynamics, size and structure rather than on the detailed
-morphological and biophysical properties of individual neurons'' \cite{Gewaltig2007}.
+morphological and biophysical properties of individual neurons''
+\cite{Gewaltig2007}, and has been enriched by a large number of neuron models
+and optimisations \cite{Blundell2018}.
 NEURON targets complex and detailed simulations of multi-chamber models, and
 attempts to model all aspects of the biophysical properties \cite{Carnevale2007}.
 Brian strikes somewhere between NEST and NEURON because it allows users to
 inject their own models through custom equations in plain text \cite{Goodman2013}.
-Nengo is a neural simulation environment for large-scale neural models, with
-a focus on graphical modelling \cite{Eliasmith2015}. 
-Nengo support a wide range a backends: non-spiking networks through Tensorflow,
-simulated spiking networks through its custom \gls{OpenCL} engine and 
-hardware accelerated networks through the neuromorphic platform SpiNNaker
-\cite{Nengo2018}.
+
+\textcite{Rueckauer2017} implemented a ``Spiking neural network conversion
+toolbox'' that converts second generation \gls{NN}s into
+spiking \gls{NN}s.
+They approach this by creating non-leaky integrate-and-fire
+\index{LIF} neurons that estimates biased spiking neural activities through
+fixed rate Poisson\index{Poisson distribution} generators
+\cite{Rueckauer2017}.
+While the implementation approximates neuron models it is unclear
+how it compares to biological networks.
 
 \subsubsection{Neuromorphic hardware}
 Based on the review of \textcite{Walter2015} and the work from
@@ -226,7 +259,7 @@ The requirements steers the specification as defined in section
 \ref{ref:volr} and later the implementation details in section
 \ref{ref:implementation}.
 
-\paragraph{1. Semantic equality}
+\paragraph{1. Semantic consistency}
 The overarching goal of the \gls{DSL} is to allow the translation 
 of \gls{NN} descriptions into semantically similar backend constructs.
 In other words a network described in the \gls{DSL} should carry
@@ -239,7 +272,7 @@ This requirement is approached empirically, by illustrating examples in
 both generations and validate whether they achieved the desired degree
 of external validity.
 
-\paragraph{2. DSL translation}
+\paragraph{2. Translation to second and third generation}
 A second requirement is the translation of the \gls{DSL} into
 one second generation model, one simulated third generation model
 and one neuromorphic third generation model.
@@ -251,37 +284,24 @@ The \gls{DSL} solves this by implementing supervised
 learning through backpropagation \index{backpropagation} for each
 of the three backends.
 
-\paragraph{4. Consistent}
+\paragraph{4. Well-typed}
 As a final functional requirement the \gls{DSL} is designed to ensure
 consistency and disallow any networks that are not well-formed at
 compile time.
+\\[0.4cm]
+\noindent
+None of the above mentioned environments fulfil all four requirements.
+Models built in Nengo and PyNN\index{Nengo}\index{PyNN} can be evaluated
+in both second and third generation environments, but Nengo does not 
+offer consistent semantics between the backends and PyNN only allows
+for a partial translation into the neuromorphic platforms.
+However, PyNN does support a consistent \gls{API} to describe models that, at
+least morphologically, translates to both simulated and accelerated 
+backends.
 
 % Both types of network are architecturally similar, and both are conceived from
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
 % The implementations, however, vary greatly.
-
-% To ensure internal and external validity in and between the two network types,
-% it is desirable that the models are as closely related from a theoretical and
-% practical perspective as possible.
-% Additionally, to test the hypothesis, it is required that both the artificial
-% and spiking models can be simulated on regular machine architecture, while
-% the spiking model requires a neuromorphic hardware platform.
-
-% An optimal approach would be to find a tool that leverages the similarities
-% of the network types, while integrating with the diverse simulated or emulated
-% targets.
-% That is, an abstract model of neural networks that can translate into
-% heterogeneous back-ends, while retaining a high degree of inter-model validity.
-
-% A number of general frameworks for artificial neural networks
-% exist\footnote{
-%   Among others, see \autocite{ONNX2018}, \autocite{PyTorch2018}, \autocite{TensorFlow2018},
-%   \autocite{Keras2018} and DyNet \autocite{Neubig2017}.
-% }, but none of them extend to the spiking domain.
-% Conversely a number of choices exist for neuromorphic modelling\footnote{
-%   %TODO: Find sources on internal IBM/Intel stuff
-% }, but they exclusively evaluate to neuromorphic or spiking neural network
-% backends \autocite{Jordan2018}.
 
 \section{DSL specification} \label{ref:volr}
 \include{chapters/volr/volr}
