@@ -157,22 +157,28 @@ hardware accelerated networks through the neuromorphic platform SpiNNaker---
 but have a limited repertoire of models compared to other simulators
 \cite{Nengo2018}.
 
-\lstset{caption={A simple LIF MNIST population network in Nengo.}}
+\begin{minipage}{\linewidth}
+\lstset{caption={A simple LIF MNIST population network in Nengo.}, label=code:Nengo}
 \begin{lstlisting}
 pop_1 = nengo.Ensemble(nengo.LIF(100), 2)
-pop_2 = nengo.Ensemble(nengo.LIF(10), 1)
+pop_2 = nengo.Ensemble(nengo.LIF(10),  1)
 nengo.Connection(pop_1, pop_2)
-\end{lstlisting} \label{code:nengo}
+\end{lstlisting}
+\end{minipage}
 
-\lstset{caption={A simple LIF MNIST network in PyNN.}}
+\begin{minipage}{\linewidth}
+\lstset{caption={A simple LIF MNIST network in PyNN.}, label=code:PyNN}
 \begin{lstlisting}
 pop_1 = nest.Create('iaf_exp_cond', 100)
-pop_2 = nest.Create('iaf_exp_cond', 100)
-nest.Connect(pop_1, pop_2, 'all_to_all', syn = {'weight': 20})
-\end{lstlisting} \label{code:nengo}
+pop_2 = nest.Create('iaf_exp_cond',  10)
+nest.Connect(pop_1, pop_2, 'all_to_all')
+\end{lstlisting} 
+\end{minipage}
 
 PyNN and Nengo are both examples of
-attempts to converge platform differences into one single \gls{API}.
+attempts to converge platform differences into one single \gls{API}, and
+offer high-level description of networks with support for detailed 
+configuration (see listings \ref{code:Nengo} and \ref{code:PyNN}).
 Nengo also offers an approximated model that can be evaluated in Tensorflow
 \cite{Hunsberger2015}, but it does not have a language like PyNN, meaning
 that the models written for one simulator cannot be interpreted by other
@@ -206,7 +212,7 @@ categories: either as digital interpretations of neural components,
 or as analogue emulations of neural tissue.
 
 Digital neuromorphic chips digitises the neural signals and mimics neuron
-behaviour either through the regular \gls{von Neumann} architecture, or
+behaviour either through the regular \gls{vonNeumann}, or
 via custom digital components \cite{Walter2015}.
 SpiNNaker is an example of the former, where a number of ARM \gls{ARM}
 processors that are equipped with controllers for handling timers and
@@ -256,8 +262,8 @@ $\sim1.3 \cdot 10^5$ synapses, but with fixed synaptic weights
 This section sketches four functional requirements for a \gls{DSL} that 
 fulfils the necessary conditions to allow testing the thesis hypothesis.
 The requirements steers the specification as defined in section 
-\ref{ref:volr} and later the implementation details in section
-\ref{ref:implementation}.
+\ref{sec:volr} and later the implementation details in section
+\ref{sec:implementation}.
 
 \paragraph{1. Semantic consistency}
 The overarching goal of the \gls{DSL} is to allow the translation 
@@ -303,9 +309,9 @@ backends.
 % the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
 % The implementations, however, vary greatly.
 
-\section{DSL specification} \label{ref:volr}
-\include{chapters/volr/volr}
+\section{DSL specification} \label{sec:volr}
+\input{chapters/volr/volr}
 
-\section{DSL implementation} \label{ref:implementation}
-\include{chapters/volr/implementation}
+\section{DSL implementation} \label{sec:implementation}
+\input{chapters/volr/implementation}
 \end{document}

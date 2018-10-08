@@ -12,45 +12,17 @@
 \stepcounter{ProofCounter}
 \begin{minipage}{0.5\textwidth}
   \begin{prooftree}
-    \AxiomC{}
-    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash n : \mathbf{float}$}
-  \end{prooftree}
-\end{minipage}
-\vskip10pt
-\stepcounter{ProofCounter}
-\begin{minipage}{0.5\textwidth}
-  \begin{prooftree}
-    \AxiomC{}
-    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash \mathbf{dense}\ l\ r : \mathbf{net}\ l\ r$}
-  \end{prooftree}
-\end{minipage}
-\stepcounter{ProofCounter}
-\begin{minipage}{0.5\textwidth}
-  \begin{prooftree}
-    \AxiomC{}
-    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash \mathbf{sparse}\ l\ r : \mathbf{net}\ l\ r$}
-  \end{prooftree}
-\end{minipage}
-\vskip10pt
-\begin{minipage}{0.5\textwidth}
-  \stepcounter{ProofCounter}
-  \begin{prooftree}
     \AxiomC{$\Gamma (x) = \tau$}
     \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
     \UnaryInfC{$\Gamma \vdash x : \tau$}
   \end{prooftree}
 \end{minipage}
-\begin{minipage}{0.5\textwidth}
-  \stepcounter{ProofCounter}
-  \begin{prooftree}
-    \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
-    \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-    \UnaryInfC{$\Gamma \vdash \neg e : \textbf{net}\ l\ r$}
-  \end{prooftree}
-\end{minipage}
+\stepcounter{ProofCounter}
+\begin{prooftree}
+  \AxiomC{}
+  \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
+  \UnaryInfC{$\Gamma \vdash \mathbf{dense}\ l\ r : \mathbf{net}\ l\ r$}
+\end{prooftree}
 \stepcounter{ProofCounter}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ m$}
@@ -61,9 +33,9 @@
 \stepcounter{ProofCounter}
 \begin{prooftree}
   \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
-  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ l'\ r'$}
+  \AxiomC{$\Gamma \vdash e' : \textbf{net}\ l\ r'$}
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \BinaryInfC{$\Gamma \vdash e\ \ominus\ e' : \textbf{net}\ (l + l')\ (r + r')$}
+  \BinaryInfC{$\Gamma \vdash e\ \ominus\ e' : \textbf{net}\ l\ (r + r')$}
 \end{prooftree}
 \stepcounter{ProofCounter}
 \begin{prooftree}

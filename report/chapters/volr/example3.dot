@@ -1,14 +1,13 @@
 digraph example3 {
     rankdir = "LR";
-    ratio=0.2;
+    ratio=0.3;
     graph [margin=0];
     edge [arrowsize=1, fontsize=24];
     node [shape=circle, width=0.07, fontsize=18];
 
-    s [label="256"]
+    s [label="", color="white"]
     o [color=white, label=" "]
-    s -> "256" [label="Input"]
-    "256" -> "10"
-    "10" -> o [label="Output"]
+    "100" -> "50"
+    "50" -> "10"
 
 }

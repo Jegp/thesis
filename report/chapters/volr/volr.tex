@@ -1,217 +1,67 @@
-% A domain-specific language (DSL) called Volr was recently presented to
-% construct reproducible \gls{NN} experiments
-% \autocite{Pedersen2018:volr}.
-% The DSL allows the modelling of sufficiently complicated models for
-% the purpose of this thesis, while providing a set of tools that permits the
-% model be sent and evaluated on both \gls{ANN} and \gls{SNN} targets.
+This sections presents the \gls{DSL} Volr. \index{Volr}
+The main purpose of Volr is to define clear and reproducible
+experiments whose semantics are retained regardless of
+the runtime environment.
+The specification in its current form is relatively simple, but sufficiently 
+complicated for the purpose of this thesis.
+It focuses solely on the topology of networks, thus
+separating the network description from any generation-specific properties
+of neurons or neuron populations.
 
-% Some work was required to fully support learning mechanisms on
-% neuromorphic hardware, and the DSL, as well as the tooling around it, has been
-% extended for the purpose of this thesis (see appendix \ref{appendix:volr})
-% The following section describes the grammar and anatomy of Volr in detail.
+The first requirement is achieved through an unambiguous syntax inspired
+by the lamdba calculus \cite{Pierce2002}.
+Figure \ref{fig:volr-expr} shows the BNF notation for expressions, values and types
+in Volr. 
+Figure \ref{fig:volr-rules} lists evaluation rules for the correct
+interpretation of the expressions.
 
-% Volr is a declarative DSL designed to model \gls{NN} that seeks a
-% trade-off between complete, but verbose, descriptions of small
-% networks and more general designs of large and complex networks.
-% By separating the network topologies from the detailed physiological properties
-% of each neuron or neuron population, the language aims to allow simple
-% experiments with few, concise declarations, as well as larger and more
-% complicated experiments while retaining readability.
-
-% Figure \ref{fig:volr-expr} shows the BNF form of expressions, values and types
-% in Volr, while figure \ref{fig:volr-rules} lists evaluation rules to apply
-% when evaluating the expressions.
-% Finally the \ref{fig:volr-examples} shows an example network that solves
-% a rudimentary maze task.
-% Expressions, evaluation rules and examples
-\pagebreak
 \input{chapters/volr/expr.tex}
 \input{chapters/volr/evaluation.tex}
+
+The constant expression $n$ is simply an integer that evaluates to the type 
+\texttt{\textbf{int}} ($e1$). 
+Similarly to the lambda calculus, the \texttt{\textbf{let}} binding binds
+the string constant $x$ to the expression $e$ in an encapsulated
+environment $e'$ \cite{Pierce2002}.
+That constant can later be referenced in the $e'$ expression 
+through the string $x$ as shown in $e2$.
+
+The \texttt{\textbf{dense}} expression describes a network of two
+populations, and is the most basic concept in the \gls{DSL}.
+Notice the distinction between a neural network \textit{layer}
+such as \texttt{\textbf{dense}} and a population. 
+In a \texttt{\textbf{dense}} network layer, every neuron from the
+first population is connected to every neuron in the second population
+(\textit{densely} or all-to-all).
+The two parameters $n$ and $m$ defines the number of neurons in the first and 
+second layer respectively, and evaluates to the \texttt{\textbf{net}}
+fundamental network type and value, as shown in $e3$. 
+Considering how each neuron is a type of classifier, these numbers
+illustrate the \textit{dimensionality} of the network, such that the number of
+dimensions in the input is truncated (or expanded) to classify the
+dimensionality of the output layer.
+
+The $\obar$ (sequential) operator binds two networks sequentially,
+such that the output layer of the first network becomes the input layer 
+of the second network.
+The two networks $e$ and $e'$ will share one of the neuron populations, why
+the output size of the first layer is required to be equal to the input
+size of the second layer ($e4$).
+
+The $\ominus$ (parallel) operator parallelises two networks by duplicating
+the input from the previous layer and merging the outputs into a single
+layer ($e5$).
+The input feeds into both $e$ and $e'$, such that the input dimension of
+the network must be shared by the two layers ($l$). 
+The output from the network is stacked such that each neuron from each
+population corresponds to one output neuron ($e_{out} + e'_{out}$).
+This is done to preserve the meaning of each parallel population.
+
+Taken together these constructs can express simple neural networks and
+the properties of their connections. 
+Figure \ref{fig:volr-examples} shows a number of example networks
+that visualises four examples of networks. 
+
 \input{chapters/volr/example.tex}
 
-% \subsubsection{Block grammar} \label{sec:volr-block}
-% The sub-components are constructed using the same declarative \textit{block}
-% structure shown in figure \ref{fig:volr-ebnf-block}.
-% The block defines its \textit{type} (\texttt{stimulus}, \texttt{population},
-% \texttt{response} or \texttt{target}), an optional \textit{name} and lastly
-% some block content.
-
-% The content varies for the different block types, but is restricted to contain
-% a number of either key-value pairs (\texttt{field}s) or relations to other
-% blocks (\texttt{connection}s).
-% Fields are interpreted by the respective targets (see section
-% \ref{sec:volr-targets}) and connections are only allowed for
-% \texttt{population}s and \texttt{responses}.
-
-% \subsubsection{Connection-set algebra grammar} \label{sec:volr-csa}
-% Connections between blocks are implemented as a subset of the \gls{CSA}
-% introduced in section \ref{sec:CSA} \autocite{Djurfeldt2012}.
-% Most notably, the notion of \textit{blocks} and \textit{geometric distance} have
-% been omitted\footnote{Neither blocks nor distances are required for the
-%   experiment in the thesis. It is, however, a necessary element to conduct
-%   further experiments, since biological \gls{SNN} are highly influenced by
-%   spatial arrangements \autocite{dayan2001}.
-% }.
-
-% The grammar is presented in figure \ref{fig:volr-ebnf-csa}, and aims to provide
-% a flexible way to describe complex connectivity patterns in text.
-% The present grammar can be viewed as a basic algebraic tool for set operations.
-% Describing full connectivity between two populations, such that all neurons
-% in the first population is connected with all neurons in the second population,
-% can simply be expressed as `\texttt{all}'.
-% Connecting one neuron to one other neuron between two populations are described
-% as `\texttt{one}', while random connectivity are described with a probability
-% of, say 0.5: `\texttt{random 0.5}'\footnote{
-%   This expresses a Bernouilli trial with the given probability
-%   \autocite{Djurfeldt2012}.
-% }
-% As a final example, every neuron in a population connected to every neuron in
-% that same population, with the exception of identical neurons, can be described
-% as `\texttt{all - self}'.
-%
-% \begin{figure}
-%   \begin{center}
-%     \begin{minipage}{0.8\linewidth}
-%       \begin{grammar}
-%         <connection> ::= 'from' , <block-name> , { <csa-expr> } ;
-%
-%         <csa-expr> ::= <csa-term> | <csa-expr> , <csa-operator> , <csa-expr> ;
-%
-%         <csa-term> ::= 'all' | 'one' | 'self' | 'random' , <number> ;
-%
-%         <csa-operator> ::= '+' | '-' | '*' ;
-%       \end{grammar}
-%     \end{minipage}
-%   \end{center}
-%   \caption{BNF of the connection grammar, describing relations between
-%     blocks through \gls{CSA}.}
-%   \label{fig:volr-bnf-csa}
-% \end{figure}
-
-% \subsubsection{Experiment stimuli}
-% The stimuli describes the ``input'' of the model.
-% Such input is defined either as an array of elements directly in the DSL
-% or as a reference to a file.
-
-% \subsubsection{Experiment populations}
-% The populations describe the topology of the neural network itself.
-% As with the stimuli, the populations are built around a block structure that
-% contains a number of sub-expressions.
-
-% The \texttt{connection} defines the source stimulus for the population,
-% i.e. the population \textit{from} which action-potentials will be forwarded.
-% A population can receive stimulus from more than one source.
-% The connections are modelled as per the \gls{CSA} described in section
-% \ref{sec:volr-csa}.
-
-% % TODO: Describe and invent archetypes... or not?
-
-% \subsubsection{Experiment responses}
-% The responses are the ``output'' of the model to be recorded, and can be
-% considered as the outcome of the network for training purposes.
-% The response block only contains an optional specification of a location for
-% the experiment output data.
-
-% \subsubsection{Experiment targets}
-% The final element in a Volr experiment is its targets.
-% A target describe a destination environments on which to run the experiment.
-% These are described in detail in section \ref{sec:volr-targets}, and are
-% referenced in the grammar as simple strings.
-
-% \subsection{Volr semantics}
-% In practice a network is built by describing a graph.
-% The nodes in the graph consist of \texttt{populations} of neurons and the edges
-% are connection-set matrices to other populations \autocite{Djurfeldt2012}.
-% % TODO: Describe CSA
-% \texttt{Populations} can consist of any positive number of neurons and is
-% required to have at least one connection.
-% Connections can be recursive, resulting in a potentially cyclic graph.
-% Both the connections and the \texttt{populations} can be annotated with features
-% such as connection weight and neuron parameters (see \nameref{appendix:volr}).
-% The parameters are treated differently depending on the experiment target (see
-% sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
-
-
-% \section{Neural network simulation targets in Volr} \label{sec:volr-targets}
-
-% % TODO :Write how fields are interpreted
-% % TODO: Write how input is interpreted
-
-% Volr exploits the structural similarities between \gls{ANN} and \gls{SNN} to
-% translate the model to both spiking and artificial network platforms (back-ends).
-
-% In the remainder of the chapter the three emulation back-ends, shown in figure
-% \ref{fig:volr}, are described:
-% a machine learning target for \gls{ANN}s and a neuron simulation target, as well
-% as a neuromorphic hardware target, for \gls{SNN}s.
-
-% \begin{figure}
-%   \centering
-%   \includegraphics[width=0.6\textwidth]{images/volr-architecture.png}
-%   \caption{The translation from the Volr DSL to \gls{ANN} simulations in OpenCL via
-%     \gls{Futhark} and to \gls{SNN} simulations on \gls{NEST} and \gls{BrainScaleS}
-%     via the \gls{Myelin} middleware.
-%   }
-%   \label{fig:volr}
-% \end{figure}
-
-% \subsection{Translation to Futhark} \label{sec:volr-futhark}
-% Futhark is a functional data-parallel programming language \autocite{Henriksen2017}.
-% It offers a number of compilation targets such as \gls{OpenCL}, which is
-% particularly interesting for this thesis because of its capacity for hardware
-% acceleration.
-
-% The practical translation from the Volr model to Futhark is built on recurrent
-% \gls{ANN} with stochastic gradient descent backpropagation
-% \autocite{russel2007, schmidhuber2014}.
-% Each neuron population is considered as a single layer, whose connections are
-% determined by a connection matrix.
-
-% % Deal with recurrent connections
-% % Describe how this relates to layers
-
-% ... To be continued ...
-
-% \subsection{Spiking neural network simulations via PyNN} \label{sec:volr-pynn}
-% The Python neural network simulation interface PyNN is designed as a
-% "simulator-independent language for building neuronal network models"
-% \autocite{PyNN2018}.
-% It aims to reduce the problem of diverse, and occasionally unique, descriptions
-% of neural network experiments for different simulation back-ends \autocite{Davison2009}.
-% PyNN has been adapted by a number of simulators, including the NEST simulation
-% platform and the neuromorphic BrainScaleS wafer system
-% \autocite{Davison2009, Helias2012, Schmitt2017}.
-
-% There are still simulator-dependent configurations that seems unlikely to be
-% adopted into PyNN in the immediate future\footnote{
-%   Particularly hardware mapping configurations are hard to abstract in a general
-%   interface.
-% }.
-% For that reason Volr provides simulation-specific PyNN scripts that can
-% interpret the model in the context of each simulation target.
-% A middleware, dubbed \gls{Myelin}, was invented to translate the \gls{NN} model
-% into a static intermediate representation in JSON.
-% The JSON standard was chosen for the task because of its concise syntax while
-% still retaining human readability.
-
-% The advantage of the static experiment representation being, that the experiment
-% easily a) transports to the target PyNN scripts without losing any information,
-% and b) duplexes between several experiment; the same experiment setup is
-% trivial to setup on multiple targets at once.
-
-% The correct execution of the experiments relies on the PyNN scripts to exploit
-% the simulator to represent the Volr model as accurately as possible.
-% Fortunately PyNN is designed to cover exactly such a use case, so properties
-% related to the \gls{NN} models itself (such as network topology and population
-% attributes) were faithfully reproduced across the simulators.
-% However, the simulators deviate in a number of ways that are relevant to
-% mention.
-% The following two sections explains the steps necessary to achieve accurate
-% experiment environments in \gls{NEST} and \gls{BrainScaleS}.
-
-% \subsubsection{Translation to PyNN} \label{sec:volr-translation}
-
-% \subsubsection{Translation to NEST} \label{sec:volr-NEST}
-% ... To be continued ...
-% \subsubsection{Translation to BrainScaleS} \label{sec:volr-BrainScaleS}
-% ... To be continued ...
+\FloatBarrier

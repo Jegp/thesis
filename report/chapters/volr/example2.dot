@@ -5,13 +5,15 @@ digraph example2 {
     edge [arrowsize=0.2, labelfontsize=11];
     node [shape=point, width=0.07];
 
-    s_0, s_1, o_1, o_2 [color=white, label=" "];
+    i_1, i_2, o_1, o_2 [color=white, label=" "];
 
+    i_1 -> s_0  [taillabel="Input", labelangle=20, labeldistance=2.4];
+    i_2 -> s_1  [taillabel="Input", labelangle=-20, labeldistance=2.4];
     s_0 -> p_1;
     s_1 -> p_0;
-    s_0 -> p_0 [taillabel="Input", labelangle=50, labeldistance=2.5];
-    s_1 -> p_1 [taillabel="Input", labelangle=-50, labeldistance=2.5];
-    p_0 -> o_1 [headlabel="Output", labelangle=20, labeldistance=2.8];
-    p_1 -> o_2 [headlabel="Output", labelangle=-20, labeldistance=2.8]
+    s_0 -> p_0;
+    s_1 -> p_1;
+    p_0 -> o_1 [headlabel="Output", labelangle=20, labeldistance=2.4];
+    p_1 -> o_2 [headlabel="Output", labelangle=-20, labeldistance=2.4]
 
 }
