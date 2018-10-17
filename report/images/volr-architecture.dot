@@ -1,20 +1,21 @@
 graph {
-  "Volr DSL"
+  "Volr compiler"
   subgraph cluster_ann {
-    label="ANN";
+    label="";
     OpenCL [shape="box"]
     Futhark -- OpenCL
   }
   subgraph cluster_snn {
-    label="SNN"
+    label=""
     JSON [shape="diamond"]
     BrainScaleS [shape="box"]
     NEST [shape="box"]
-    Myelin -- JSON
-    JSON -- NEST
-    JSON -- BrainScaleS
+    JSON -- PyNN
+    PyNN -- NEST
+    PyNN -- BrainScaleS
   }
 
-  "Volr DSL" -- Myelin
-  "Volr DSL" -- Futhark
+  "Volr compiler" -- JSON
+  "Volr compiler" -- Futhark
+  PyNN [label="PyNN executable"]
 }

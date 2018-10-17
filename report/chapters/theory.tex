@@ -100,28 +100,25 @@ For each neuron $j$ the output $x$ can be derived as shown in
 \subsection{Third generation neural networks}
 Constructing a network of neuron models essentially creates a non-linear
 response to a given numerical vector \cite{Russel2007}.
-This transformative view can be adopted to biological \gls{SNN}, where
-the data being transferred are no longer vectors, but discrete
+This transformative view can be adopted to biological third generation 
+\gls{SNN}, where the data being transferred are no longer vectors, but discrete
 \textit{spikes} of electrical current \cite[p. 32]{Dayan2001, Eliasmith2004}.
-In this case the activation of a spike can be understood as a function
-of the electric current to the neuron cell along with the cell weights,
-similar to the weighted sum in equation \ref{eq:weightedsum}
-\cite[p. 234]{Dayan2001}.
 
-There is a temporal dimension to this because signals in biological 
-networks arrive from multiple sources in parallel \cite{Eliasmith2004}.
-Lapicque presented the first model of conductance over time in 1907,
+In biological networks there is a temporal dimension to this the signals
+arrive from multiple sources in parallel \cite{Eliasmith2004}.
+Lapicque worked on a conductance model in 1907 that would illustrate this fact,
 dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and-fire}
 \index{integrate-and-fire|see {neuron model}}
-model, because neurons essentially
-integrate received current over time to determine whether they should fire 
+model.
+The model essentially integrates received current over time
+to determine whether to fire
 \cite{Dayan2001, Eliasmith2004}.
 The Dirac ($\delta$) function \index{Dirac function}
 in equation \ref{eq:dirac} shows an idealised
 version of this \cite[p. 404]{Dayan2001}.
 For all values it approaches 0, except when its argument is
 0 where it will grow infinitely.
-The total area of these 'spikes' sum together to 1 over time $t$ \index{neuron spike}.
+The total area of these `spikes' sum together to 1 over time $t$ \index{neuron spike}.
 
 \begin{equation} \label{eq:dirac}
 \int dt\ \delta(t) = 1
@@ -191,8 +188,35 @@ present voltage depends more strongly on recent input voltages
 By controlling the resistance (or leak), it is possible to
 control the time with which previous voltages are 'forgotten'
 \cite{Eliasmith2004}.
+The LIF equation is given in equation \ref{eq:lif}, where
+$v$ is the membrane voltage difference between the interior
+and exterior of the neuron membrane, $C$ is the input current
+and $\tau_{RC}$ is the membrane time constant that determines how
+quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
+As soon as the voltage reaches $V_{th}$ the neuron spikes and
+enters the refractory period.
 
-Todo: present 3rd gen NN as a function of previous inputs and weights
+\begin{equation}
+  \tau_{RC}\frac{dv(t)}{dt} = -v(t) + C(t)
+  \label{eq:lif}
+\end{equation}
+
+Like in the second generation neural networks, neurons in this context
+can receive input from a number of input neurons ($n$).
+The connections are commonly referred to as synapses, and are similarly
+weighted (see equation \ref{eq:weightedsum}), 
+such that they contribute differently to the accumulated 
+voltage, given by equation \ref{eq:synaptic} \cite{Dayan2001}.
+Action-potentials are here given a delay ($d_i$),
+counting from the moment they leave the
+firing of the neuron to the moment they reach the target neuron
+\cite[p. 234]{Dayan2001}. 
+
+\begin{equation}
+  \sum_{i=1}^n{w_i\delta(t - t_i - d_i)}
+  \label{eq:synaptic}
+\end{equation}
+
 % TODO: Present how spike rates are represented
 % TODO: Write about noise
 %\subsubsection{Neuron spike rates}
@@ -212,9 +236,10 @@ an encoder
 \end{comment}
 
 \subsection{\Gls{NN}s as directed graphs}
-Following the above descriptions, \gls{NN}s can be abstracted as a 
-directed graph: circuits of computational units connected through
-weighted, directed edges \cite{Dayan2001, Eliasmith2004, Russel2007}.
+Following the above descriptions, \gls{NN}s in both generations
+can be abstracted as a directed graph: circuits of computational
+units connected through	weighted, directed edges
+\cite{Dayan2001, Eliasmith2004, Russel2007}.
 Figure \ref{fig:nn-example} illustrates such a network.
 The layered design is typical for first and second generation networks, but 
 can be generalised to the third generation as well, despite their parallel
@@ -274,6 +299,35 @@ A \gls{NN} can then be understood as a function $f$ that
 maps an input vector to an output vector of arbitrary size
 \cite{Russel2007}.
 
+This view can be simplified as shown in figure \ref{fig:nn-composition},
+such that each node is considered a function \cite{Rojas1996}.
+The network is the same but the output is considered to be the sequential
+composition of node functions over the input $x$.
+\begin{figure}
+\centering
+\tikzset{%
+  node/.style={
+    circle, draw, minimum size=0.8cm
+  }
+}
+\begin{tikzpicture}
+  \node [value] (input) at (-0.3,0) { $x$ };
+  \node [node] (node-f) at (1.5,0) { $f$ };
+  \node [node] (node-g) at (3,0) { $g$ };
+  \node [node] (node-h) at (4.5,0) { $h$ };
+  \node [value] (output) at (6.5,0) { $f(g(h(x)))$ };
+  \draw [->] (value) -- (node-f);
+  \draw [->] (node-f) -- (node-g);
+  \draw [->] (node-g) -- (node-h);
+  \draw [->] (node-h) -- (output);
+\end{tikzpicture}
+\caption{Another representation of the network in figure
+  \ref{fig:nn-example}, where each node is considered a function
+and the output is derived by composing functions sequentially 
+over the input.}
+\label{fig:nn-composition}
+\end{figure}
+
 \section{Learning} \index{learning} \label{sec:learnin}
 Defining an \gls{agent} as a system that can act on previous knowledge
 \cite{Russel2007}, learning in the context of an \gls{agent}
@@ -319,8 +373,8 @@ or \textit{deductive} \index{learning!deduction} \cite[p. 704]{Russel2007}.
 The latter requires a basis in rule-based systems from which new knowledge can
 be deduced, while the former requires a measurement of success \cite[p. 705]{Russel2007}.
 Such a measurement is typically referred to as the \textit{error} or \textit{loss}
-function\index{loss function}\index{error function|see {loss function}}
-because it shows how much the prediction deviated from the expectation (success)
+function,\index{loss function}\index{error function|see {loss function}}
+because it shows how much the prediction deviated from the expectation (goal)
 \cite{Russel2007}.
 
 Learning within neural networks have shown to be possible within all three
@@ -360,9 +414,86 @@ are not agreed upon, but a 80\%/20\% split seems to be
 the default \cite{Russel2007, Schmidhuber2014}.
 
 \subsection{Backpropagation}
+Returning to the analogy of neural networks as functions
+over vectors, learning can be understood as a search for
+the optimal weight configuration, such that prediction
+errors are minimised \cite{Rumelhart1988}.
+Thus the network weights constitutes the search space, 
+and the loss function \index{loss function}
+is the subject of the optimisation \cite{Russel2007}.
 
-\subsection{Learning in second generation \gls{NN}}
-\subsection{Learning in third generation \gls{NN}}
+The loss function to minimize for a supervised network
+is described in equation \ref{eq:bp-loss},
+where the actual output $x$ is compared to the 
+target (desired) output $t$, for all output neurons $n$
+\cite{Russel2007}.
+
+\begin{equation}
+  E = {1 \over 2} \sum_{i=1}^n |x_i - t_i|^2
+  \label{eq:bp-loss}
+\end{equation}
+
+For feedforward networks this calculation happens
+through the sequential application of the weighted activation
+functions in each layer, such that the value of $x_i$
+depends on the value from the connected previous neurons.
+For second generation neural networks this makes the
+error function continuous and differentiable,
+such that the gradient of $E$ with respect to the layer weights
+($w_1 \cdots w_l$) can be found, and the weights can be iteratively
+adjust \cite{Rojas1996}, as shown in equation \ref{eq:bp-derivation}.
+
+\begin{equation}
+  \Delta E = (
+    {\partial E \over \partial w_1}, 
+    {\partial E \over \partial w_2},
+    \cdots, 
+    {\partial E \over \partial w_l}
+  )
+  \label{eq:bp-derivation}
+\end{equation}
+
+Incrementally, each weight can be updated as in equation \ref{eq:bp-update},
+where $\gamma$ is a factor that controls the speed with which the weights
+are corrected (learning rate). \index{learning rate}
+
+\begin{equation}
+  \Delta w_i = -\gamma {\partial E \over \partial w_i}
+  \label{eq:bp-update}
+\end{equation}
+
+This technique is referred to as gradient descent, because the weights
+traverse the gradient towards a minimum \cite{Russel2007}.
+Whether that minimum is local or not is uncertain, why it is
+important to note that this technique is vulnerable to 
+local protuberances \cite{Rojas1996, Russel2007}.
+The learning rate exists to avoid ``shooting over'' optimal points, and
+several techniques have been invented to circumvent the problem of 
+local minima\footnote{Two examples are to give the learning rate a
+  ``momentum'', that alters the learning rate based on the previous 
+  success in minimising the loss function, 
+  or to assign individual learning rates for each weight
+  \cite{Schmidhuber2014}. Many more techniques exist, but they will
+  not be covered here.
+} \cite{Russel2007}.
+
+Because the computation of the output layer is the result of the
+previous layer,
+
+Backpropagation, as it was invented by
+\textcite{Rumelhart1988}, is an algorithm that ``looks for the minimum
+of the error function in weight space using the method
+of gradient descent'' \cite[p. 151]{Rojas1996}.
+The idea is based on the application of the 
+
+For feedforward networks By deriving the 
+searches for optima by calculating the negative
+gradients of this loss function \cite{Rumelhart1988}.
+In a neural network the error is calculated at the output
+layer and `pushed' backwards, so as to incrementally 
+correct the network weights, such that .
+
+% TODO: Write in
 
 %\subsubsection{Auto-differentiation}
 % TODO: Write about autodiff

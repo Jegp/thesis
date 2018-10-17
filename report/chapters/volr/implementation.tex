@@ -1,34 +1,266 @@
-The 
+The compiler for the \gls{DSL} itself is implemented in the functional language
+Haskell.
+The compiler generates code for two different backends: a second generation
+backend in Futhark \index{Futhark} and a third generation backend in PyNN.
+\index{PyNN}.
 
-% Duplication
-In practice this happens through a replication of the previous layer, where
-the output from the previous layer feeds into to both parallel 
-layers ($e$ and $e'$).
-In the other end, the two layers are merged such that each output neuron
-is represented individually in a population with the size $e + e'$.
-By not entangling the output dimensions, the following layers can choose
-to ignore parts of the input, irrespective of the other parallel layer.
-This parallelisation represents the duplication that occurs
-in neural circuits, where structurally similar sub-networks, that are
-fed the same stimuli, appear to contribute with semantically different
-information (see \ref{sec:ref}).
+Futhark has been chosen because it is uncommonly concise and offers
+useful functional abstractions that cleanly composes functional
+models \cite{Henriksen2017}.
+Considering \gls{NN}s as a structure of feedforward and feedback functions,
+Futhark is an elegant solution for the task.
 
+PyNN has been chosen for its general purpose API that translates to both the
+neuromorphic BrainScaleS \index{BrainScaleS} backend and the NEST 
+\index{NEST} simulator.
+\\[0.2cm]
+Figure \ref{fig:volr-architecture} shows flow from the compiler
+down to each backend.
+The following section explains the diagram one component at the time, 
+with a focus on the model semantics are 
+retained throughout each step.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{images/volr-architecture.png}
+  \caption{The workflow from the Volr compiler to 
+    \gls{ANN} simulations in Futhark or \gls{SNN} simulations in \gls{NEST} and
+    \gls{BrainScaleS}.
+  }
+  \label{fig:volr-architecture}
+\end{figure}
+
+\subsection{DSL compiler}
+The Haskell compiler consists of five different parts:
+An \gls{AST}, evaluator, language parser and two
+code generators for \gls{ANN}s and \gls{SNN}s.
+
+\lstset{caption=The Volr AST in Haskell., mathescape=false,showstringspaces=false}
+\begin{lstlisting}{haskell}
+data Term
+  = TmNet Int 
+  | TmPar Term Term                                                                                                                                                                                             
+  | TmRef String                                                                                                                                                                                                
+  | TmLet String Term Term                                                                                                                                                                                      
+  deriving (Eq, Show)  
+\end{lstlisting} \label{code:term}
+
+The AST reflects the expressions given in the 
+specification (section \ref{sec:volr}) and is
+shown in listing \ref{code:term}.
+It is accompanied by a simple type system (in listing \ref{code:type})
+that similarly maps to the types given above.
+
+\lstset{caption=Volr type system in Haskell.}
+\begin{lstlisting}
+data Type 
+  = TyNetwork Int Int
+  | TyInt
+\end{lstlisting} \label{code:type}
+
+The evaluator component evaluates the expression tree into
+a reference-free model, checking the type integrity in the
+process.
+Each expression construct---and their combinations---are
+tested to produce the expected output, such that the evaluator
+is guaranteed to output well-formed code.
+An example of this is shown in listing \ref{code:eval-test}
+where a unit test \index{unit test} written in \texttt{HaskellSpec} 
+tests whether the let binding of the constant \texttt{x} correctly
+evaluates to the network \texttt{Net 1 1}.
+
+\lstset{caption=Part of the evaluation code in Haskell.}
+\begin{lstlisting}
+eval' :: Term -> EvalState Term
+eval' term =
+  case term of
+    TmNet n m -> return $ TmNet n m
+    TmSeq t1 t2 -> do
+      t1' <- eval' t1 
+      t2' <- eval' t2
+      return $ TmSeq t1' t2'
+\end{lstlisting} \label{code:evaluator}
+
+\lstset{caption=A unit test for the correct evaluation of a let binding.}
+\begin{lstlisting}{code=Haskell}
+it "can evaluate a let binding with a reference" $ do
+  let e = TmLet "x" (TmNet 1 1) (TmRef "x")
+  eval e `shouldBe` Right (TmNet 1 1
+\end{lstlisting} \label{code:eval-test}
+
+Listing \ref{code:eval-type} shows the type checking
+that also occurs in the evaluator step. 
+If the model is malformed, an error is output to explain why the
+model could not evaluate correctly.
+Tests for the type checks and the evaluator in its entirety
+can be found in appendix \ref{app:implementation}.
+
+\lstset{caption=Part of the type checking code in Haskell.}
+\begin{lstlisting}{language=Haskell}
+typeOf :: Term -> EvalState Type
+typeOf term = 
+  case term of
+    TmNet n m -> return $ TyNetwork n m
+    TmSeq t1 t2 -> do
+      leftOut <- sizeRight t1
+      rightIn <- sizeLeft t2
+      if leftOut == rightIn then do
+        leftIn <- sizeLeft t1
+        rightOut <- sizeRight t2
+        return $ TyNetwork leftIn rightOut
+      else
+        throwError $ "Type error: Incompatible network sizes. " ++
+                     "Output " ++ (show leftOut) ++ " should " ++
+                     "be equal to input " ++ (show rightIn)
+\end{lstlisting} \label{code:eval-type}
+
+The language parser interprets textual input into the AST. \index{AST}
+The parser is built via the monadic parser combinator library Megaparsec
+\cite{megaparsec}.
+The main component of the parser is shown in listing \ref{code:parser}
+and the whole parser is available in appendix \ref{app:implementation}.
+
+\begin{lstlisting}{language=Haskell,name=The main component of the text parser for Volr.}
+parseTerm :: Parser Term
+parseTerm = (lexeme $ choice
+  [ TmNet <$> (symbol "Net" *> integer) <*> integer
+  , TmPar <$> (symbol "Par" *> (parens parseTerm)) <*> (parens parseTerm)
+  , TmSeq <$> (symbol "Seq" *> (parens parseTerm)) <*> (parens parseTerm)
+  , TmRef <$> (symbol "Ref" *> (name))
+  , TmLet <$> (symbol "Let" *> (name)) <*> (symbol "=" *> parseTerm)
+                           <*> (symbol "in" *> parseTerm)
+  ]) <* (optional eof)
+\end{lstlisting} \label{code:parser}
+
+Finally two code generators are implemented for the translation into
+second and third generation networks.
+This translation will be presented along with the implementation
+for the two backends.
+
+\subsection{Futhark backend} \label{sec:volr-futhark}
+Futhark is a functional data-parallel programming language, that
+executes on a number of targets \autocite{Henriksen2017}.
+\gls{OpenCL} is one of them, which allows Futhark access to 
+hardware acceleration through \gls{GPU}s.
+
+This thesis builds on the work by \textcite{Minh2018}, who 
+implemented a functional library for deep learning.
+The library models \gls{NN} layers as records with three fields:
+a function for forward propagation, a function for backward propagation
+and a cache for weights. 
+The backward propagation uses gradient descent to find optimal
+weight configurations.
+Because of its functional nature, layers can simply be joined 
+sequentially by function composision.
+
+The library has been modified to fit the additions in the thesis.
+In particular, a \textit{replicate} and a \textit{merge} layer has
+been added, to account for the parallel operator ($\ominus$).
+A connection that allows two parallel networks to connect to other
+layers has also been added, although it simply composes tuples of
+the layer structure (see the \texttt{neural\_networks.fut} file in
+appendix \ref{app:implementation}.
+
+\paragraph{Replicate layer}
+In practice this layer connects to two other networks, and densely
+replicates the output to each layer.
+This happens by storing two separate collections of weights, such
+that each forward connection is assigned the correct value.
+Backpropagation works by calculating the error correction on the
+two sets of weights, and the final error sent to the previous layer
+is a simple average of the error for each neuron. 
+The algorithm is shown in an shortened form in listing \ref{code:bp-replicate}.
+Here the two errors and weights are independently calculated.
+The weights are stored in the layer as-is, but the errors are 
+averaged before they are output to the previous layer.
+
+\lstset{language=,caption=Part of the forward and backward propagation algorithms for the replicate layer. Abbreviated for clarity.}
+\begin{lstlisting}
+-- Forward propagation
+let forward (act:[]t -> []t)
+	    (training:bool)
+	    ((t1, t2): weights)
+	    (input:input) : (cache, output) =
+  let feedForward ((w, b): std_weights t): (tup2d t, arr2d t) = [...]
+  let (c1, r1) = feedForward t1
+  let (c2, r2) = feedForward t2
+  in ((c1, c2), (r1, r2))
+
+-- Backward propagation
+let backward (act: []t -> []t)
+             (first_layer: bool)
+             (apply_grads: apply_grad t)
+             ((w1, w2): weights)
+             ((c1, c2): cache)
+             ((e1, e2): error_in) : b_output =
+  let (error1, w1) = backProp w1 c1 e1
+  let (error2, w2) = backProp w2 c2 e2
+  [...]
+  in (average_sum_matrix [error1, error2], (w1, w2))
+\end{lstlisting} \label{code:bp-replicate}
+
+This interpretation fits with the original specification, where
+where the parallel notation duplicates the 'work' in two separate 
+networks.
+The whole code for the replicate, and the code for translating the \gls{DSL}
+abstractions into Futhark, \index{Futhark} is shown in appendix 
+\ref{app:implementation}.
+
+\paragraph{Merge layer}
+The merge layer is significantly simpler than the replication layer,
+because it simply concatenates the inputs from two parallel layer into one single
+layer. 
+For that reason it also does not contain any weights.
+In the case of backprogapation it simply reroutes the errors back to
+the population, from which the neuron originated.
+All optimisation logic is thus left for the regular dense or replicated
+layers.
+
+\lstset{language=,caption=Functions for forward and backward propagation in the merge layer.}
+\begin{lstlisting}
+-- Forward propagation
+let forward  (_:[]t -> []t)
+	     (_:bool)
+	     (_: weights)
+	     ((i1, i2):input) : (cache, output) =
+  ((), map2 concat i1 i2)
+
+-- Backward propagation
+let backward (_:[]t -> []t) (l1_sz:i32)
+	     (_:bool)
+	     (_:apply_grad t)
+	     (_:weights)
+	     (_:cache)
+	     (error_concat:error_in) : b_output =
+  (unzip (map (split l1_sz) error_concat), ())
+\end{lstlisting}
+
+This interpretation is also aligned with the original specification, 
+because it allows the parallel populations to propagate its output
+independent of each other.
+
+\begin{comment}
+, where the compiler can generate specifications for either Futhark
+or third generation neural networks.
+In the case of Futhark, a complete text file with correct Futhark syntax
+is generated. 
+In the other case, an intermediate JSON file is generated for a number of
+reasons: one is the heterogeneous nature of the backends.
+NEST \index{NEST} is written in C++ \index{C++} and can run on most platforms,
+but BrainScaleS requires access to the neuromorphic hardware.
+The BrainScaleS chips are expensive to produce and protected by a number of
+measures.
+One being that certain libraries are inaccessible, excluding the evaluation
+of Haskell binaries. 
+PyNN is normally configured to work with Python, so converting the 
+\end{comment}
 % An optimal approach would be to find a tool that leverages the similarities
 % of the network types, while integrating with the diverse simulated or emulated
 % targets.
 % That is, an abstract model of neural networks that can translate into
 % heterogeneous back-ends, while retaining a high degree of inter-model validity.
 
-% A domain-specific language (DSL) called Volr was recently presented to
-% construct reproducible \gls{NN} experiments
-% \autocite{Pedersen2018:volr}.
-
-% Some work was required to fully support learning mechanisms on
-% neuromorphic hardware, and the DSL, as well as the tooling around it, has been
-% extended for the purpose of this thesis (see appendix \ref{appendix:volr})
-% The following section describes the grammar and anatomy of Volr in detail.
-
-% In practice a network is built by describing a graph.
+% In practice a network is built by describing a graph
 % The nodes in the graph consist of \texttt{populations} of neurons and the edges
 % are connection-set matrices to other populations \autocite{Djurfeldt2012}.
 % % TODO: Describe CSA
@@ -40,54 +272,11 @@ information (see \ref{sec:ref}).
 % The parameters are treated differently depending on the experiment target (see
 % sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
 
-% \subsubsection{Experiment targets}
-% The final element in a Volr experiment is its targets.
-% A target describe a destination environments on which to run the experiment.
-% These are described in detail in section \ref{sec:volr-targets}, and are
-% referenced in the grammar as simple strings.
 
-% \subsection{Volr semantics}
+\subsection{PyNN backend}
 
 
-% \section{Neural network simulation targets in Volr} \label{sec:volr-targets}
 
-% % TODO :Write how fields are interpreted
-% % TODO: Write how input is interpreted
-
-% Volr exploits the structural similarities between \gls{ANN} and \gls{SNN} to
-% translate the model to both spiking and artificial network platforms (back-ends).
-
-% In the remainder of the chapter the three emulation back-ends, shown in figure
-% \ref{fig:volr}, are described:
-% a machine learning target for \gls{ANN}s and a neuron simulation target, as well
-% as a neuromorphic hardware target, for \gls{SNN}s.
-
-% \begin{figure}
-%   \centering
-%   \includegraphics[width=0.6\textwidth]{images/volr-architecture.png}
-%   \caption{The translation from the Volr DSL to \gls{ANN} simulations in OpenCL via
-%     \gls{Futhark} and to \gls{SNN} simulations on \gls{NEST} and \gls{BrainScaleS}
-%     via the \gls{Myelin} middleware.
-%   }
-%   \label{fig:volr}
-% \end{figure}
-
-% \subsection{Translation to Futhark} \label{sec:volr-futhark}
-% Futhark is a functional data-parallel programming language \autocite{Henriksen2017}.
-% It offers a number of compilation targets such as \gls{OpenCL}, which is
-% particularly interesting for this thesis because of its capacity for hardware
-% acceleration.
-
-% The practical translation from the Volr model to Futhark is built on recurrent
-% \gls{ANN} with stochastic gradient descent backpropagation
-% \autocite{russel2007, schmidhuber2014}.
-% Each neuron population is considered as a single layer, whose connections are
-% determined by a connection matrix.
-
-% % Deal with recurrent connections
-% % Describe how this relates to layers
-
-% ... To be continued ...
 
 % \subsection{Spiking neural network simulations via PyNN} \label{sec:volr-pynn}
 % The Python neural network simulation interface PyNN is designed as a

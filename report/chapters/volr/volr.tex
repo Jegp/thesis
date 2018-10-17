@@ -57,6 +57,26 @@ The output from the network is stacked such that each neuron from each
 population corresponds to one output neuron ($e_{out} + e'_{out}$).
 This is done to preserve the meaning of each parallel population.
 
+Semantically the parallel operator the ability for a network
+perform specialised functions, based on the same stimulus.
+In the context of neural systems such specialisations are frequently used
+to balance correctness with compactness: it is cheaper in terms of neurons,
+and more efficient in terms of accuracy,
+to allow two subnetworks to specialise than to have one large network 
+generalise.
+
+% TODO: Relate this to the trade-off wrt. training in the theory section
+\begin{comment} %TODO: include this?
+In the other end, the two layers are merged such that each output neuron
+is represented individually in a population with the size $e + e'$.
+By not entangling the output dimensions, the following layers can choose
+to ignore parts of the input, irrespective of the other parallel layer.
+This parallelisation represents the duplication that occurs
+in neural circuits, where structurally similar sub-networks, that are
+fed the same stimuli, appear to contribute with semantically different
+information (see \ref{sec:ref}).
+\end{comment}
+
 Taken together these constructs can express simple neural networks and
 the properties of their connections. 
 Figure \ref{fig:volr-examples} shows a number of example networks

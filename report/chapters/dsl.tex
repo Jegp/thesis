@@ -2,10 +2,20 @@
 \begin{document}
 
 This chapter presents the \gls{DSL} Volr \index{Volr}.
-Before the presentation itself, existing work
+Volr is a language that allows concise specifications of 
+neural models and that translates
+into three backends for future evaluation:
+Futhark \index{Futhark} through \gls{OpenCL},
+NEST \index{NEST} through PyNN \index{PyNN} and BrainScaleS
+\index{BrainScaleS} through PyNN.
+
+Before the presentation and specification of the language itself, 
+it is necessary to examine similar and existing work
 within the programming and simulation of second and third generation
-\gls{NN}s is presented, followed by a number of requirements for the
-\gls{DSL}, to scope the language in the contemporary landscape.
+\gls{NN}s.
+A detailed list of requirements are also given to verify that the
+specified language is accurately scoped 
+\gls{DSL}.
 
 \section{Similar work}
 A vast amount of work has been put into the development of software for simulating
