@@ -8,7 +8,7 @@ It focuses solely on the topology of networks, thus
 separating the network description from any generation-specific properties
 of neurons or neuron populations.
 
-The first requirement is achieved through an unambiguous syntax inspired
+The first requirement is met through an unambiguous syntax heavily inspired
 by the lamdba calculus \cite{Pierce2002}.
 Figure \ref{fig:volr-expr} shows the BNF notation for expressions, values and types
 in Volr. 
@@ -21,32 +21,23 @@ interpretation of the expressions.
 The constant expression $n$ is simply an integer that evaluates to the type 
 \texttt{\textbf{int}} ($e1$). 
 Similarly to the lambda calculus, the \texttt{\textbf{let}} binding binds
-the string constant $x$ to the expression $e$ in an encapsulated
-environment $e'$ \cite{Pierce2002}.
+the string constant $x$ to the expression $e$ when evaluating $e'$ \cite{Pierce2002}.
 That constant can later be referenced in the $e'$ expression 
 through the string $x$ as shown in $e2$.
 
-The \texttt{\textbf{dense}} expression describes a network of two
-populations, and is the most basic concept in the \gls{DSL}.
+The \texttt{\textbf{dense}} expression describes a fully connected
+neural network layer with a single population, and is the most basic
+concept in the \gls{DSL}.
 Notice the distinction between a neural network \textit{layer}
 such as \texttt{\textbf{dense}} and a population. 
-In a \texttt{\textbf{dense}} network layer, every neuron from the
-first population is connected to every neuron in the second population
-(\textit{densely} or all-to-all).
-The two parameters $n$ and $m$ defines the number of neurons in the first and 
-second layer respectively, and evaluates to the \texttt{\textbf{net}}
-fundamental network type and value, as shown in $e3$. 
-Considering how each neuron is a type of classifier, these numbers
+A \texttt{\textbf{dense}} network layer can be understood as a single
+population that receives a number of inputs, densely 
+connects these inputs to all neurons in the population with the associated
+weights, and finally outputs the response to the following layer.
+Considering how each neuron is a type of classifier, $n$ and $m$
 illustrate the \textit{dimensionality} of the network, such that the number of
 dimensions in the input is truncated (or expanded) to classify the
 dimensionality of the output layer.
-
-The $\obar$ (sequential) operator binds two networks sequentially,
-such that the output layer of the first network becomes the input layer 
-of the second network.
-The two networks $e$ and $e'$ will share one of the neuron populations, why
-the output size of the first layer is required to be equal to the input
-size of the second layer ($e4$).
 
 The $\ominus$ (parallel) operator parallelises two networks by duplicating
 the input from the previous layer and merging the outputs into a single
@@ -57,7 +48,13 @@ The output from the network is stacked such that each neuron from each
 population corresponds to one output neuron ($e_{out} + e'_{out}$).
 This is done to preserve the meaning of each parallel population.
 
-Semantically the parallel operator the ability for a network
+The $\obar$ (sequential) operator binds two networks sequentially,
+such that the output layer of the first network becomes the input layer 
+of the second network.
+For that reason the output dimensionality of the first network ($m$) should 
+be equal to the input of the second network, as shown in $e4$.
+
+Semantically the parallel operator provides the ability for a network to
 perform specialised functions, based on the same stimulus.
 In the context of neural systems such specialisations are frequently used
 to balance correctness with compactness: it is cheaper in terms of neurons,

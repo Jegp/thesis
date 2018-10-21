@@ -311,12 +311,12 @@ composition of node functions over the input $x$.
   }
 }
 \begin{tikzpicture}
-  \node [value] (input) at (-0.3,0) { $x$ };
+  \node (input) at (-0.3,0) { $x$ };
   \node [node] (node-f) at (1.5,0) { $f$ };
   \node [node] (node-g) at (3,0) { $g$ };
   \node [node] (node-h) at (4.5,0) { $h$ };
-  \node [value] (output) at (6.5,0) { $f(g(h(x)))$ };
-  \draw [->] (value) -- (node-f);
+  \node (output) at (6.5,0) { $f(g(h(x)))$ };
+  \draw [->] (input) -- (node-f);
   \draw [->] (node-f) -- (node-g);
   \draw [->] (node-g) -- (node-h);
   \draw [->] (node-h) -- (output);

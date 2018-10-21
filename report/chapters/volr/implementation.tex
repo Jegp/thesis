@@ -14,11 +14,9 @@ PyNN has been chosen for its general purpose API that translates to both the
 neuromorphic BrainScaleS \index{BrainScaleS} backend and the NEST 
 \index{NEST} simulator.
 \\[0.2cm]
-Figure \ref{fig:volr-architecture} shows flow from the compiler
+Figure \ref{fig:volr-architecture} shows the workflow from the compiler
 down to each backend.
-The following section explains the diagram one component at the time, 
-with a focus on the model semantics are 
-retained throughout each step.
+The following section explains the diagram one component at the time.
 
 \begin{figure}
   \centering
@@ -153,7 +151,8 @@ weight configurations.
 Because of its functional nature, layers can simply be joined 
 sequentially by function composision.
 
-The library has been modified to fit the additions in the thesis.
+The library from \cite{Minh2018} has been modified to fit the
+additions in the thesis.
 In particular, a \textit{replicate} and a \textit{merge} layer has
 been added, to account for the parallel operator ($\ominus$).
 A connection that allows two parallel networks to connect to other
@@ -274,51 +273,142 @@ PyNN is normally configured to work with Python, so converting the
 
 
 \subsection{PyNN backend}
+The interpretation to PyNN\index{PyNN} is done in two steps: a
+conversion from the \gls{DSL} into a \gls{SNN} representation,
+and a translation between that representation into backend-specific
+Python code.
+The steps are decoupled to enforce the same semantics on the code
+generation for the neuromorphic and simulation backends.
+While PyNN is designed as a simulator-dependent \gls{API} 
+it is unlikely that the backends will fully support it in the
+immediate future (see section \ref{sec:SNN-simulators}).
 
+\subsubsection{\gls{SNN} translation step}
+Before Python code for PyNN can be generated a number of assumptions
+has to be met. 
+In particular the types of connections (referred to as projections in PyNN)
+and neuron models has to be described with a full set of neuron parameters.
+The modelling of this happens in yet another Haskell code base.
+The neuron parameters for an example LIF\index{LIF} neuron is seen in listing
+\ref{lst:lif-cond-exp} with their corresponding default values
+below\footnote{
+The current neuron models and their default parameters are taken from PyNN's
+standard models, available at
+\url{http://neuralensemble.org/docs/PyNN/standardmodels.html}.
+}.
 
+\lstset{language=,caption={A LIF neuron with exponential decay and
+  conductance-based synapses, modelled in Haskell.},label=lst:lif-cond-exp}
+\begin{lstlisting}
+data NeuronType =
+    = IFCondExp {
+        _v_rest :: Float, -- ^ resting potential
+        _cm :: Float, -- ^ membrane capacitance
+        _tau_m :: Float, -- ^ membrane time constant
+        _tau_refrac :: Float, -- ^ refractory time
+        _tau_syn_E :: Float, -- ^ excitatory synaptic time constant
+        _tau_syn_I :: Float, -- ^ inhibitory synaptic time constant
+        _e_rev_E :: Float, -- ^ excitatory reversal potential
+        _e_rev_I :: Float, -- ^ inhibitory reversal potential
+        _v_thresh :: Float, -- ^ spike initiation threshold
+        _v_reset :: Float, -- ^ reset value for membrane potential after a spike
+        _i_offset :: Float -- ^ offset current
+    }
 
+if_cond_exp :: NeuronType
+if_cond_exp = IFCondExp {
+    _v_rest = -65.0,
+    _cm = 1.0,
+    _tau_m = 20.0,
+    _tau_refrac = 0.0,
+    _tau_syn_E = 5.0,
+    _tau_syn_I = 5.0,
+    _e_rev_E = 0.0,
+    _e_rev_I = -70.0,
+    _v_thresh = -50.0,
+    _v_reset = -65.0,
+    _i_offset = 0.0
+}
+\end{lstlisting}
 
-% \subsection{Spiking neural network simulations via PyNN} \label{sec:volr-pynn}
-% The Python neural network simulation interface PyNN is designed as a
-% "simulator-independent language for building neuronal network models"
-% \autocite{PyNN2018}.
-% It aims to reduce the problem of diverse, and occasionally unique, descriptions
-% of neural network experiments for different simulation back-ends \autocite{Davison2009}.
-% PyNN has been adapted by a number of simulators, including the NEST simulation
-% platform and the neuromorphic BrainScaleS wafer system
-% \autocite{Davison2009, Helias2012, Schmitt2017}.
+These neuron models form the basis of populations, which is determined by the
+neuron model and the number of neurons in the population.
+Populations can be understood as nodes in the network graph, along with
+spike sources, which generates stimulus per the input data.
+The definition of nodes as either populations or spike sources is shown in
+listing \ref{lst:node}.
 
-% There are still simulator-dependent configurations that seems unlikely to be
-% adopted into PyNN in the immediate future\footnote{
-%   Particularly hardware mapping configurations are hard to abstract in a general
-%   interface.
-% }.
-% For that reason Volr provides simulation-specific PyNN scripts that can
-% interpret the model in the context of each simulation target.
-% A middleware, dubbed \gls{Myelin}, was invented to translate the \gls{NN} model
-% into a static intermediate representation in JSON.
-% The JSON standard was chosen for the task because of its concise syntax while
-% still retaining human readability.
+\lstset{language=,caption=The definition of a node as either a population or a
+spike source.,label=lst:node}
+\begin{lstlisting}
+data Node = Population {
+        _numNeurons :: Integer,
+        _neuronType :: NeuronType
+    }
+    | SpikeSourcePoisson {
+        _rate :: Float,
+        _start :: Integer
+    }
+\end{lstlisting}
+
+The nodes in the spiking graph is connected through edges shown in 
+listing \ref{lst:projection}.
+
+\lstset{language=,caption=The definition of an edge as a projection between
+two nodes with a certain effect.,label=lst:projection}
+\begin{lstlisting}
+data Edge =
+      Projection {
+          _effect :: ProjectionEffect,
+          _input :: Node,
+          _output :: Node
+\end{lstlisting}
+
+The type of the edges are determined by a projection effect that is
+not listed here, but available in appendix \ref{app:implementation}.
+This effect simply describes the connectivity between two nodes---which
+for now is exclusively all-to-all---and the type of the synapses--which
+for now is exclusively constant excitatory weights.
+
+The model here allows us to retain the connection graph from the \gls{DSL}
+description.
+The main difference being the activation functions which changes with the
+neuron types.
+
+\subsubsection{PyNN code generation}
+The final step in the translation of the \gls{DSL} to PyNN code maps the
+\gls{SNN} model from above to executable Python code.
+Similar to the Futhark backend the PyNN API has been augmented to 
+incorporate learning, further described in the section ``Learning in PyNN''.
+Listing \ref{lst:PyNN-MNIST} shows an example of a non-executable MNIST network.
+When activating the input node \texttt{node0} the connections are fed through
+the network to the \texttt{node2} output node.
+Each projection is initiated with random normal distributed weights, similar
+to the Futhark networks.
+
+\lstset{language=,caption={A simple MNIST network in Python from the network in figure
+\ref{fig:volr-examples}. The dots illustrate the neuron parameters, given as a
+dictionary, as they appear in listing
+\ref{lst:lif-cond-exp}.},label=lst:PyNN-MNIST}
+\begin{lstlisting}
+node0 = LearningNode(Population(100, LIFCondExp(), ...))
+node1 = LearningNode(Population(50, LIFCondExp(), ...))
+node2 = LearningNode(Population(10, LIFCondExp(), ...))
+edge0 = Projection(node0, node1, AllToAllConnector())
+edge0.set(weight=numpy.random.normal)
+edge1 = Projection(node1, node2, AllToAllConnector())
+edge1.set(weight=numpy.random.normal)
+\end{lstlisting}
 
 % The advantage of the static experiment representation being, that the experiment
 % easily a) transports to the target PyNN scripts without losing any information,
 % and b) duplexes between several experiment; the same experiment setup is
 % trivial to setup on multiple targets at once.
+\subsubsection{Code header for BrainScaleS} \label{ref:Cairo}
+%Because of the incompatible backends, each code is injected with a  
+%preample to perform the necessary setup steps 
+Describe hardware mappings for BrainScaleS
 
-% The correct execution of the experiments relies on the PyNN scripts to exploit
-% the simulator to represent the Volr model as accurately as possible.
-% Fortunately PyNN is designed to cover exactly such a use case, so properties
-% related to the \gls{NN} models itself (such as network topology and population
-% attributes) were faithfully reproduced across the simulators.
-% However, the simulators deviate in a number of ways that are relevant to
-% mention.
-% The following two sections explains the steps necessary to achieve accurate
-% experiment environments in \gls{NEST} and \gls{BrainScaleS}.
-
-% \subsubsection{Translation to PyNN} \label{sec:volr-translation}
-
-% \subsubsection{Translation to NEST} \label{sec:volr-NEST}
-% ... To be continued ...
-% \subsubsection{Translation to BrainScaleS} \label{sec:volr-BrainScaleS}
-% ... To be continued ...
-\label{ref:Cairo}
+\subsubsection{Learning in PyNN}
+\label{ref:PyNN-augmentation}
+Describe PyNN learning API

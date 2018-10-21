@@ -132,7 +132,7 @@ is developed from scratch, because of the degree of specialisation
 This section covers the most important technical details of
 the environments.
 
-\subsubsection{\Gls{SNN} simulators}
+\subsubsection{\Gls{SNN} simulators} \label{sec:SNN-simulators}
 Based on the review of \textcite{Blundell2018} this paper will discuss
 the following third generation \gls{SNN} simulators: PyNN \cite{Davison2009},
 NEST \cite{Gewaltig2007}, NEURON \cite{Carnevale2007},
@@ -141,10 +141,11 @@ Brian \cite{Goodman2013} and Nengo \cite{Eliasmith2015}.
 PyNN is a ``simulator-independent language''
 \cite{PyNN2018} that compiled to both simulated and
 accelerated architectures \cite{Davison2009}.
-Technically PyNN is not a simulator but acts as interface to any third generation
-backend, but currently supports Brian, NEST, BrainScaleS and SpiNNaker.
+Technically PyNN is not a simulator but acts as an interface to any third generation
+backend \cite{Davison2009}.
+PyNN currently supports Brian, NEST, BrainScaleS and SpiNNaker
 \index{Brian}\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
-PyNN is more than 10 years old, \cite{Davison2009} older
+and is more than 10 years old, \cite{Davison2009} older
 than most neuromorphic chips. 
 Their \gls{API}s were designed a priori and lacked a number of crucial
 elements\footnote{In particular in relation to the mapping of neuron population
