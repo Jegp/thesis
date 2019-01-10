@@ -7,6 +7,8 @@ neuromorphic hardware, \index{neuromorphic} and finally
 the cognitive theory of the Reorganisation of Elementary Functions
 (\gls{REF}).
 
+%TODO : Add section on terminology: population in layers in networks
+
 \section{Neural networks} \label{sec:nn}
 \Gls{NN}s is a broad term that originates in the neuronal models from
 biological brain \cite{Dayan2001}.
@@ -121,7 +123,7 @@ For all values it approaches 0, except when its argument is
 The total area of these `spikes' sum together to 1 over time $t$ \index{neuron spike}.
 
 \begin{equation} \label{eq:dirac}
-\int dt\ \delta(t) = 1
+  \rho(t) = \int dt\ \delta(t) = 1
 \end{equation}
 
 This idealised representation is a common mathematical approximation of
@@ -190,7 +192,7 @@ control the time with which previous voltages are 'forgotten'
 \cite{Eliasmith2004}.
 The LIF equation is given in equation \ref{eq:lif}, where
 $v$ is the membrane voltage difference between the interior
-and exterior of the neuron membrane, $C$ is the input current
+and exterior of the neuron membrane, $C(t)$ is the input current
 and $\tau_{RC}$ is the membrane time constant that determines how
 quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
 As soon as the voltage reaches $V_{th}$ the neuron spikes and
@@ -201,26 +203,55 @@ enters the refractory period.
   \label{eq:lif}
 \end{equation}
 
-Like in the second generation neural networks, neurons in this context
+Like in the second generation neural networks, neurons
 can receive input from a number of input neurons ($n$).
 The connections are commonly referred to as synapses, and are similarly
 weighted (see equation \ref{eq:weightedsum}), 
 such that they contribute differently to the accumulated 
 voltage, given by equation \ref{eq:synaptic} \cite{Dayan2001}.
-Action-potentials are here given a delay ($d_i$),
-counting from the moment they leave the
-firing of the neuron to the moment they reach the target neuron
-\cite[p. 234]{Dayan2001}. 
 
 \begin{equation}
-  \sum_{i=1}^n{w_i\delta(t - t_i - d_i)}
+  \sum_{i=1}^n{w_i\delta(t - t_i)}
   \label{eq:synaptic}
 \end{equation}
 
-% TODO: Present how spike rates are represented
+\subsection{Coding spikes}
+The temporal properties of the spikes convey information \cite{Dayan2001}.
+Collecting spikes from a neuron over time provides a 
+spike train\index{spike train} that can be decoded into numerical
+values \cite{Dayan2001}.
+A simple way to decode a spike train is to count the number of
+spikes and divide them by the duration of the spike train, shown in
+equation \ref{eq:spikerate}
+\cite{Dayan2001}.
+
+\begin{equation}
+  r = {n \over T} = {1 \over T} \int_0^T \rho(t)
+\label{eq:spikerate}
+\end{equation}
+
+When encoding numerical information to spikes, it is useful to 
+express the spikes stochastically, such that one scalar determines
+the probability that a neuron spikes over time \cite{Dayan2001}.
+The firing rate can be understood as the probability that a given
+neuron will fire over time \cite{Dayan2001}.
+Assuming that the spikes are independent of each other, this
+probability can be expressed by a distribution such as the
+Poisson probability distribution\index{Poisson distribution}
+\cite{Dayan2001}.
+The Poisson distribution determines the probability of a number
+of events occurring in an interval, given that the events are
+known to happen at a fixed rate \cite{Dayan2001}.
+It is defined in equation \ref{eq:poisson} where $n$ is the
+number of events and $\alpha$ is the rate with which events
+happen \cite{Dayan2001}.
+
+\begin{equation}
+P(n) = \alpha^n {e^{-\alpha} \over n!}
+\label{eq:poisson}
+\end{equation}
+
 % TODO: Write about noise
-%\subsubsection{Neuron spike rates}
-%...
 
 %\subsubsection{Encoding and decoding in spiking neural networks}
 %...
@@ -233,7 +264,6 @@ distributions are commonly used to describe
 Given a current for background firing rates
 Assuming there are $n$ inputs to a neuron with $i$ bits of information,
 an encoder
-\end{comment}
 
 \subsection{\Gls{NN}s as directed graphs}
 Following the above descriptions, \gls{NN}s in both generations
@@ -329,6 +359,7 @@ over the input.}
 \end{figure}
 
 \section{Learning} \index{learning} \label{sec:learnin}
+% TODO: http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
 Defining an \gls{agent} as a system that can act on previous knowledge
 \cite{Russel2007}, learning in the context of an \gls{agent}
 refers to ``the process of gaining
@@ -505,5 +536,5 @@ correct the network weights, such that .
 \subsection{REF model} \label{sec:ref}
 
 \section{Neuromorphic computing}
-
+\end{comment}
 \end{document}
