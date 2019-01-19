@@ -2,281 +2,43 @@
 \begin{document}
 
 This first chapter presents the theoretical foundation for the thesis.
-The theory is grouped in four categories: \gls{NN}s, learning,
-neuromorphic hardware, \index{neuromorphic} and finally
-the cognitive theory of the Reorganisation of Elementary Functions
-(\gls{REF}).
-
-%TODO : Add section on terminology: population in layers in networks
+The theory is grouped into three sections: \glspl{NN}, learning and
+neuromorphic hardware.\index{neuromorphic}
 
 \section{Neural networks} \label{sec:nn}
-\Gls{NN}s is a broad term that originates in the neuronal models from
-biological brain \cite{Dayan2001}.
+\Glspl{NN} is a broad term that originates in the neuronal models from
+the biological brain \cite{Dayan2001}.
 The general architecture of neural systems can be explained as circuits
-of neurons \index{neuron} connected through weighted edges.
+of neurons \index{neuron} connected through weighted edges
 \cite{Russel2007, Dayan2001}.
-In this abstract sense a neuron is defined as a computational unit that
+
+In this abstract sense, a neuron is a computational unit that
 takes a number of signals (inputs) and processes them through some
-function $f$ that outputs a single value \cite{Eliasmith2004}.
-From that perspective neural networks simply \textit{computes} an 
-output based on some input why neural networks can be understood as
-complex non-linear computations \cite{Eliasmith2004, Dayan2001}.
+function $f$,that outputs a single value \cite{Eliasmith2004}.
+Composed in a network, neurons can \textit{compute} 
+complex non-linear functions \cite{Eliasmith2004, Dayan2001}.
 
-In a more concrete sense neural networks computes over either
-continuous (e. g. voltage and numbers) or discrete signal, and they
-can be modelled with or without a temporal dimension
-\cite{Eliasmith2004, Russel2007, Schmidhuber2014}.
-
-Discrete models without a temporal dimension were the foundation for
+In a more concrete sense, \gls{NN}s compute over either
+continuous (e.g., voltage and numbers) or discrete signals
+\cite{Russel2007, Schmidhuber2014}.
+Discrete models were the foundation for
 the first generation of neural networks \cite{Russel2007, Maass1997}.
-They are based on the perceptron model as seen in equation
+They are based on the perceptron model as seen in Equation
 \ref{eq:perceptron}, also known as the McCulluch-Pitts neuron model
 \cite{Eliasmith2004}.
 
 \begin{equation} \label{eq:perceptron}
-f(x) = \begin{cases}
-	 1 & \text{if } u > 0\\
+\sigma(x) = \begin{cases}
+	 1 & \text{if } x > 0\\
 	 0 & \text{otherwise}
        \end{cases}
 \end{equation}
 
-\subsection{Second generation neural networks}
-Second generation neural networks augment the perceptron model by
-a) allowing continuous output values of a neuron and b) parametrising
-the computation of the neuron by adding an \textit{activation function}
-\index{activation function} for when the output ``activates'' 
-\cite{Maass1997}.
-\textit{Sigmoidal} functions are commonly used for activation functions
-because they resemble the perceptron step function while 
-retaining continuity (see figure \ref{fig:sigmoid})
-\cite{Maass1997}.
-
-\begin{figure}
-\centering
-\begin{tikzpicture}[domain=-6:6,xscale=0.3]
-  \draw[->] (-6.2,0) -- (6.2,0) node[right] {$x$};
-  \draw[->] (0,-0.2) -- (0,1.2) node[above] {$\sigma(x)$};
-  \draw plot (\x,{1 / (1 + exp(-\x))}) node[right] {$\sigma(x) = {1 \over 1 + e^{-x}}$};
-\end{tikzpicture}
-\caption{A sigmoidal (soft step) function.}
-\label{fig:sigmoid}
-\end{figure}
-
-A number of variations for sigmoidal activation functions exist such as the 
-hyperbolic tangent ($tanh$) and
-the rectified linear unit \index{ReLU} (ReLU, see equation \ref{eq:ReLU}). 
-They are applied either in a feed-forward or recurrent (cyclic) manner, where
-the recurrent variant are forced to cope with temporal transformations to
-terminate\footnote{It is possible to \textit{unfold} recurrent
-networks to resemble the circular processes until a certain point, achieving
-a similar effect to temporal signal transformation, see \cite{Mozer1995}.}
-\cite{Schmidhuber2014}.
-
-\begin{equation} \label{eq:ReLU}
-f(x) = \begin{cases}
-         0 & \text{if } x < 0 \\
-	 x & \text{otherwise}
-       \end{cases}
-\end{equation}
-
-Second generation neuron models typically enrich the
-input signals ($x$) with a weight ($w$) as shown in \ref{eq:weightedsum}
-\cite{Schmidhuber2014, Russel2007}. 
-Given $n$ input neurons, the weighted sum is the value of each
-input neuron ($x_i$) scaled by a weight for that individual neuron ($w_i$).
-Weights allow the model to adapt the relative importance of each
-input neuron by modifying their weights, thus allowing the
-model to \textit{train} to a given domain \cite{Schmidhuber2014, Russel2007}.
-
-\begin{equation} \label{eq:weightedsum}
-u = w \cdot x = \sum_{i=1}^n w_i x_i
-\end{equation}
-
-For each neuron $j$ the output $x$ can be derived as shown in 
-\ref{eq:weightedoutput}.
-
-\begin{equation} \label{eq:weightedoutput}
-  x_j = \sigma(u_j) = \sigma(\sum_{i=1}^n w_{i,j} x_i)
-\end{equation}
-
-\subsection{Third generation neural networks}
-Constructing a network of neuron models essentially creates a non-linear
-response to a given numerical vector \cite{Russel2007}.
-This transformative view can be adopted to biological third generation 
-\gls{SNN}, where the data being transferred are no longer vectors, but discrete
-\textit{spikes} of electrical current \cite[p. 32]{Dayan2001, Eliasmith2004}.
-
-In biological networks there is a temporal dimension to this the signals
-arrive from multiple sources in parallel \cite{Eliasmith2004}.
-Lapicque worked on a conductance model in 1907 that would illustrate this fact,
-dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and-fire}
-\index{integrate-and-fire|see {neuron model}}
-model.
-The model essentially integrates received current over time
-to determine whether to fire
-\cite{Dayan2001, Eliasmith2004}.
-The Dirac ($\delta$) function \index{Dirac function}
-in equation \ref{eq:dirac} shows an idealised
-version of this \cite[p. 404]{Dayan2001}.
-For all values it approaches 0, except when its argument is
-0 where it will grow infinitely.
-The total area of these `spikes' sum together to 1 over time $t$ \index{neuron spike}.
-
-\begin{equation} \label{eq:dirac}
-  \rho(t) = \int dt\ \delta(t) = 1
-\end{equation}
-
-This idealised representation is a common mathematical approximation of
-a sequence of activation functions \cite{Dayan2001, Eliasmith2004},
-and the foundation for the \textit{third} generation
-neural networks, where the computations are understood as spikes over
-time \cite{Maass1997}. \index{neuron spike} \index{spike|see {neuron spike}}
-In this model the neurons receive a voltage that builds over time, until
-it reaches a threshold voltage ($V_{th}$) and produces a single spike
-\mbox{($\delta(t-t_n)$)}
-\cite{Dayan2001, Eliasmith2004}.
-In a brief period after the activation the neuron enters a period of
-refraction, \index{refraction period}
-where injected voltage is not accumulated, denoted by 
-$\tau_{ref}$, illustrated in figure \ref{fig:spiking}
-\cite[p. 82]{Eliasmith2004}.
-
-A more realistic neuron model was developed by Hodgkin
-and Huxley in 1952 dubbed the Hudgkin-Huxley model \cite{Dayan2001}.
-While it is more precise than integrate-and-fire models, it is
-more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
-\cite{Albada2018, Dayan2001, Eliasmith2015}.
-
-\begin{figure}
-\centering
-
-\begin{tikzpicture}[scale=3]
-\pgfkeys{/pgf/number format/precision=1}
-\draw (0,0) -- (2, 0);
-\draw (0,0) -- (0, 1);
-\foreach \i in {0,0.2,...,1}
-  \draw (0,\i) -- (0.02,\i) node [left] {\scriptsize \pgfmathroundtozerofill{\i}\pgfmathresult};
-\foreach \i in {0,20,...,100}
-  \draw (\i/50,0) -- (\i/50,0.02) node [below] {\scriptsize \i};
-
-\node [rotate=90] at (-0.25, 0.5) {\text{voltage (V)}};
-\node at (1, -0.2) {\text{time (ms)}};
-
-\draw [thick] (0,0) .. controls (12/50,0.50) and (36/50,0.6) .. (67/50, 0.639);
-\draw [thick] (67/50,0) -- (67/50,1);
-\draw [dashed] (0,0.64) -- (2,0.64) node [right] {\scriptsize $V_{th}$};
-\node at (67/50, -0.1) {\scriptsize $t_n$};
-\draw [thick] (67/50,0) -- ++ (0.1,0);
-\node at (80/50,0.85) {\scriptsize $\delta(t-t_n)$};
-\draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.35) .. (2, 0.42);
-\node at (75/50,0.3) {\scriptsize $\tau_{ref}$};
-\draw (70/50,0.03) .. controls (71.5/50,0.13) .. (74.5/50,0.24);
-
-\end{tikzpicture}
-\caption{A model of the voltage buildup, spiking and refractory period
-         of an integrate-and-fire \index{neuron model!integrate-and-fire} 
-         neuron with constant current influx.}
-\label{fig:spiking}
-\end{figure}
-
-Lapicque's model has been elaborated in the \textit{leaky
-integrate-and-fire} (LIF) \index{neuron model!leaky-integrate-and-fire}
-model, which introduces a numerical ``leak''
-into the model, that acts as a type of memory \index{memory}
-for the neuron integration \cite{Eliasmith2004, Eliasmith2015}.
-Input voltages decays exponentially over time, meaning that the
-present voltage depends more strongly on recent input voltages
-\cite[p. 86]{Eliasmith2004}.
-By controlling the resistance (or leak), it is possible to
-control the time with which previous voltages are 'forgotten'
-\cite{Eliasmith2004}.
-The LIF equation is given in equation \ref{eq:lif}, where
-$v$ is the membrane voltage difference between the interior
-and exterior of the neuron membrane, $C(t)$ is the input current
-and $\tau_{RC}$ is the membrane time constant that determines how
-quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
-As soon as the voltage reaches $V_{th}$ the neuron spikes and
-enters the refractory period.
-
-\begin{equation}
-  \tau_{RC}\frac{dv(t)}{dt} = -v(t) + C(t)
-  \label{eq:lif}
-\end{equation}
-
-Like in the second generation neural networks, neurons
-can receive input from a number of input neurons ($n$).
-The connections are commonly referred to as synapses, and are similarly
-weighted (see equation \ref{eq:weightedsum}), 
-such that they contribute differently to the accumulated 
-voltage, given by equation \ref{eq:synaptic} \cite{Dayan2001}.
-
-\begin{equation}
-  \sum_{i=1}^n{w_i\delta(t - t_i)}
-  \label{eq:synaptic}
-\end{equation}
-
-\subsection{Coding spikes}
-The temporal properties of the spikes convey information \cite{Dayan2001}.
-Collecting spikes from a neuron over time provides a 
-spike train\index{spike train} that can be decoded into numerical
-values \cite{Dayan2001}.
-A simple way to decode a spike train is to count the number of
-spikes and divide them by the duration of the spike train, shown in
-equation \ref{eq:spikerate}
-\cite{Dayan2001}.
-
-\begin{equation}
-  r = {n \over T} = {1 \over T} \int_0^T \rho(t)
-\label{eq:spikerate}
-\end{equation}
-
-When encoding numerical information to spikes, it is useful to 
-express the spikes stochastically, such that one scalar determines
-the probability that a neuron spikes over time \cite{Dayan2001}.
-The firing rate can be understood as the probability that a given
-neuron will fire over time \cite{Dayan2001}.
-Assuming that the spikes are independent of each other, this
-probability can be expressed by a distribution such as the
-Poisson probability distribution\index{Poisson distribution}
-\cite{Dayan2001}.
-The Poisson distribution determines the probability of a number
-of events occurring in an interval, given that the events are
-known to happen at a fixed rate \cite{Dayan2001}.
-It is defined in equation \ref{eq:poisson} where $n$ is the
-number of events and $\alpha$ is the rate with which events
-happen \cite{Dayan2001}.
-
-\begin{equation}
-P(n) = \alpha^n {e^{-\alpha} \over n!}
-\label{eq:poisson}
-\end{equation}
-
-% TODO: Write about noise
-
-%\subsubsection{Encoding and decoding in spiking neural networks}
-%...
-\begin{comment}
-To align digital representations with neural spikes,
-signals are encoded and decoded when entering and leaving the system
-respectively \cite{Dayan2001}.
-Because of the temporal nature of spiking neural networks, probability
-distributions are commonly used to describe 
-Given a current for background firing rates
-Assuming there are $n$ inputs to a neuron with $i$ bits of information,
-an encoder
-
-\subsection{\Gls{NN}s as directed graphs}
-Following the above descriptions, \gls{NN}s in both generations
-can be abstracted as a directed graph: circuits of computational
-units connected through	weighted, directed edges
-\cite{Dayan2001, Eliasmith2004, Russel2007}.
-Figure \ref{fig:nn-example} illustrates such a network.
-The layered design is typical for first and second generation networks, but 
-can be generalised to the third generation as well, despite their parallel
-nature.
-The second layer is traditionally denoted as `hidden' because it is only
-stimulated indirectly \cite{Russel2007}.
-
+\subsection{Neural networks as directed graphs}
+These first \glspl{NN} would collect neurons in groups\index{neuron!group} 
+that connect to other groups in a sequence
+\cite{Russel2007}.
+Figure \ref{fig:nn-example} shows an example of such a network.
 \begin{figure}
 \centering
 \tikzset{%
@@ -316,23 +78,29 @@ stimulated indirectly \cite{Russel2007}.
 
   \foreach \l [count=\x from 0] in {Input, Hidden, Output}
     \node [align=center, above] at (\x*2,2) {\l};
+  
+  \draw [decorate,decoration={brace, amplitude=5pt,mirror,raise=4ex}]
+    (0,-1.2) -- (1.8,-1.2) node[midway,yshift=-3em]{$l_1$};
+  \draw [decorate,decoration={brace, amplitude=5pt,mirror,raise=4ex}]
+    (2,-1.2) -- (3.8,-1.2) node[midway,yshift=-3em]{$l_2$};
 \end{tikzpicture}
-\caption{An example neural network with a single hidden layer.}
+\caption{An example neural network of depth 3 with two layers ($l_1$, $l_2$) and a single hidden neuron group ($H$).}
 \label{fig:nn-example}
 \end{figure}
 
-In this representation an `input' is a stimulus vector, whose
-length is equal to the number of neurons in the first layer.
-Conversely, an `output' is a vector whose length
-is controlled by the number of output neurons.
-A \gls{NN} can then be understood as a function $f$ that 
-maps an input vector to an output vector of arbitrary size
-\cite{Russel2007}.
-
+The number of groups determines the depth\index{neural network!depth} of
+a network\cite{Russel2007}.
+Each group applies a non-linear transformation to the input that is forwarded
+to the next layer and so on \cite{Bishop2006, Russel2007}.
+From a computational point of view a neuron group is simply a computational
+unit, which allows \glspl{NN} to be abstracted as circuits of units connected in
+a directed graph
+\cite{Dayan2001, Eliasmith2004, Russel2007}.
 This view can be simplified as shown in figure \ref{fig:nn-composition},
-such that each node is considered a function \cite{Rojas1996}.
-The network is the same but the output is considered to be the sequential
-composition of node functions over the input $x$.
+such that each neuron group\index{neuron!group} (node)\index{node}
+is considered a function \cite{Rojas1996}.
+Here the output is found by the sequential
+composition of activation functions over the input $x$.
 \begin{figure}
 \centering
 \tikzset{%
@@ -342,23 +110,310 @@ composition of node functions over the input $x$.
 }
 \begin{tikzpicture}
   \node (input) at (-0.3,0) { $x$ };
-  \node [node] (node-f) at (1.5,0) { $f$ };
-  \node [node] (node-g) at (3,0) { $g$ };
-  \node [node] (node-h) at (4.5,0) { $h$ };
-  \node (output) at (6.5,0) { $f(g(h(x)))$ };
+  \node [node] (node-f) at (1.5,0) { $g$ };
+  \node [node] (node-g) at (3,0) { $h$ };
+  \node (output) at (5,0) { $g(h(x))$ };
   \draw [->] (input) -- (node-f);
   \draw [->] (node-f) -- (node-g);
-  \draw [->] (node-g) -- (node-h);
-  \draw [->] (node-h) -- (output);
+  \draw [->] (node-g) -- (output);
 \end{tikzpicture}
-\caption{Another representation of the network in figure
-  \ref{fig:nn-example}, where each node is considered a function
+\caption{Another representation of the network in Figure
+  \ref{fig:nn-example}, where each layer is considered a function ($l_1 = g$, $l_2 = h$),
 and the output is derived by composing functions sequentially 
-over the input.}
+over the input ($x$).}
 \label{fig:nn-composition}
 \end{figure}
 
-\section{Learning} \index{learning} \label{sec:learnin}
+Neuron groups are sometimes referred to as \textit{layers}\index{neural network!layer} \index{layer|see neural network}
+in the literature, but from a computational perspective it is simpler to view layers as
+functions, such that they include the output activations for the next neuron group \cite{Bishop2006}.
+In this thesis, a layer is defined as computational units that transform input
+with a non-linear function to produce some output.
+Thus the network in figure \ref{fig:nn-example} consists of two layers.
+
+The layered design is typical for first and second generation networks, but 
+can be generalised to the third generation as well, despite their parallel
+nature \cite{Eliasmith2015}. %TODO: Move to 3rd gen
+Neuron groups or layers that are not directly connected to the input or output
+of the network is traditionally denoted as `hidden'\index{layer!hidden} because it is only
+stimulated indirectly \cite{Russel2007}.
+
+In this representation the `input' is a vector, whose
+length is equal to the number of input neurons in the first layer.
+Conversely, the `output' is a vector whose length
+is controlled by the number of output neurons in the network.
+An \gls{NN} can then be understood as a function $f$ that 
+maps an input vector to an output vector of arbitrary size
+\cite{Russel2007}.
+
+Neuron models typically enrich the
+input signals ($x$) with a linear equation as shown in Equation \ref{eq:weightedoutput},
+where $\sigma$ is the neuron function
+\cite{Schmidhuber2014, Russel2007}. 
+For a single neuron $x$, the output signal is calculated through a weight ($w$)
+and a bias ($b$). 
+Weights and biases allow the model to adapt the relative importance of each
+input neuron by modifying their weights and biases, thus allowing the
+model to \textit{train} to a given domain \cite{Schmidhuber2014, Russel2007}.
+
+For each neuron $x$ in the layer $j$, the output $x_j$ can be calculated given the activation value,
+weight and bias from the previous layer ($i$) (see Equation
+\ref{eq:weightedoutput}).
+Here $u_j$ is the weighted sum of the output from the previous layer $i$, before
+applying the activation function $\sigma$.
+
+\begin{equation} \label{eq:weightedoutput}
+x_j = \sigma(u_j) = \sigma([\sum_{i=1}^n w_{i,j} x_i] + b_j)
+\end{equation}
+
+\subsection{Second generation neural networks}
+Second generation neural networks augment the perceptron model by
+a) allowing continuous output values of a neuron and b) parametrising
+the computation of the neuron by adding an \textit{activation function}
+\index{activation function} that determines the output of the neuron
+\cite{Maass1997}.
+\textit{Sigmoidal} functions are commonly used for activation functions
+because they resemble the perceptron step function while 
+retaining continuity (see Figure \ref{fig:sigmoid})
+\cite{Maass1997}.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[domain=-6:6,xscale=0.3]
+  \draw[->] (-6.2,0) -- (6.2,0) node[right] {$x$};
+  \draw[->] (0,-0.2) -- (0,1.2) node[above] {$\sigma(x)$};
+  \draw plot (\x,{1 / (1 + exp(-\x))}) node[right] {$\sigma(x) = {1 \over 1 + e^{-x}}$};
+\end{tikzpicture}
+\caption{A sigmoidal (soft step) function.}
+\label{fig:sigmoid}
+\end{figure}
+
+A number of variations for sigmoidal activation functions exist such as the 
+hyperbolic tangent ($tanh$) and
+the rectified linear unit \index{ReLU} (ReLU, see Equation \ref{eq:ReLU}). 
+They are applied either in a feed-forward or recurrent (cyclic) manner, where
+the recurrent variant performs temporal transformations
+\footnote{It is possible to \textit{unfold} recurrent
+networks to resemble the circular processes until a certain point, achieving
+a similar effect to temporal signal transformation, see \cite{Mozer1995}.}
+\cite{Schmidhuber2014}.
+
+\begin{equation} \label{eq:ReLU}
+f(x) = \begin{cases}
+         0 & \text{if } x < 0 \\
+	 x & \text{otherwise}
+       \end{cases}
+\end{equation}
+
+\subsection{Third generation neural networks}
+Constructing a network of neuron models essentially creates a non-linear
+response to a given numerical vector \cite{Russel2007}.
+This transformative view can be adopted to biological (third generation)
+\glspl{SNN}, where the data being transferred are no longer vectors, but 
+\textit{spikes}\index{neuron!spike}
+of electrical current over time \cite[p. 32]{Dayan2001, Eliasmith2004}.
+
+In biological networks there is a temporal dimension, in that neurons
+produce and fire spikes asynchronously to other neurons in the same
+group \cite{Eliasmith2004}.
+
+Lapicque worked on a conductance model in 1907 that could describe this
+process dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and-fire}
+\index{integrate-and-fire|see {neuron model}}
+model.
+The model essentially integrates received current over time
+to determine whether to fire
+\cite{Dayan2001, Eliasmith2004}.
+The Dirac ($\delta$) function \index{Dirac function}
+in Equation \ref{eq:dirac} shows an idealised
+version of this idea \cite[p. 404]{Dayan2001}.
+For all values it approaches 0, except when its argument is
+0 where it will grow infinitely.
+This is the equivalent of summing up $n$ neuronal events in a trial,
+starting at time $0$ and ending at time $t$.
+The total area of these `spikes' sum together to 1 over time $t$. \index{neuron spike}
+
+\begin{equation} \label{eq:dirac}
+  \rho(t) = \int dt\ \delta(t) = \sum_{i=1}^n \delta(t - t_i) = 1
+\end{equation}
+
+This idealised representation is a common mathematical approximation of
+a sequence of activation functions \cite{Dayan2001, Eliasmith2004},
+and the foundation for the \textit{third} generation
+neural networks, where the computational unit is discrete events over time,
+instead of continuous-valued (as in second generation \glspl{NN})
+\cite{Maass1997}.\index{neuron spike}\index{spike|see {neuron spike}}
+
+The spiking model is based on a neuron that builds voltage over time, until
+it reaches a threshold voltage ($V_{th}$) and emits a spike
+\mbox{($\delta(t-t_n)$)}
+\cite{Dayan2001, Eliasmith2004}.
+The spike carries a charge and is received by a post-synaptic neuron as
+input current, which, in turn, decides whether to fire \cite{Dayan2001}.
+
+In a brief period after the activation the neuron enters a period of
+refraction, \index{refractory period}
+where injected voltage is not accumulated, denoted by 
+$\tau_{ref}$, illustrated in Figure \ref{fig:spiking}
+\cite[p. 82]{Eliasmith2004}.
+
+A more realistic neuron model was developed by Hodgkin
+and Huxley in 1952 dubbed the Hudgkin-Huxley model \cite{Dayan2001}.
+While it is more precise than integrate-and-fire models, it is
+more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
+\cite{Albada2018, Dayan2001, Eliasmith2015}.
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}[scale=3]
+\pgfkeys{/pgf/number format/precision=1}
+\draw (0,0) -- (2, 0);
+\draw (0,0) -- (0, 1);
+\foreach \i in {0,0.2,...,1}
+  \draw (0,\i) -- (0.02,\i) node [left] {\scriptsize \pgfmathroundtozerofill{\i}\pgfmathresult};
+\foreach \i in {0,20,...,100}
+  \draw (\i/50,0) -- (\i/50,0.02) node [below] {\scriptsize \i};
+
+\node [rotate=90] at (-0.25, 0.5) {\text{voltage (V)}};
+\node at (1, -0.2) {\text{time (ms)}};
+
+\draw [thick] (0,0) .. controls (12/50,0.50) and (36/50,0.6) .. (67/50, 0.639);
+\draw [thick] (67/50,0) -- (67/50,1);
+\draw [dashed] (0,0.64) -- (2,0.64) node [right] {\scriptsize $V_{th}$};
+\node at (67/50, -0.1) {\scriptsize $t_n$};
+\draw [thick] (67/50,0) -- ++ (0.1,0);
+\node at (80/50,0.85) {\scriptsize $\delta(t-t_n)$};
+\draw [thick] (72/50,0) .. controls (81/50,0.25) and (90/50,0.35) .. (2, 0.42);
+\node at (75/50,0.3) {\scriptsize $\tau_{ref}$};
+\draw (70/50,0.03) .. controls (71.5/50,0.13) .. (74.5/50,0.24);
+
+\end{tikzpicture}
+\caption{A model of how a constant, low input current produces a buildup of
+	voltage, a spike and finally a refractory period
+         of an integrate-and-fire \index{neuron model!integrate-and-fire} 
+         neuron.
+	 No voltage is integrated during the refractory period.}
+\label{fig:spiking}
+\end{figure}
+
+Lapicque's model has been elaborated in the \textit{leaky
+integrate-and-fire} (LIF) \index{neuron model!leaky-integrate-and-fire}
+model, which introduces a numerical ``leak''
+into the model, that acts as a type of memory \index{memory}
+for the neuron integration \cite{Eliasmith2004, Eliasmith2015}.
+In the leaky model, input voltages decays exponentially over time,
+meaning that the present voltage depends more strongly on recent input
+voltages \cite[p. 86]{Eliasmith2004}.
+By controlling the resistance (or leak), it is possible to
+control the time with which previous voltages are 'forgotten'
+\cite{Eliasmith2004}.
+The LIF equation is given in \ref{eq:lif}, where
+$v$ is the membrane voltage difference between the interior
+and exterior of the neuron membrane, $C(t)$ is the input current
+at time $t$, and $\tau_{RC}$ is the membrane time constant that determines how
+quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
+As soon as the voltage reaches $V_{th}$ the neuron spikes and
+enters the refractory period.
+
+\begin{equation}
+  \tau_{RC}\frac{dv(t)}{dt} = -v(t) + C(t)
+  \label{eq:lif}
+\end{equation}
+
+Similar to second generation neural networks, neurons
+receive input from $n$ input neurons.
+The connections are commonly referred to as synapses, and are similarly
+weighted, as well as translated by a bias (see Equation \ref{eq:weightedoutput}),
+such that they contribute differently to the accumulated 
+voltage, given by Equation \ref{eq:synaptic} \cite{Dayan2001}.
+
+\begin{equation}
+  x_j = \sigma(u_j) = (\sum_{i=1}^n{w_i\delta(t - t_i)}) + b_j
+  \label{eq:synaptic}
+\end{equation}
+
+\subsection{Coding spikes}
+Spikes convey information in the form of amplitude, duration and
+intervals \cite{Dayan2001}.
+A number of methods exist to decode the information in the spikes, by a 
+combination of the three parameters \cite{Dayan2001, Eliasmith2015, Diehl2015, Rueckauer2017},
+but this thesis will
+focus on so-called rate models\index{rate encoding|see {encoding}}\index{encoding!rate}.
+Recording neuron spikes over time provides an array of timestamps called a
+spike train\index{spike train}, and rate models simply counts the timestamps and divides
+them by the duration of the spike train to produce the spike \textit{rate}, shown
+in Equation \ref{eq:spikerate} \cite{Dayan2001, Eliasmith2004}.
+Semantically this is the equivalent of the average number of spikes propagated
+in that interval, and provides the basis for a numerical interpretation of a
+neuron's output \cite{Eliasmith2004}.
+
+\begin{equation}
+  r = {n \over T} = {1 \over T} \int_0^T \rho(t)
+\label{eq:spikerate}
+\end{equation}
+
+When encoding numerical information to spikes, it is useful to 
+express the spikes stochastically, such that one scalar determines
+the probability that a neuron spikes over time \cite{Dayan2001}.
+The firing rate can be understood as the probability that a given
+neuron will fire over time \cite{Dayan2001}.
+
+Assuming that the spikes are independent from each other, this
+probability can be expressed by a distribution such as the
+Poisson probability distribution\index{Poisson distribution}
+\cite{Dayan2001}.
+The Poisson distribution determines the probability of a number
+of events occurring in an interval, given that the events are
+known to happen at a fixed rate \cite{Dayan2001}.
+It is defined in Equation \ref{eq:poisson} where $n$ is the
+number of events and $\lambda$ is the rate with which events
+happen \cite{Dayan2001}.
+Figure \ref{fig:poisson} shows the probability that the number of
+observed events ($k$) matches the poisson rate ($\lambda$).
+
+\begin{equation}
+P(n) = \lambda^n {e^{-\lambda} \over n!}
+\label{eq:poisson}
+\end{equation}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\pgfmathdeclarefunction{poiss}{1}{%
+  \pgfmathparse{(#1^x)*exp(-#1)/(x!)}%
+}
+\begin{axis}[ylabel={P(X=k)},xlabel={k},legend
+    entries={$\lambda=1$,$\lambda=4$,$\lambda=7$},every axis plot post/.append style={
+    samples at = {0,...,15},
+    axis x line*=bottom,
+    axis y line*=left,
+    enlargelimits=upper}]
+  \addplot +[sharp plot] {poiss(1)};
+  \addplot +[sharp plot] {poiss(4)};
+  \addplot +[sharp plot] {poiss(7)};
+\end{axis}
+\end{tikzpicture}
+\label{fig:poisson}
+\caption{The probability of a number of events ($k$) occurring, given the
+poisson rates ($\lambda$) of 1 (blue), 4 (red) and 7 (green).}
+\end{figure}
+
+To align digital representations with neural spikes,
+signals are encoded and decoded when entering and leaving the \gls{SNN}
+\cite{Dayan2001}.
+
+For a LIF neuron the frequency of spikes over time, given a variable input current,
+is given by \cite[p.87]{Eliasmith2004}
+\begin{equation}
+  f(I) = (\tau_{ref} - \tau_{RC}\; log(1 - {V_{th} \over IR}))^{-1}
+  \label{eq:lif-rate}
+\end{equation}
+
+Assuming that the stochastic process smoothes out over time, this equation
+relates input in \gls{ANN}s to input in \gls{SNN}s.
+
+\section{Learning} \index{learning} \label{sec:learning}
 % TODO: http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
 Defining an \gls{agent} as a system that can act on previous knowledge
 \cite{Russel2007}, learning in the context of an \gls{agent}
@@ -369,7 +424,7 @@ Following the above abstraction of neural networks as computations over vectors,
 ``learning'' \index{learning} can be understood as the development of consistent
 patterns, given the same input.
 Within the \gls{ml} literature, this is commonly referred to as 
-\textit{prediction}. \index{predict}
+\textit{prediction}. \index{learning!prediction}
 In practice this is expressed in terms of general functions or
 \textit{rules} \index{rule} in a network \cite[p. 704.]{Russel2007}.
 
@@ -404,7 +459,7 @@ or \textit{deductive} \index{learning!deduction} \cite[p. 704]{Russel2007}.
 The latter requires a basis in rule-based systems from which new knowledge can
 be deduced, while the former requires a measurement of success \cite[p. 705]{Russel2007}.
 Such a measurement is typically referred to as the \textit{error} or \textit{loss}
-function,\index{loss function}\index{error function|see {loss function}}
+function,\index{loss function}\index{error function|see {error function}}
 because it shows how much the prediction deviated from the expectation (goal)
 \cite{Russel2007}.
 
@@ -412,48 +467,48 @@ Learning within neural networks have shown to be possible within all three
 types of learning \cite{Schmidhuber2014, Russel2007}, but deduction is rarely
 seen in the \gls{NN} literature, because it is cumbersome to express neural
 networks through logic transformations \cite{Pearl2018}.
-%TODO: Check citation; write about Eliasmith and DTU logics guy
+
 Because of its simplicity and widespread use, this thesis will focus on supervised
 inductive learning.
 
 \subsection{Errors in learning}
 It is worth noting that \gls{NN}s may learn \index{learn}
-rules \index{rule} that are not optimal \cite{Russel2007}.
+rules \index{learning!rule} that are not optimal \cite{Russel2007}.
 This can happen in one of two ways: either the
 network is structurally incapable of learning the domain, 
 or the learned rule is incorrect \cite{Russel2007, Eliasmith2015}.
 
-A \gls{NN} is limited in complexity by its number of nodes,
-because one neuron is only capable of describing a limited
-outcome \cite{Dayan2001, Russel2007}.
-This is sufficient to model a linear correlation, but insufficient
-to explain, complex dependencies by itself.
+An \gls{NN} is limited in complexity by its number of nodes,
+because one neuron is only as complex as its activation function
+\cite{Dayan2001, Russel2007}.
 Such a structural limit cannot be solved by any other means
 than augmenting the network \cite{Russel2007}.
 
+Seeing neural networks as complex non-linear systems, with
+a number of parameters for the weights and biases,
+the network can be visualised as a point in a high-dimensional space 
+\cite{Russel2007}. 
 Provided that the network is sufficiently complex, the 
-learned rules can still be incorrect if the data, on which
-the network bases its predictions, fails to capture the 
-expectations of the trainer.
-In other words the data can fail to represent the problem 
-correctly \cite{Russel2007}.
-To avoid this, it is customary to only train the network
-on a part of the available data, only to test it on 
+learned rules can still fail to achieve a good accuracy because
+the system falls into local minima \cite{Russel2007}.
+
+A similar problem occurs when the model only trains on data
+that is not representable for the more general domain \cite{Russel2007}
+This type of ``overfitting'' can be avoided if the network
+is only trained on parts of the available data, and to test it on 
 the remaining data \cite{Russel2007, Schmidhuber2014}.
 The limits between data for training and data for testing
 are not agreed upon, but a 80\%/20\% split seems to be
 the default \cite{Russel2007, Schmidhuber2014}.
 
 \subsection{Backpropagation}
-Returning to the analogy of neural networks as functions
-over vectors, learning can be understood as a search for
-the optimal weight configuration, such that prediction
-errors are minimised \cite{Rumelhart1988}.
-Thus the network weights constitutes the search space, 
+In the search for optimal weight/bias configurations,
+such that prediction errors are minimised \cite{Rumelhart1988},
+the network weights constitutes the search space, 
 and the loss function \index{loss function}
 is the subject of the optimisation \cite{Russel2007}.
 
-The loss function to minimize for a supervised network
+One loss function to minimize for a supervised network
 is described in equation \ref{eq:bp-loss},
 where the actual output $x$ is compared to the 
 target (desired) output $t$, for all output neurons $n$
@@ -464,15 +519,18 @@ target (desired) output $t$, for all output neurons $n$
   \label{eq:bp-loss}
 \end{equation}
 
-For feedforward networks this calculation happens
+As has been shown, feedforward networks perform this calculation
 through the sequential application of the weighted activation
-functions in each layer, such that the value of $x_i$
-depends on the value from the connected previous neurons.
-For second generation neural networks this makes the
-error function continuous and differentiable,
+functions in each layer.
+One method to minimising this error is
+to calculate the gradients of the network layers and iteratively walk in
+the opposite direction of the error, a technique called gradient
+descent\index{gradient descent}\cite{Rumelhart1988, Russel2007}.
+Gradient descent requires that the network
+activation functions are differentiable,
 such that the gradient of $E$ with respect to the layer weights
-($w_1 \cdots w_l$) can be found, and the weights can be iteratively
-adjust \cite{Rojas1996}, as shown in equation \ref{eq:bp-derivation}.
+($w_1 \cdots w_l$) can be found, and be iteratively
+adjusted \cite{Rojas1996}, as shown in equation \ref{eq:bp-weights}.
 
 \begin{equation}
   \Delta E = (
@@ -481,11 +539,79 @@ adjust \cite{Rojas1996}, as shown in equation \ref{eq:bp-derivation}.
     \cdots, 
     {\partial E \over \partial w_l}
   )
-  \label{eq:bp-derivation}
+  \label{eq:bp-weights}
 \end{equation}
 
-Incrementally, each weight can be updated as in equation \ref{eq:bp-update},
-where $\gamma$ is a factor that controls the speed with which the weights
+Deriving the error function from equation \ref{eq:bp-loss} gives
+
+\begin{equation}
+  \delta_j = y_j - t_j
+  \label{eq:bp-loss-prime}
+\end{equation}
+
+The derivation of $E_n$ for an output neuron $n$ from layer $i$ to layer $j$
+depends on the weight $w_{ji}$ via the activation input $u_j$ (see equation
+\ref{eq:weightedoutput}).
+We can therefore apply the chain rule for partial derivatives \cite{Bishop2006}:
+
+\begin{equation}
+  {\partial E_n \over \partial w_{ji} } =
+  { \partial E_n \over \partial u_j}
+  {\partial u_j \over \partial w_{ji}}
+  \label{eq:bp-chain}
+\end{equation}
+
+and replace the following terms
+
+\begin{equation}
+  \delta_j = 
+  { \partial E_n \over \partial u_j}
+  \qquad
+  z_i = { \partial u_j \over \partial w_{ji}}
+  \label{eq:bp-d}
+\end{equation}
+
+to get 
+\begin{equation}
+  {\partial E_n \over \partial w_{ji} } =
+  { \partial E_n \over \partial u_j}
+  {\partial u_j \over \partial w_{ji}} = 
+  \delta_j z_i
+  \label{eq:bp-chain2}
+\end{equation}
+
+Observing that $\delta_j$ can be further expanded to the sum of all units $k$
+that receives input from unit $j$ such that
+
+\begin{equation}
+  \delta_j = {\partial E_n \over \partial u_j} =
+  \sum_k {\partial E_n \over \partial u_k} 
+  {\partial u_k \over \partial u_j}
+  \label{eq:bp-d2}
+\end{equation}
+
+and substituting \ref{eq:bp-d} into \ref{eq:bp-d2} while applying the chain rule, such that
+
+\begin{equation}
+  \begin{split}
+  \delta_j & = \sum_k {\partial E_n \over \partial u_k} 
+   {\partial u_k \over \partial u_j} \\
+   & = \sum_k \delta_k {\partial u_k \over \partial \sigma_j} {\partial \sigma_j \over \partial u_k} \\
+   & = \sum_k \delta_k w_{kj} \sigma'_j \\
+   & = \sigma'_j \sum_k w_{kj} \delta_k 
+  \end{split}
+  \label{eq:bp}
+\end{equation}
+
+This more general form of backpropagation can be chained through layers, where
+the outer most $\delta_j$ term---also called the layer ``error''---is defined 
+as in \ref{eq:bp-loss-prime}.
+
+In each layer weights are updated as shown in equation \ref{eq:bp-update},
+to approach an optimal configuration.
+For biases the derivative $\partial a_j \mathbin{/} \partial b_j = 1$ such that bias
+updates are given by \ref{eq:bp-update-bias}.
+Here $\gamma$ is a factor that controls the speed with which the weights
 are corrected (learning rate). \index{learning rate}
 
 \begin{equation}
@@ -493,48 +619,39 @@ are corrected (learning rate). \index{learning rate}
   \label{eq:bp-update}
 \end{equation}
 
-This technique is referred to as gradient descent, because the weights
-traverse the gradient towards a minimum \cite{Russel2007}.
-Whether that minimum is local or not is uncertain, why it is
-important to note that this technique is vulnerable to 
-local protuberances \cite{Rojas1996, Russel2007}.
-The learning rate exists to avoid ``shooting over'' optimal points, and
-several techniques have been invented to circumvent the problem of 
-local minima\footnote{Two examples are to give the learning rate a
-  ``momentum'', that alters the learning rate based on the previous 
-  success in minimising the loss function, 
-  or to assign individual learning rates for each weight
-  \cite{Schmidhuber2014}. Many more techniques exist, but they will
-  not be covered here.
-} \cite{Russel2007}.
+\begin{equation}
+  \Delta b_i = -\gamma \delta_j
+  \label{eq:bp-update-bias}
+\end{equation}
 
-Because the computation of the output layer is the result of the
-previous layer,
-
-Backpropagation, as it was invented by
-\textcite{Rumelhart1988}, is an algorithm that ``looks for the minimum
-of the error function in weight space using the method
-of gradient descent'' \cite[p. 151]{Rojas1996}.
-The idea is based on the application of the 
-
-For feedforward networks By deriving the 
-searches for optima by calculating the negative
-gradients of this loss function \cite{Rumelhart1988}.
-In a neural network the error is calculated at the output
-layer and `pushed' backwards, so as to incrementally 
-correct the network weights, such that .
-
-% TODO: Write in
-
-%\subsubsection{Auto-differentiation}
-% TODO: Write about autodiff
-
-%\section{Connection-set algebra} \label{sec:CSA}
-
-\section{The biological brain}
-\subsection{Plasticity in the brain}
-\subsection{REF model} \label{sec:ref}
+The learning rate exists to avoid ``shooting over'' optimal points
+\cite{Russel2007}.
+Typically a momentum is added to the learning rate, depending on the norm of
+$\delta_j$, such that see \cite{Sutskever2013, LeCun1998}. 
+Several other techniques have been invented to circumvent the problem of 
+local minima and optimise the learning of the model \cite{LeCun1998,
+Schmidhuber2014}, but they will not be covered here.
 
 \section{Neuromorphic computing}
-\end{comment}
+Neuromorphic hardware is based on the idea of \gls{NN}s where the activation
+units are modelled outside the classical \gls{vonNeumann} architectute, either in 
+integrated circuits or in simulated environments \cite{Albada2018,Blundell2018,Schmitt2017}.
+
+This approach permits the simulators to work several hundred of magnitudes
+faster than regular \gls{ANN}s, but at the cost of precision and noise
+\cite{Indiveri2015, Schmitt2017}.
+The precision problems occur because of hardware limitations where the typical
+weight is restricted to a few bits, compared to larger \gls{ANN} networks
+\cite{Indiveri2015, Lin2018}.
+The noise problems are caused by noise in the integrated circuit components 
+\cite{Lin2018, Pfeil2013}.
+
+Furthermore the technology is still relatively young and suffers from a number
+of practical problems, why networks above a couple of thousand neurons remains
+a problem in the available platforms \cite{Schmitt2017}.
+
+A number of examples are given in section \ref{sec:similar-neuromorphic}.
+
+%TODO: Add section on REF and the need for parallel networks
+
 \end{document}
