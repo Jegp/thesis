@@ -18,6 +18,7 @@
 % tikz drawing
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,matrix,chains,positioning,decorations.pathreplacing,arrows}
+\usepackage{pgfplots}
 
 % Listings
 \usepackage{listings}
@@ -68,7 +69,6 @@
 \renewcommand{\glossarypreamble}{\label{sec:glossary}}
 \makeglossaries
 \include{glossary}
-\makeglossaries
 
 % TOC
 \maxsecnumdepth{subsection}
@@ -173,18 +173,20 @@
 \section{How to read this thesis}
 \section{Acknowledgements}
 Kerem for providing internet.
+% TODO: Add statement that it's my own work
 \end{comment}
 
 \mainmatter
+
+
 \chapter{Introduction} \label{sec:intro}
   \subfile{chapters/introduction}
 
 \chapter{Theory} \label{sec:theory}
   \subfile{chapters/theory}
-
 \chapter{A DSL for neural networks modelling} \label{sec:dsl}
   \subfile{chapters/dsl}
-
+  \begin{comment}
 \chapter{Experiment} \label{sec:experiment}
 %  \subfile{chapters/experiment}
 
@@ -207,12 +209,17 @@ Kerem for providing internet.
 %  \section{REF similarity}
 %  \section{Future work}
 
-\printbibliography
-\printglossary
-\printindex
- 
+\end{comment}
+
 \appendix
 \chapter{Volr implementation code} \label{app:implementation}
   \include{appendices/volr}
 
+\backmatter
+
+\printglossary
+
+\printbibliography
+ 
+\printindex
 \end{document}
