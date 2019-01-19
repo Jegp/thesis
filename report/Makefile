@@ -12,6 +12,10 @@ all: build
 build: 
 	latexmk $(FLAGS) ${SOURCE_IN}
 
+count:
+	@ls report.tex chapters/*.tex chapters/**/*.tex
+	@texcount -char report.tex chapters/*.tex chapters/**/*.tex | grep "Letters in text" | cut -d':' -f2 | sum
+
 graphs: $(DOTFILE_DIRS)
 
 $(DOTFILE_DIRS): 
