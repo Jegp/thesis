@@ -163,7 +163,7 @@ Here $u_j$ is the weighted sum of the output from the previous layer $i$, before
 applying the activation function $\sigma$.
 
 \begin{equation} \label{eq:weightedoutput}
-x_j = \sigma(u_j) = \sigma([\sum_{i=1}^n w_{i,j} x_i] + b_j)
+x_j = \sigma(u_j) = \sigma\left(\left[\sum_{i=1}^n w_{i,j} x_i\right] + b_j \right)
 \end{equation}
 
 \subsection{Second generation neural networks}
@@ -229,12 +229,13 @@ in Equation \ref{eq:dirac} shows an idealised
 version of this idea \cite[p. 404]{Dayan2001}.
 For all values it approaches 0, except when its argument is
 0 where it will grow infinitely.
-This is the equivalent of summing up $n$ neuronal events in a trial,
-starting at time $0$ and ending at time $t$.
+In a trial starting at time $0$ and ending at time $t$, this
+is the equivalent of summing up the $n$ neuronal events that occurred in 
+the duration of the trial.
 The total area of these `spikes' sum together to 1 over time $t$. \index{neuron spike}
 
 \begin{equation} \label{eq:dirac}
-  \rho(t) = \int dt\ \delta(t) = \sum_{i=1}^n \delta(t - t_i) = 1
+  \rho(t) = \int_0^T \delta(t) = \sum_{i=1}^n \delta(t - t_i) = 1
 \end{equation}
 
 This idealised representation is a common mathematical approximation of
@@ -251,6 +252,8 @@ it reaches a threshold voltage ($V_{th}$) and emits a spike
 The spike carries a charge and is received by a post-synaptic neuron as
 input current, which, in turn, decides whether to fire \cite{Dayan2001}.
 
+After spiking the voltage inside the neuron is reset to a value ($\tau_{reset}$),
+from which it begins to accumulate charge again.
 In a brief period after the activation the neuron enters a period of
 refraction, \index{refractory period}
 where injected voltage is not accumulated, denoted by 
@@ -290,10 +293,10 @@ more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
 
 \end{tikzpicture}
 \caption{A model of how a constant, low input current produces a buildup of
-	voltage, a spike and finally a refractory period
-         of an integrate-and-fire \index{neuron model!integrate-and-fire} 
-         neuron.
-	 No voltage is integrated during the refractory period.}
+	voltage inside a integrate-and-fire neuron, which eventually produces a spike.
+	\index{neuron model!integrate-and-fire} 
+	After spiking the neuron enters a refractory period, $\tau_{ref}$,
+   	where no voltage is integrated.}
 \label{fig:spiking}
 \end{figure}
 
@@ -304,22 +307,23 @@ into the model, that acts as a type of memory \index{memory}
 for the neuron integration \cite{Eliasmith2004, Eliasmith2015}.
 In the leaky model, input voltages decays exponentially over time,
 meaning that the present voltage depends more strongly on recent input
-voltages \cite[p. 86]{Eliasmith2004}.
-By controlling the resistance (or leak), it is possible to
-control the time with which previous voltages are 'forgotten'
-\cite{Eliasmith2004}.
-The LIF equation is given in \ref{eq:lif}, where
-$v$ is the membrane voltage difference between the interior
-and exterior of the neuron membrane, $C(t)$ is the input current
-at time $t$, and $\tau_{RC}$ is the membrane time constant that determines how
-quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
-As soon as the voltage reaches $V_{th}$ the neuron spikes and
-enters the refractory period.
+voltages \cite[p. 85]{Eliasmith2004}.
 
 \begin{equation}
-  \tau_{RC}\frac{dv(t)}{dt} = -v(t) + C(t)
+  \frac{dv}{dt} = - {1 \over \tau_{RC}} (v - cr)
   \label{eq:lif}
 \end{equation}
+
+The LIF equation is given in Equation \ref{eq:lif}, where
+$v$ is the membrane voltage difference between the interior
+and exterior of the neuron membrane, $c$ is the input current, $r$
+is the ionic current (or leak) of charge across the membrane, and
+$\tau_{RC}$ is the membrane time constant that determines how
+quickly the neuron decays to its resting state \cite{Dayan2001, Eliasmith2004}.
+As the voltage builds up inside the neuron, $r$ will scale the
+rate of growth \cite{Eliasmith2004}.
+By tuning the leak it is possible to control the time with which
+previous voltages are 'forgotten' \cite{Eliasmith2004}.
 
 Similar to second generation neural networks, neurons
 receive input from $n$ input neurons.
@@ -329,39 +333,37 @@ such that they contribute differently to the accumulated
 voltage, given by Equation \ref{eq:synaptic} \cite{Dayan2001}.
 
 \begin{equation}
-  x_j = \sigma(u_j) = (\sum_{i=1}^n{w_i\delta(t - t_i)}) + b_j
+  x_j = \sigma(u_j) = \sum_{i=1}^n{w_i\delta(t - t_i)} + b_j
   \label{eq:synaptic}
 \end{equation}
 
 \subsection{Coding spikes}
-Spikes convey information in the form of amplitude, duration and
-intervals \cite{Dayan2001}.
+Spikes convey information in the form of amplitude, duration, and
+inter-spike intervals \cite{Dayan2001}.
 A number of methods exist to decode the information in the spikes, by a 
 combination of the three parameters \cite{Dayan2001, Eliasmith2015, Diehl2015, Rueckauer2017},
 but this thesis will
 focus on so-called rate models\index{rate encoding|see {encoding}}\index{encoding!rate}.
 Recording neuron spikes over time provides an array of timestamps called a
-spike train\index{spike train}, and rate models simply counts the timestamps and divides
-them by the duration of the spike train to produce the spike \textit{rate}, shown
+spike train\index{spike train} \cite{Eliasmith2015}.
+Rate models simply count the timestamps and divide them by the duration of
+the trial to produce the spike \textit{rate}, shown
 in Equation \ref{eq:spikerate} \cite{Dayan2001, Eliasmith2004}.
-Semantically this is the equivalent of the average number of spikes propagated
+Semantically this is the equivalent of averaging the number of spikes propagated
 in that interval, and provides the basis for a numerical interpretation of a
 neuron's output \cite{Eliasmith2004}.
 
 \begin{equation}
-  r = {n \over T} = {1 \over T} \int_0^T \rho(t)
+  r = {n \over T} = {n \over \rho(t)} = {1 \over T} \int_0^T \delta(t)
 \label{eq:spikerate}
 \end{equation}
 
 When encoding numerical information to spikes, it is useful to 
 express the spikes stochastically, such that one scalar determines
 the probability that a neuron spikes over time \cite{Dayan2001}.
-The firing rate can be understood as the probability that a given
-neuron will fire over time \cite{Dayan2001}.
-
 Assuming that the spikes are independent from each other, this
-probability can be expressed by a distribution such as the
-Poisson probability distribution\index{Poisson distribution}
+probability can be expressed by a probability distribution such as the
+Poisson distribution\index{Poisson distribution}
 \cite{Dayan2001}.
 The Poisson distribution determines the probability of a number
 of events occurring in an interval, given that the events are
@@ -394,24 +396,175 @@ P(n) = \lambda^n {e^{-\lambda} \over n!}
   \addplot +[sharp plot] {poiss(7)};
 \end{axis}
 \end{tikzpicture}
-\label{fig:poisson}
 \caption{The probability of a number of events ($k$) occurring, given the
 poisson rates ($\lambda$) of 1 (blue), 4 (red) and 7 (green).}
+\label{fig:poisson}
 \end{figure}
 
 To align digital representations with neural spikes,
 signals are encoded and decoded when entering and leaving the \gls{SNN}
 \cite{Dayan2001}.
+To compare between non-spiking and spiking networks is it necessary to 
+provide a coding scheme that transfers between the two representations.
 
-For a LIF neuron the frequency of spikes over time, given a variable input current,
-is given by \cite[p.87]{Eliasmith2004}
+Given the stepwise activation function from Equation \ref{eq:perceptron},
+the neuron can be said to spike with \cite[p. 3]{Diehl2015, Rueckauer2017}:
+
 \begin{equation}
-  f(I) = (\tau_{ref} - \tau_{RC}\; log(1 - {V_{th} \over IR}))^{-1}
-  \label{eq:lif-rate}
+\Theta(x) = \begin{cases}
+  	1 & \text{if } x \geq 0 \\
+	0 & \text{otherwise}
+	\end{cases}
+\label{eq:spike_theta}
+\end{equation}
+\noindent
+In turn the occurrence of a spike for a neuron $i$ at timestep $t$ can be
+calculated by the integration of input current at every simulation time step, where
+$v_i^l$ is the membrane potential for the neuron \cite[p. 3]{Rueckauer2017}:
+
+\begin{equation}
+\Theta^l_{t,i} = \Theta(v^l_i (t-1) + \zeta^l_i(t) - V_{thr}),
+\label{eq:current_timestep}
+\end{equation}
+\noindent
+Recalling that a neuron $i$ at layer $l$ receives post-synaptic
+impulses from $j$ neurons from layer $l - 1$, the input current $\zeta^l_i$ for neuron $i$
+at layer $l$ can be seen as the linear equation
+\cite[p. 3]{Rueckauer2017}:
+
+\begin{equation}
+\zeta^l_i (t) = V_{thr}\left(\sum^{N^{l - 1}}_{j = 1} w^l_{ij} \Theta^{l - 1}_{t,j} + b^l_i\right) ,
+\label{eq:membrane_timestep}
+\end{equation}
+\noindent
+where $V_{thr}$ is the neuron threshold. 
+
+Neurons integrate $\zeta_i^l(t)$ until the threshold $V_{thr}$ is 
+reached, where a spike is emitted and the membrane potential is reset to 
+0 (see Figure \ref{fig:spiking}).
+The membrane current $v_i^l(t)$ can then be modelled as
+
+\begin{equation}
+v_i^l(t) = \left(V_i^l(t - 1) + \zeta_i^l(t)\right)\left(1 - \Theta_{t,i}^l\right)
+\label{eq:membrane_current_sim}
 \end{equation}
 
-Assuming that the stochastic process smoothes out over time, this equation
-relates input in \gls{ANN}s to input in \gls{SNN}s.
+\noindent
+Assuming that the input current is above zero ($\zeta_i^1 > 0$) and that it
+remains constant through time, there will be a constant number of timesteps $n_i^1$
+between spikes in the neuron $i$, and the neuron threshold will always be exceeded
+by the same amount:
+
+\begin{equation}
+\epsilon_i^l = v_i^1(n_i^1) - V_{thr} = n_i^1 \cdot \zeta_i^1 - V_{thr}
+\label{eq:threshold}
+\end{equation}
+\noindent
+Assuming the same constant input current $\zeta$ such that $\sum_{t'}^t 1 = t/\Delta t$, 
+and realising that the number of spikes $N$ in a simulation of duration $t$ is
+$N(t) = \sum_{t'=1}^t\Theta_{t'}$, 
+the membrane potential can be obtained by summing over the simulation duration $t$
+\cite{Rueckauer2017}:
+\begin{equation}
+\begin{split}
+\sum_{t'}^tv(t') &= \sum_{t'=1}^t v(t' - 1)(1 - \theta_{l'}) + (1 - \Theta_{t'}) \\
+     		 &= \sum_{t'=1}^t v(t' - 1)(1 - \theta_{l'}) + \zeta({t \over \Delta t} - n) \\
+\end{split}
+\label{eq:sum_rate}
+\end{equation}
+\noindent
+The layer and neuron indices are omitted for clarity.
+
+By further rearranging Equation \ref{eq:sum_rate} and defining the maximum firing rate 
+as $r_{max} = 1 / \Delta t$, the average firing rate $N/t$ can now
+be calculated by dividing with the simulation time \cite{Rueckauer2017}:
+
+\begin{equation} 
+\begin{split}
+{1 \over \zeta t} \sum_{t'}^tv(t') &= {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) + \zeta({t \over \Delta t} - N) \\
+{1 \over \zeta t} \sum_{t'}^tv(t') &= {1 \over \Delta t} - {N \over t} + {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) \\
+{1 \over \zeta t} \sum_{t'}^tv(t') + {N \over t} &= r_{max} + {1 \over \zetat} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) \\
+{N \over t} &= r_{max} + {1 \over \zeta t} \sum_{t'=1}^t \left(v(t' - 1)(1 - \Theta_{l'}) - v(t')\right) \\
+r = {N \over t} &= r_{max} - {1 \over \zetat} \sum_{t'=1}^t \left(v(t') - v(t' - 1)(1 - \Theta_{l'})\right) \\
+\end{split}
+\label{eq:spike_rate_sum}
+\end{equation}
+
+\noindent
+Since the input current is constant, the value of the membrane potential before a spike is always the same,
+and is always an integer multiple of the input $\zeta$.
+Defining $n \in \mathbbm{N}$ as the number of simulation steps needed to cross the threshold $V_{thr}$, then
+
+\begin{equation}
+{1 \over \zetat} \sum_{t'}^tv(t' - 1)\Theta_{t'} = {1 \over \zetat}(n - 1)\zetaN = r(n - 1)
+\label{eq:time_threshold}
+\end{equation}
+
+\noindent
+Realising that
+
+\begin{equation}
+\sum_{t'=1}^tv(t') - v(t' - 1) = v(t) - v(0)
+\label{eq:sum_index_shuffle}
+\end{equation}
+
+\noindent
+Equation \ref{eq:spike_rate_sum} simplifies to:
+
+\begin{equation}
+\begin{split}
+r    &= r_{max} - {1 \over \zeta t} \sum_{t'=1}^t \left(v(t') - v(t' - 1)(1 - \Theta_{l'})\right) \\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)\Theta_{l'}\\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - r(n - 1)\\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - rn - r\\
+r &= {1 \over n} \left(r_{max} - {v(t) - v(0) \over \zeta t}\right)
+\end{split}
+\label{eq:spike_rate}
+\end{equation}
+
+Finally, the residual charge $\epsilon \in \mathbbm{R}$ is defined as the surplus charge at the time of
+a spike:
+
+\begin{equation}
+\epsilon = n\zeta - V_{thr}
+\label{eq:charge_surplus}
+\end{equation}
+
+\noindent
+and remembering that the first layer at constant input $\zeta^l = V_{thr}x^1$, the average spike rate
+for that layer can now be defined with re-introduced neuron and layer indices:
+\begin{equation}
+\begin{split}
+r_i^1(t) &= {1 \over n_i^1} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {1 \over {(\epsilon_i^1 + V_{thr}) / \zeta}} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {\zeta \over \epsilon_i^1 + V_{thr}} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {V_{thr} x_i^1  \over \epsilon_i^1 + V_{thr}} r_{max}
+          - \left({\zeta \over \epsilon_i^1 + V_{thr}} {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= x_i^1 r_{max} {V_{thr} \over V_{thr} + \epsilon_i^l } - {v_i^1(t) \over t (V_{thr} + \epsilon_i^l) } \\
+%x_i^1 r_{max} \cdot {v_{thr} \over v_{thr} + \epsilon_i^1} - {v_i^1(t) \over t \cdot (v_{thr} + \epsilon_i^l)} \\
+\end{split}
+\label{<+label+>}
+\end{equation}
+
+as argued by \citeauthor{rueckauer2017} the membrane reset discards the additional
+information in the $\epsilon$ term.
+for that reason
+
+assuming that the poisson rates represents an averaging of spikes over time,
+the average firing rate $r_i^l(t)$ of some neuron $i$ in layer $l$ can be computed
+by summing the number of spikes kor the duration of the simulation $t$ \cite{rueckauer2017}:
+
+\begin{equation}
+\sum_{t=1}^t \rho(t) = 
+\label{fig:lif-rate}
+\end{equation}
+
+for a lif neuron the frequency of spikes over time, given a variable input current,
+is given by \cite[p.87]{eliasmith2004}
+
+assuming that the stochastic process smoothes out over time, this equation
+relates input in \glspl{ANN} to input in \glspl{SNN}.
+
 
 \section{Learning} \index{learning} \label{sec:learning}
 % TODO: http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
