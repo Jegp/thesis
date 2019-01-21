@@ -2,62 +2,73 @@
 \begin{document}
 
 This chapter presents the \gls{DSL} Volr \index{Volr}.
-Volr is a language that allows concise specifications of 
-neural models and that translates
-into three backends for future evaluation:
-Futhark \index{Futhark} through \gls{OpenCL},
-NEST \index{NEST} through PyNN \index{PyNN} and BrainScaleS
-\index{BrainScaleS} through PyNN.
+Volr is built for concise specifications of 
+neural models and translates into both artificial as well as
+spiking network models.
+Currently, Volr translates the network models into three runtime
+environments (backends) based on \gls{OpenCL}, \glspl{SNN} simulations
+and neuromorphic hardware.
 
-Before the presentation and specification of the language itself, 
-it is necessary to examine similar and existing work
-within the programming and simulation of second and third generation
-\gls{NN}s.
-A detailed list of requirements are also given to verify that the
-specified language is accurately scoped 
-\gls{DSL}.
+Before presenting and specifying the language itself, 
+it is beneficial to examine existing work within the
+programming and simulation of second and third
+generation \gls{NN}s.
+Following the existing work, a detailed list of requirements
+are provided to accurately scope the \gls{DSL}.
+Finally, the implementation of the \gls{DSL} is presented and
+accompanied by code and test examples.
 
 \section{Similar work}
 A vast amount of work has been put into the development of software for simulating
 neural networks.
-This section covers the most popular and recent projects for both second and third
-generation frameworks, and extracts relevant
-features for use in the requirements section \ref{sec:requirements}.
+This section covers recent work within the simulation of second and third
+generation \glspl{NN}, and extracts relevant findings for use in the
+requirements section \ref{sec:requirements}.
+
+It is likely that the following list is incomplete due to the fragmented and 
+fast-paced nature of the field.
+To encompass as many relevant findings as humanly possible, the subsequent
+references are based on a number of source, primarily based on books
+(\cite{Bishop2006, Russel2007, Eliasmith2015, Lin2018, Nilsson2009, Pearl1988, Rojas1996, Rumelhart1988}), review papers 
+(\cite{Schmidhuber2014, Blundell2018, Markram2013, Walter2015, Hunsberger2015}),
+and, of course, articles, which will be referenced below.
 %TODO:  https://github.com/Shikhargupta/Spiking-Neural-Network
+
 \subsection{Second generation}
 The perhaps most notable product for this type of networks is the Tensorflow \index{Tensorflow}
 framework \cite{Abadi2016}.
-Tensorflow is an \gls{API} for the description and and execution of directed graph 
+Tensorflow is an \gls{API} for the description and execution of directed graph 
 structures,
 that connects varying activation functions and learning mechanisms through the common abstraction
 of tensors \cite{Abadi2015}.
-It is a large collaboration of multiple companies and organisations, who have
+Tensorflow is the result of a large collaboration of multiple companies and organisations, who have
 developed a comprehensive library of both code as well as infrastructure, and they
-provide extensive hardware acceleration \cite{Abadi2015}.
+provide extensive support for hardware acceleration \cite{Abadi2015}.
 
 The primary advantage of Tensorflow \index{Tensorflow} arrives from 
-its foundation in tensors as a general abstraction that
+its foundation in tensors as a general abstraction, that
 can be applied to a wide array of problems \cite{Abadi2016}.
 Other frameworks have adapted a similar approach, such as PyTorch \cite{PyTorch2018}, 
 scikit-learn \cite{Sklearn2018}, Microsoft Cognitive Toolkit (CNTK) \cite{CNTK2018},
 Caffe \cite{Caffe2018} and Theano \cite{Theano2018}.
 
-Lasagne and Keras are examples of products that works with higher-level abstractions,
-building on Theano and Tensorflow respectively \cite{Lasagne2018, Keras2018}.
+Lasagne and Keras are built on top of Theano and Tensorflow respectively,
+and works similarly well higher-level abstractions \cite{Lasagne2018, Keras2018}.
 They both provide imperative \gls{API}s for constructing models in steps, while
-including useful utilities for the molding of data to fit the underlying tensor structures.
+including useful utilities for preprocessing of data.
 
-The mentioned products differ slightly in terms of syntax and objective 
-as well as integrations for data and services, where Tensorflow (through Keras)
-are most advanced.
-Especially PyTorch and Caffe targets \gls{DL} but all frameworks
-rely on second generation \gls{NN} architecture in a general sense.
-The Caffe example in listing \ref{code:caffe} shows a single fully connected
-layer in a network, built to recognise handwritten digits in the 
+Where scikit-learn, CNTK, Tensorflow and Theano targets \glspl{NN} in general,
+PyTorch and Caffe are frameworks that specifically target \gls{DL} 
+\cite{PyTorch2018, Caffe2018}.
+All of them, however, rely on second generation \gls{NN} architecture in a general sense.
+
+To provide a comparison between them a number of examples are provided below.
+The Listing \ref{code:caffe} shows a network with a single fully connected
+layer in Caffe, built to recognise handwritten digits from the 
 popular MNIST dataset \cite{LeCun1998}.
 Caffe is verbose compared to the full network definitions in PyTorch 
-(listing \ref{code:pytorch}), Keras (listing \ref{code:keras}) and
-Lasagne (listing \ref{code:lasagne}), but provides additional 
+(Listing \ref{code:pytorch}), Keras (Listing \ref{code:keras}) and
+Lasagne (Listing \ref{code:lasagne}), but provides additional 
 configuration options for setting of weights and biases in 
 individual layers.
 
@@ -108,16 +119,30 @@ l_out = lasagne.layers.DenseLayer(
 \end{lstlisting} \label{code:lasagne}
 
 In terms of learning the frameworks are diverse, although gradient descent 
-and auto-differentiation are among the most common features 
+and auto-differentiation (where transformations are automatically registered and 
+later derived using the chain rule) are among the most common features 
 (seen in Tensorflow, PyTorch, CNTK, Theano and Caffe). 
 
 The Open Neural Network Exchange Format (ONNX) is an open data format for the representation
 of \gls{DL} learning models \cite{ONNX2018}. 
-In this context ONNX is interesting because it, like all the frameworks above, describes 
+ONNX is interesting in this context because it, like all the frameworks above, describes 
 networks as directed graphs, defined by nodes of a certain dimension (shape) connected through
 edges with certain activations (operations).
-This is a strong indication that directed graphs are sufficiently generic to model
-the structure and learning tasks within second generation networks.
+
+\subsubsection{Neural networks in Futhark}
+\index{Futhark}
+The data-parallel language Futhark is designed to produce efficient parallel
+code, suitable for parallel application \cite{Henriksen2017}.
+Second generation \gls{NN} are such an application, because they can be reduced
+to a large number of parallel matrix multiplications.
+
+Futhark supports hardware acceleration through the \gls{OpenCL} framework,
+and can integrate with other languages, such as \gls{Python} through the
+PyOpenCL interface \cite{PyOpenCL}.
+
+\citeauthor{Minh2018} developed a library for machine learning, which 
+allows the construction of densely connected layers and gradient descent
+training \cite{Minh2018}.
 
 \subsection{Third generation}
 The landscape for third generation software is less homogeneous, first and
@@ -143,30 +168,34 @@ PyNN is a ``simulator-independent language''
 accelerated architectures \cite{Davison2009}.
 Technically PyNN is not a simulator but acts as an interface to any third generation
 backend \cite{Davison2009}.
-PyNN currently supports Brian, NEST, BrainScaleS and SpiNNaker
+PyNN currently interfaces with Brian, NEST, BrainScaleS and SpiNNaker
 \index{Brian}\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
 and is more than 10 years old, \cite{Davison2009} older
 than most neuromorphic chips. 
 Their \gls{API}s were designed a priori and lacked a number of crucial
-elements\footnote{In particular in relation to the mapping of neuron population
-onto the physical chip, see \ref{sec:Cairo}.}, which the hardware designers sought
+elements,\footnote{In particular in relation to the mapping of neuron population
+onto the physical chip, see \ref{sec:Cairo}.} which the hardware designers sought
 to resolve by augmenting the interface \cite{Pfeil2013, PyNN2018}.
-The result is a fragmented environment where basic morphologies are supported, 
-but where each experiment needs retrofitting to correctly evaluate on all
+The result is a fragmented environment that supports basic morphologies, 
+but where each experiment requires retrofitting to execute correctly on the 
 backends \cite{PyNN2018}.
 
 Nengo is a neural simulation environment for large-scale neural models, with
 a focus on graphical modelling \cite{Eliasmith2015}. 
 The Nengo project bases itself on the Neural Engineering Framework (NEF)
 \index{Neural Engineering Framework} that offers a concise language for
-describing third generation simulations \cite{Bekolay2014}, and that
-offers limited rendering of traditional computations into approximated
+describing third generation simulations \cite{Bekolay2014}, along with
+the limited rendering of logical computations (such as logical gates and basic
+mathematical functions) into approximated
 \gls{NN} structures \cite{Eliasmith2004, Eliasmith2015}.
 Nengo supports a wide range a backends---non-spiking networks through Tensorflow,
 simulated spiking networks through its custom \gls{OpenCL} engine and 
 hardware accelerated networks through the neuromorphic platform SpiNNaker---
 but have a limited repertoire of models compared to other simulators
 \cite{Nengo2018}.
+
+Listings \ref{code:Nengo} and \ref{code:PyNN} shows how
+basic spiking models are defined using Nengo and PyNN.
 
 \begin{minipage}{\linewidth}
 \lstset{caption={A simple LIF MNIST population network in Nengo.}, label=code:Nengo}
@@ -185,41 +214,39 @@ pop_2 = nest.Create('iaf_exp_cond',  10)
 nest.Connect(pop_1, pop_2, 'all_to_all')
 \end{lstlisting} 
 \end{minipage}
-
-PyNN and Nengo are both examples of
-attempts to converge platform differences into one single \gls{API}, and
+\\[0.3cm]
+PyNN and Nengo both attempt to converge platform differences into one single \gls{API}, and
 offer high-level description of networks with support for detailed 
-configuration (see listings \ref{code:Nengo} and \ref{code:PyNN}).
+configuration.
 Nengo also offers an approximated model that can be evaluated in Tensorflow
-\cite{Hunsberger2015}, but it does not have a language like PyNN, meaning
-that the models written for one simulator cannot be interpreted by other
-backends \cite{Nengo2018}.
+\cite{Hunsberger2015}, but it does not translate to other simulators like PyNN:
+models written for one simulator cannot be transferred to another \cite{Nengo2018}.
 
-The NEST simulator focuses on neurons that do not extend in space, \index{neuron!point}
-but also supports compartmentalised models \cite{Gewaltig2007}.
-It focuses on the ``dynamics, size and structure rather than on the detailed
+The NEST simulator supports both point neurons \index{neuron!point}
+and compartmentalised models to support speed as well as sophisticated neuron
+geometry \cite{Gewaltig2007}.
+NEST claims to focus on ``dynamics, size and structure rather than on the detailed
 morphological and biophysical properties of individual neurons''
-\cite{Gewaltig2007}, and has been enriched by a large number of neuron models
-and optimisations \cite{Blundell2018}.
+\cite{Gewaltig2007}.
+It has modelled a large number of neuron models and optimisations
+\cite{Blundell2018}.
+
 NEURON targets complex and detailed simulations of multi-chamber models, and
 attempts to model all aspects of the biophysical properties \cite{Carnevale2007}.
 Brian strikes somewhere between NEST and NEURON because it allows users to
 inject their own models through custom equations in plain text \cite{Goodman2013}.
 
 \textcite{Rueckauer2017} implemented a ``Spiking neural network conversion
-toolbox'' that converts second generation \gls{NN}s into
-spiking \gls{NN}s.
-They approach this by creating non-leaky integrate-and-fire
-\index{LIF} neurons that estimates biased spiking neural activities through
-fixed rate Poisson\index{Poisson distribution} generators
-\cite{Rueckauer2017}.
-While the implementation approximates neuron models it is unclear
-how it compares to biological networks.
+toolbox'' that converts second generation \glspl{NN} into \glspl{SNN}.
+As shown in Section \ref{sec:coding} they approach this by estimating the 
+firing rate of LIF \index{LIF} neurons through fixed current inputs,
+assuming even Poisson\index{Poisson distribution} distributed signals
+throughout the network \cite{Rueckauer2017}.
 
 \subsubsection{Neuromorphic hardware} \label{sec:similar-neuromorphic}
 Based on the review of \textcite{Walter2015} and the work from
-\cite{Lin2018}, this paper classifies neuromorphic hardware in two
-categories: either as digital interpretations of neural components, 
+\textcite{Lin2018}, the following section classifies neuromorphic hardware into
+two categories: either as digital interpretations of neural components, 
 or as analogue emulations of neural tissue.
 
 Digital neuromorphic chips digitises the neural signals and mimics neuron
@@ -233,8 +260,7 @@ a large degree of parallelism \cite{Albada2018}.
 IBM's TrueNorth \index{IBM!TrueNorth} and Intel's Loihi \index{Intel!Loihi}
 are examples of neuromorphic hardware with custom digital components 
 \cite{Walter2015, Lin2018}.
-Developed as a part of a \gls{DARPA} grant, TrueNorth consist of 4096
-independently operating neurosynaptic cores, each implementing 256
+TrueNorth consist of 4096 independently operating neurosynaptic cores, each implementing 256
 digital neurons in silicon \cite{Walter2015, ArtificialBrains2018}.
 The Loihi seems similar to the TrueNorth chip, with the difference that
 its 128 neuromorphic cores feature programmable
@@ -251,7 +277,7 @@ chip, that contains up to 512 neurons depending on the hardware configuration
 \cite{Pfeil2013}.
 Several HICANN chips can be integrated to allow the simulation of larger
 networks, where dedicated \gls{FPGA}s set weights for each neuron and
-communicate with other FPGAs on chip \cite{Walter2015}. 
+communicate with other \gls{FPGA}s on chip \cite{Walter2015}. 
 Neurogrid models around $10^6$ two-compartment neurons, where the dendritic
 tree is separated from the neuron `soma' \cite{Walter2015}.
 The spikes are transmitted digitally through \gls{RAM} \cite{Walter2015}.
@@ -259,47 +285,41 @@ The ROLLS processor consists of 256 analogue silicon neurons with
 $\sim1.3 \cdot 10^5$ synapses, but with fixed synaptic weights
 \cite{Walter2015}.
 
-%\subsubsection{Programming third generation \gls{NN}}
-%
-%With the exception of BrainScaleS \index{BrainScaleS} that integrates with PyNN \index{PyNN}
-%and SpiNNaker \index{SpiNNaker} that integrates with PyNN and Nengo. \index{Nengo}
-%With rega
-%
-%It supports many of the NEST simulation features, but
-%requires significant amount of programming to post-fit the models to 
-%run on SpinNaker and BrainScales.
-
 \section{DSL requirements} \label{sec:requirements}
 This section sketches four functional requirements for a \gls{DSL} that 
-fulfils the necessary conditions to allow testing the thesis hypothesis.
+fulfils the necessary conditions to allow the testing of the thesis hypothesis.
 The requirements steers the specification as defined in section 
 \ref{sec:volr} and later the implementation details in section
 \ref{sec:implementation}.
 
 \paragraph{1. Semantic consistency}
 The overarching goal of the \gls{DSL} is to allow the translation 
-of \gls{NN} descriptions into semantically similar backend constructs.
+of \gls{NN} descriptions into semantically similar models in backend runtime
+environments.
 In other words a network described in the \gls{DSL} should carry
-the same semantic meaning when translated to second or third generation
+the same semantic structure when translated to second or third generation
 implementations. 
 
-Because of the diverse and incompatible this is a non-trivial requirement,
-but a necessity to validate models across \gls{NN} paradigms.
+Because of the diverse and incompatible nature of spiking neural network
+landscape, this is a non-trivial requirement,
+but a necessity one if the models are to be validated across \gls{NN} paradigms.
 This requirement is approached empirically, by illustrating examples in
 both generations and validate whether they achieved the desired degree
 of external validity.
 
 \paragraph{2. Translation to second and third generation}
 A second requirement is the translation of the \gls{DSL} into
-one second generation model, one simulated third generation model
-and one neuromorphic third generation model.
+three runtime environments to permit a sufficient degree of
+generalisation.
+It is required that the DSL can translate code that evaluate networks
+in second generation, simulated third generation, as well as
+analog third generation (neuromorphic).
 
 \paragraph{3. Learning}
-A further requirement is that the \gls{DSL} support a form of
+It is furthermore required that the \gls{DSL} supports a form of
 learning, to illustrate the expected theoretical adaptation.
-The \gls{DSL} solves this by implementing supervised 
-learning through backpropagation \index{backpropagation} for second
-and third generation networks.
+For this purpose, supervised learning through backpropagation\index{backpropagation}
+is sufficient for the purpose of this thesis.
 
 \paragraph{4. Well-typed}
 As a final functional requirement the \gls{DSL} is designed to ensure
@@ -313,12 +333,8 @@ in both second and third generation environments, but Nengo does not
 offer consistent semantics between the backends and PyNN only allows
 for a partial translation into the neuromorphic platforms.
 However, PyNN does support a consistent \gls{API} to describe models that, at
-least morphologically, translates to both simulated and accelerated 
+least topologically, translates to both simulated and accelerated 
 backends.
-
-% Both types of network are architecturally similar, and both are conceived from
-% the same physiological principles \autocite{dayan2001, russel2007, Nilsson2009, schmidhuber2014}.
-% The implementations, however, vary greatly.
 
 \section{DSL specification} \label{sec:volr}
 \input{chapters/volr/volr}

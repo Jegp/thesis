@@ -221,12 +221,24 @@ Lapicque worked on a conductance model in 1907 that could describe this
 process dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and-fire}
 \index{integrate-and-fire|see {neuron model}}
 model.
-The model essentially integrates received current over time
-to determine whether to fire
-\cite{Dayan2001, Eliasmith2004}.
-The Dirac ($\delta$) function \index{Dirac function}
-in Equation \ref{eq:dirac} shows an idealised
-version of this idea \cite[p. 404]{Dayan2001}.
+The model essentially integrates received current over time, and
+if the integrated current reaches a certain threshold $V_{thr}$, the neuron
+fires \cite{Dayan2001, Eliasmith2004}.
+In biological neurons this also implies a spatial dimension, because the
+current is sent through a neurons that extend in space \cite{Dayan2001}.
+The cell body (soma)\index{neuron!soma} receives impulses from a number
+of dendrites\index{neuron!dendrite}, and emits spikes through an 
+axon\index{neuron!axon} \cite{Dayan2001}.
+The geometry of the components influence the time as well as the amount of current
+it requires to send impulses through the neuron \cite{Eliasmith2004}.
+This has been modelled to a high degree of precision in the 
+Hudgkin-Huxley model \cite{Dayan2001}.
+While it is more precise than models below, it is
+more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
+\cite{Albada2018, Dayan2001, Eliasmith2015}.
+
+An idealised version of this is given in he Dirac ($\delta$) function \index{Dirac function}
+in Equation \ref{eq:dirac} \cite[p. 404]{Dayan2001}.
 For all values it approaches 0, except when its argument is
 0 where it will grow infinitely.
 In a trial starting at time $0$ and ending at time $t$, this
@@ -259,12 +271,6 @@ refraction, \index{refractory period}
 where injected voltage is not accumulated, denoted by 
 $\tau_{ref}$, illustrated in Figure \ref{fig:spiking}
 \cite[p. 82]{Eliasmith2004}.
-
-A more realistic neuron model was developed by Hodgkin
-and Huxley in 1952 dubbed the Hudgkin-Huxley model \cite{Dayan2001}.
-While it is more precise than integrate-and-fire models, it is
-more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
-\cite{Albada2018, Dayan2001, Eliasmith2015}.
 
 \begin{figure}
 \centering
@@ -337,7 +343,7 @@ voltage, given by Equation \ref{eq:synaptic} \cite{Dayan2001}.
   \label{eq:synaptic}
 \end{equation}
 
-\subsection{Coding spikes}
+\subsection{Coding spikes} \label{sec:coding}
 Spikes convey information in the form of amplitude, duration, and
 inter-spike intervals \cite{Dayan2001}.
 A number of methods exist to decode the information in the spikes, by a 
@@ -607,7 +613,7 @@ Deriving the error function from Equation \ref{eq:bp-loss} gives
 The derivation of $E_n$ for an output neuron $n$ from layer $i$ to layer $j$
 depends on the weight $w_{ji}$ via the activation input $u_j$ (see equation
 \ref{eq:weightedoutput}).
-We can therefore apply the chain rule for partial derivatives \cite{Bishop2006}:
+The chain rule for partial derivations can now be applied \cite{Bishop2006}:
 
 \begin{equation}
   {\partial E_n \over \partial w_{ji} } =
