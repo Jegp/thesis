@@ -1,0 +1,141 @@
+This appendix walks through the proof for Equation \ref{eq:spike_conversion},
+as given by \citeauthor{Rueckauer2017} in \cite{Rueckauer2017}.
+
+Given the stepwise activation function from Equation \ref{eq:perceptron},
+the neuron can be said to spike with \cite[p. 3]{Diehl2015, Rueckauer2017}:
+
+\begin{equation}
+\Theta(x) = \begin{cases}
+  	1 & \text{if } x \geq 0 \\
+	0 & \text{otherwise}
+	\end{cases}
+\label{eq:spike_theta}
+\end{equation}
+\noindent
+In turn the occurrence of a spike for a neuron $i$ at timestep $t$ can be
+calculated by the integration of input current at every simulation time step, where
+$v_i^l$ is the membrane potential for the neuron \cite[p. 3]{Rueckauer2017}:
+
+\begin{equation}
+\Theta^l_{t,i} = \Theta(v^l_i (t-1) + \zeta^l_i(t) - V_{thr}),
+\label{eq:current_timestep}
+\end{equation}
+\noindent
+Recalling that a neuron $i$ at layer $l$ receives post-synaptic
+impulses from $j$ neurons from layer $l - 1$, the input current $\zeta^l_i$ for neuron $i$
+at layer $l$ can be seen as the linear equation
+\cite[p. 3]{Rueckauer2017}:
+
+\begin{equation}
+\zeta^l_i (t) = V_{thr}\left(\sum^{N^{l - 1}}_{j = 1} w^l_{ij} \Theta^{l - 1}_{t,j} + b^l_i\right) ,
+\label{eq:membrane_timestep}
+\end{equation}
+\noindent
+where $V_{thr}$ is the neuron threshold. 
+
+Neurons integrate $\zeta_i^l(t)$ until the threshold $V_{thr}$ is 
+reached, where a spike is emitted and the membrane potential is reset to 
+0 (see Figure \ref{fig:spiking}).
+The membrane current $v_i^l(t)$ can then be modelled as
+
+\begin{equation}
+v_i^l(t) = \left(V_i^l(t - 1) + \zeta_i^l(t)\right)\left(1 - \Theta_{t,i}^l\right)
+\label{eq:membrane_current_sim}
+\end{equation}
+
+\noindent
+Assuming that the input current is above zero ($\zeta_i^1 > 0$) and that it
+remains constant through time, there will be a constant number of timesteps $n_i^1$
+between spikes in the neuron $i$, and the neuron threshold will always be exceeded
+by the same amount:
+
+\begin{equation}
+\epsilon_i^l = v_i^1(n_i^1) - V_{thr} = n_i^1 \cdot \zeta_i^1 - V_{thr}
+\label{eq:threshold}
+\end{equation}
+\noindent
+Assuming the same constant input current $\zeta$ such that $\sum_{t'}^t 1 = t/\Delta t$, 
+and realising that the number of spikes $N$ in a simulation of duration $t$ is
+$N(t) = \sum_{t'=1}^t\Theta_{t'}$, 
+the membrane potential can be obtained by summing over the simulation duration $t$
+\cite{Rueckauer2017}:
+\begin{equation}
+\begin{split}
+\sum_{t'}^tv(t') &= \sum_{t'=1}^t v(t' - 1)(1 - \theta_{l'}) + (1 - \Theta_{t'}) \\
+     		 &= \sum_{t'=1}^t v(t' - 1)(1 - \theta_{l'}) + \zeta({t \over \Delta t} - n) \\
+\end{split}
+\label{eq:sum_rate}
+\end{equation}
+\noindent
+The layer and neuron indices are omitted for clarity.
+
+By further rearranging Equation \ref{eq:sum_rate} and defining the maximum firing rate 
+as $r_{max} = 1 / \Delta t$, the average firing rate $N/t$ can now
+be calculated by dividing with the simulation time \cite{Rueckauer2017}:
+
+\begin{equation} 
+\begin{split}
+{1 \over \zeta t} \sum_{t'}^tv(t') &= {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) + \zeta({t \over \Delta t} - N) \\
+{1 \over \zeta t} \sum_{t'}^tv(t') &= {1 \over \Delta t} - {N \over t} + {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) \\
+{1 \over \zeta t} \sum_{t'}^tv(t') + {N \over t} &= r_{max} + {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)(1 - \Theta_{l'}) \\
+{N \over t} &= r_{max} + {1 \over \zeta t} \sum_{t'=1}^t \left(v(t' - 1)(1 - \Theta_{l'}) - v(t')\right) \\
+r = {N \over t} &= r_{max} - {1 \over \zeta t} \sum_{t'=1}^t \left(v(t') - v(t' - 1)(1 - \Theta_{l'})\right) \\
+\end{split}
+\label{eq:spike_rate_sum}
+\end{equation}
+
+\noindent
+Since the input current is constant, the value of the membrane potential before a spike is always the same,
+and is always an integer multiple of the input $\zeta$.
+Defining $n \in \mathbbm{N}$ as the number of simulation steps needed to cross the threshold $V_{thr}$, then
+
+\begin{equation}
+{1 \over \zeta t} \sum_{t'}^tv(t' - 1)\Theta_{t'} = {1 \over \zeta t}(n - 1)\zeta N = r(n - 1)
+\label{eq:time_threshold}
+\end{equation}
+
+\noindent
+Realising that
+
+\begin{equation}
+\sum_{t'=1}^tv(t') - v(t' - 1) = v(t) - v(0)
+\label{eq:sum_index_shuffle}
+\end{equation}
+
+\noindent
+Equation \ref{eq:spike_rate_sum} simplifies to:
+
+\begin{equation}
+\begin{split}
+r    &= r_{max} - {1 \over \zeta t} \sum_{t'=1}^t \left(v(t') - v(t' - 1)(1 - \Theta_{l'})\right) \\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - {1 \over \zeta t} \sum_{t'=1}^t v(t' - 1)\Theta_{l'}\\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - r(n - 1)\\
+     &= r_{max} - {v(t) - v(0) \over \zeta t} - rn - r\\
+r &= {1 \over n} \left(r_{max} - {v(t) - v(0) \over \zeta t}\right)
+\end{split}
+\label{eq:spike_rate}
+\end{equation}
+
+Finally, the residual charge $\epsilon \in \mathbbm{R}$ is defined as the surplus charge at the time of
+a spike:
+
+\begin{equation}
+\epsilon = n\zeta - V_{thr}
+\label{eq:charge_surplus}
+\end{equation}
+
+\noindent
+and remembering that the first layer at constant input $\zeta^l = V_{thr}x^1$, the average spike rate
+for that layer can now be defined with re-introduced neuron and layer indices:
+\begin{equation}
+\begin{split}
+r_i^1(t) &= {1 \over n_i^1} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {1 \over {(\epsilon_i^1 + V_{thr}) / \zeta}} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {\zeta \over \epsilon_i^1 + V_{thr}} \left(r_{max} - {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= {V_{thr} x_i^1  \over \epsilon_i^1 + V_{thr}} r_{max}
+          - \left({\zeta \over \epsilon_i^1 + V_{thr}} {v_i^1(t) - v_i^1(0) \over \zeta t}\right) \\
+         &= x_i^1 r_{max} {V_{thr} \over V_{thr} + \epsilon_i^1 } - {v_i^1(t) \over t (V_{thr} + \epsilon_i^1) } \\
+\end{split}
+\label{eq:spike_conversion_appendix}
+\end{equation}
+

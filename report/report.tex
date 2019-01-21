@@ -42,6 +42,7 @@
 \DeclareCaptionLabelFormat{cont}{#1~#2\alph{ContinuedFloat}}
 \captionsetup[ContinuedFloat]{labelformat=cont}
 \usepackage{placeins}
+\usepackage{pdfpages}
 
 %linespacing
 \usepackage{setspace}
@@ -213,6 +214,8 @@ Kerem for providing internet.
 \end{comment}
 
 \appendix
+\chapter{Transfer functions for spiking neurons} \label{app:transfer}
+\include{appendices/transfer}
 \chapter{Volr implementation code} \label{app:implementation}
   \include{appendices/volr}
 
