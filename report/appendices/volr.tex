@@ -1,3 +1,39 @@
-% TODO: Include complete EBNF (of structure)
-
 % TODO: Describe changes to Volr for this thesis
+
+The code in this appendix is available for completeness (and newer versions) 
+at the website \url{https://github.com/}. Specifically,
+\begin{itemize}
+  \item The Volr compiler in Haskell: \\ \url{https://github.com/volr/compiler}
+  \item The Python neural network library: \\ \url{https://github.com/volr/volrpynn}
+  \item The Futhark neural network library: \\ \url{https://github.com/jegp/deep_learning}
+\end{itemize}
+
+\lstset{mathescape=false,showstringspaces=false,breaklines=true,basicstyle=\ttfamily\scriptsize}
+
+\section{Haskell compiler}
+\subsection{Evaluator.hs}
+\lstinputlisting[language=Haskell]{appendices/Evaluator.hs}
+
+\subsection{EvaluatorSpec.hs}
+\lstinputlisting[language=Haskell]{appendices/EvaluatorSpec.hs}
+
+\subsection{Parser.hs} \label{app:implementation_parser}
+\lstinputlisting[language=Haskell]{appendices/Parser.hs}
+
+\section{Futhark library}
+\subsection{neural\_network.fut} \label{app:implementation_fut_nn}
+\lstinputlisting[language=Haskell]{appendices/neural_network.fut}
+
+\subsection{replicate.fut}
+\lstinputlisting[language=Haskell]{appendices/replicate.fut}
+
+\subsection{merge.fut}
+\lstinputlisting[language=Haskell]{appendices/merge.fut}
+
+\section{Python library} \label{app:implementation_volrpynn}
+\subsection{layer.py}
+\lstinputlisting[language=Python]{appendices/layer.py}
+
+\subsection{test\_dense.py}
+\lstinputlisting[language=Python]{appendices/test_dense.py}
+

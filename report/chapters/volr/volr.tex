@@ -2,14 +2,15 @@ This sections presents the \gls{DSL} Volr. \index{Volr}
 The main purpose of Volr is to define clear and reproducible
 experiments whose semantics are retained regardless of
 the runtime environment.
-The specification in its current form is relatively simple, but sufficiently 
-complicated for the purpose of this thesis.
-It focuses solely on the topology of networks, thus
-separating the network description from any generation-specific properties
-of neurons or neuron populations.
+It is built for the concise specification and straight-forward
+translation of neural models into both artificial as well as
+spiking network models.
+Volr focuses solely on the topology of networks, thus
+separating the network description from generation-specific
+properties of neurons or neuron populations.
 
-The first requirement is met through an unambiguous syntax heavily inspired
-by the lamdba calculus \cite{Pierce2002}.
+The first requirement on semantic consistency is met through an unambiguous
+syntax, heavily inspired by the lamdba calculus \cite{Pierce2002}.
 Figure \ref{fig:volr-expr} shows the BNF notation for expressions, values and types
 in Volr. 
 Figure \ref{fig:volr-rules} lists evaluation rules for the correct
@@ -26,33 +27,30 @@ That constant can later be referenced in the $e'$ expression
 through the string $x$ as shown in $e2$.
 
 The \texttt{\textbf{dense}} expression describes a fully connected
-neural network layer with a single population, and is the most basic
-concept in the \gls{DSL}.
-Notice the distinction between a neural network \textit{layer}
-such as \texttt{\textbf{dense}} and a population. 
-A \texttt{\textbf{dense}} network layer can be understood as a single
-population that receives a number of inputs, densely 
-connects these inputs to all neurons in the population with the associated
-weights, and finally outputs the response to the following layer.
-Considering how each neuron is a type of classifier, $n$ and $m$
-illustrate the \textit{dimensionality} of the network, such that the number of
-dimensions in the input is truncated (or expanded) to classify the
-dimensionality of the output layer.
+neural network layer, and is the smallest building block for networks
+\gls{DSL}.
+This aligns with the previous understanding of a layer, where
+a \texttt{\textbf{dense}} network layer can be understood as a number of inputs,
+that are densely connected to a number of outputs (see Section
+\ref{sec:nn_graphs}).
+To calculate the output of the layer, the layer bias is added to the
+weighted input (output from the previous layer) and given 
+to the activation function.
+Remembering the definition of layers as functions over vectors, each neuron 
+accounts for the activation of a single dimension in the input/output vectors.
+In turn, $n$ and $m$ illustrates the \textit{dimensionality} of the network,
+such that the number of dimensions in the input is truncated (or expanded) to
+the dimensionality of the output layer.
 
 The $\ominus$ (parallel) operator parallelises two networks by duplicating
 the input from the previous layer and merging the outputs into a single
 layer ($e5$).
-The input feeds into both $e$ and $e'$, such that the input dimension of
-the network must be shared by the two layers ($l$). 
+The input from the previous layer is replicated into both $e$ and $e'$, such
+that the input dimension of the network \textit{must} be shared by the two layers ($l$).
 The output from the network is stacked such that each neuron from each
 population corresponds to one output neuron ($e_{out} + e'_{out}$).
-This is done to preserve the meaning of each parallel population.
-
-The $\obar$ (sequential) operator binds two networks sequentially,
-such that the output layer of the first network becomes the input layer 
-of the second network.
-For that reason the output dimensionality of the first network ($m$) should 
-be equal to the input of the second network, as shown in $e4$.
+This is done to preserve the meaning of each parallel population, where
+a truncation would loose information.
 
 Semantically the parallel operator provides the ability for a network to
 perform specialised functions, based on the same stimulus.
@@ -60,19 +58,16 @@ In the context of neural systems such specialisations are frequently used
 to balance correctness with compactness: it is cheaper in terms of neurons,
 and more efficient in terms of accuracy,
 to allow two subnetworks to specialise than to have one large network 
-generalise.
+generalise \cite{Eliasmith2015}.
 
-% TODO: Relate this to the trade-off wrt. training in the theory section
-\begin{comment} %TODO: include this?
-In the other end, the two layers are merged such that each output neuron
-is represented individually in a population with the size $e + e'$.
-By not entangling the output dimensions, the following layers can choose
-to ignore parts of the input, irrespective of the other parallel layer.
-This parallelisation represents the duplication that occurs
-in neural circuits, where structurally similar sub-networks, that are
-fed the same stimuli, appear to contribute with semantically different
-information (see \ref{sec:ref}).
-\end{comment}
+The $\obar$ (sequential) operator binds two networks sequentially,
+such that the output layer of the first network becomes the input layer 
+of the second network.
+This binding is similar to the \texttt{\textbf{dense}} operation before,
+in that the neurons are connected densely, but differ because the operator
+can connect parallel networks.
+To connect networks sequentially, it is expected that the output dimensionality of
+the first network ($m$) equals that of the input of the second network, as shown in $e4$.
 
 Taken together these constructs can express simple neural networks and
 the properties of their connections. 

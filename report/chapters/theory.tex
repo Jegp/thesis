@@ -34,7 +34,7 @@ They are based on the perceptron model as seen in Equation
        \end{cases}
 \end{equation}
 
-\subsection{Neural networks as directed graphs}
+\subsection{Neural networks as directed graphs} \label{sec:nn_graphs}
 These first \glspl{NN} would collect neurons in groups\index{neuron!group} 
 that connect to other groups in a sequence
 \cite{Russel2007}.
@@ -191,6 +191,7 @@ retaining continuity (see Figure \ref{fig:sigmoid})
 A number of variations for sigmoidal activation functions exist such as the 
 hyperbolic tangent ($tanh$) and
 the rectified linear unit \index{activation!ReLU} (ReLU, see Equation \ref{eq:ReLU}). 
+
 They are applied either in a feed-forward or recurrent (cyclic) manner, where
 the recurrent variant performs temporal transformations
 \footnote{It is possible to \textit{unfold} recurrent
@@ -203,6 +204,23 @@ f(x) = \begin{cases}
          0 & \text{if } x < 0 \\
 	 x & \text{otherwise}
        \end{cases}
+\end{equation}
+
+\subsubsection{Normalisation}
+\index{normalisation}
+To align with the activation output domain ($[0, 1]$), the input data
+is typically normalised \cite{Bishop2006}.
+One naïve approach is to divide by the maximum value of the input, but
+that produces a linear effect, which is undesirable for reasons that will be
+discussed later.
+Instead, a sigmoidal function is typically used, because of its abovementioned
+qualities.
+One common variant for normalisation is the softmax\index{normalisation!softmax}
+function, defined below given the input vector $x$ with $N$ elements:
+
+\begin{equation}
+  \sigma(x) = { e^x \over \sum^N_{n=1} e^x}
+  \label{eq:softmax}
 \end{equation}
 
 \subsection{Third generation neural networks}

@@ -2,12 +2,6 @@
 \begin{document}
 
 This chapter presents the \gls{DSL} Volr \index{Volr}.
-Volr is built for concise specifications of 
-neural models and translates into both artificial as well as
-spiking network models.
-Currently, Volr translates the network models into three runtime
-environments (backends) based on \gls{OpenCL}, \glspl{SNN} simulations
-and neuromorphic hardware.
 
 Before presenting and specifying the language itself, 
 it is beneficial to examine existing work within the
@@ -335,6 +329,10 @@ for a partial translation into the neuromorphic platforms.
 However, PyNN does support a consistent \gls{API} to describe models that, at
 least topologically, translates to both simulated and accelerated 
 backends.
+
+The following two sections will present the design and implementation of
+Volr, while drawing on the requirements above to assess whether and
+how they are met.
 
 \section{DSL specification} \label{sec:volr}
 \input{chapters/volr/volr}

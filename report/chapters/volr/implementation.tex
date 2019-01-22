@@ -1,8 +1,9 @@
 The compiler for the \gls{DSL} itself is implemented in the functional language
-Haskell.
-The compiler generates code for two different backends: a second generation
-backend in Futhark \index{Futhark} and a third generation backend in PyNN.
-\index{PyNN}.
+Haskell \cite{Haskell}.
+Currently, Volr translates its network models into three runtime
+environments (backends) based on \gls{OpenCL} through Futhark\index{Futhark},
+\glspl{SNN} simulations through NEST\index{NEST} and 
+the neuromorphic hardware BrainScaleS\index{BrainScaleS}.
 
 Futhark has been chosen because it is uncommonly concise and offers
 useful functional abstractions that cleanly composes functional
@@ -14,15 +15,15 @@ PyNN has been chosen for its general purpose API that translates to both the
 neuromorphic BrainScaleS \index{BrainScaleS} backend and the NEST 
 \index{NEST} simulator.
 \\[0.2cm]
-Figure \ref{fig:volr-architecture} shows the workflow from the compiler
-down to each backend.
+Figure \ref{fig:volr-architecture} shows the workflow starting with the
+compilation of the network model, down to the runtime evaluation on each backend.
 The following section explains the diagram one component at the time.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{images/volr-architecture.png}
   \caption{The workflow from the Volr compiler to 
-    \gls{ANN} simulations in Futhark or \gls{SNN} simulations in \gls{NEST} and
+    \gls{ANN} simulations in Futhark or \gls{SNN} simulations in NEST and
     \gls{BrainScaleS}.
   }
   \label{fig:volr-architecture}
@@ -33,28 +34,32 @@ The Haskell compiler consists of five different parts:
 An \gls{AST}, evaluator, language parser and two
 code generators for \gls{ANN}s and \gls{SNN}s.
 
-\lstset{caption=The Volr AST in Haskell., mathescape=false,showstringspaces=false}
-\begin{lstlisting}{haskell}
+\lstset{mathescape=false,showstringspaces=false}
+\begin{minipage}{\linewidth}
+  \begin{lstlisting}[language=haskell, caption={The Volr AST in
+  Haskell},label={code:term}]
 data Term
   = TmNet Int 
-  | TmPar Term Term                                                                                                                                                                                             
-  | TmRef String                                                                                                                                                                                                
-  | TmLet String Term Term                                                                                                                                                                                      
+  | TmPar Term Term
+  | TmSeq Term Term
+  | TmRef String
+  | TmLet String Term Term
   deriving (Eq, Show)  
-\end{lstlisting} \label{code:term}
+\end{lstlisting}
+\end{minipage}
 
 The AST reflects the expressions given in the 
-specification (section \ref{sec:volr}) and is
-shown in listing \ref{code:term}.
-It is accompanied by a simple type system (in listing \ref{code:type})
+specification (see Section \ref{sec:volr}) and is
+shown in Listing \ref{code:term}.
+It is accompanied by a simple type system (in Listing \ref{code:type})
 that similarly maps to the types given above.
 
-\lstset{caption=Volr type system in Haskell.}
-\begin{lstlisting}
+\begin{lstlisting}[language=haskell,label={code:type},caption={Volr type system
+in Haskell}]
 data Type 
   = TyNetwork Int Int
   | TyInt
-\end{lstlisting} \label{code:type}
+\end{lstlisting}
 
 The evaluator component evaluates the expression tree into
 a reference-free model, checking the type integrity in the
@@ -62,13 +67,14 @@ process.
 Each expression construct---and their combinations---are
 tested to produce the expected output, such that the evaluator
 is guaranteed to output well-formed code.
-An example of this is shown in listing \ref{code:eval-test}
-where a unit test \index{unit test} written in \texttt{HaskellSpec} 
-tests whether the let binding of the constant \texttt{x} correctly
-evaluates to the network \texttt{Net 1 1}.
+An example of this is shown in Listing \ref{lst:eval-test},
+where a unit test \index{unit test} verifies that the let
+binding of the constant \texttt{x} correctly
+evaluates to the network \texttt{(Net 1 1)}.
 
-\lstset{caption=Part of the evaluation code in Haskell.}
-\begin{lstlisting}
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=haskell,caption={Part of the evaluation code in
+Haskell.},label={code:evaluator}]
 eval' :: Term -> EvalState Term
 eval' term =
   case term of
@@ -77,24 +83,24 @@ eval' term =
       t1' <- eval' t1 
       t2' <- eval' t2
       return $ TmSeq t1' t2'
-\end{lstlisting} \label{code:evaluator}
+\end{lstlisting}
+\end{minipage}
 
-\lstset{caption=A unit test for the correct evaluation of a let binding.}
-\begin{lstlisting}{code=Haskell}
+\begin{lstlisting}[language=Haskell,label={lst:eval-test},caption={A unit test for the correct evaluation of a let binding.}]]
 it "can evaluate a let binding with a reference" $ do
   let e = TmLet "x" (TmNet 1 1) (TmRef "x")
-  eval e `shouldBe` Right (TmNet 1 1
-\end{lstlisting} \label{code:eval-test}
+  eval e `shouldBe` Right (TmNet 1 1)
+\end{lstlisting} 
 
 Listing \ref{code:eval-type} shows the type checking
 that also occurs in the evaluator step. 
 If the model is malformed, an error is output to explain why the
 model could not evaluate correctly.
 Tests for the type checks and the evaluator in its entirety
-can be found in appendix \ref{app:implementation}.
+can be found in Appendix \ref{app:implementation}.
 
-\lstset{caption=Part of the type checking code in Haskell.}
-\begin{lstlisting}{language=Haskell}
+\begin{lstlisting}[language=Haskell,caption={Part of the type checking code in
+Haskell.},label={code:eval-type}]
 typeOf :: Term -> EvalState Type
 typeOf term = 
   case term of
@@ -110,15 +116,16 @@ typeOf term =
         throwError $ "Type error: Incompatible network sizes. " ++
                      "Output " ++ (show leftOut) ++ " should " ++
                      "be equal to input " ++ (show rightIn)
-\end{lstlisting} \label{code:eval-type}
+\end{lstlisting}
 
-The language parser interprets textual input into the AST. \index{AST}
-The parser is built via the monadic parser combinator library Megaparsec
-\cite{megaparsec}.
-The main component of the parser is shown in listing \ref{code:parser}
-and the whole parser is available in appendix \ref{app:implementation}.
+The language parser, built via the monadic parser combinator library Megaparsec
+\cite{megaparsec}, interprets textual input into the AST. \index{AST}
+The main component of the parser is shown in Listing \ref{code:parser}
+and the whole parser is available in Appendix \ref{app:implementation} on page
+\pageref{app:implementation_parser}.
 
-\begin{lstlisting}{language=Haskell,name=The main component of the text parser for Volr.}
+\begin{lstlisting}[language=Haskell,name=The main component of the text parser
+for Volr.,label={code:parser}]
 parseTerm :: Parser Term
 parseTerm = (lexeme $ choice
   [ TmNet <$> (symbol "Net" *> integer) <*> integer
@@ -128,7 +135,7 @@ parseTerm = (lexeme $ choice
   , TmLet <$> (symbol "Let" *> (name)) <*> (symbol "=" *> parseTerm)
                            <*> (symbol "in" *> parseTerm)
   ]) <* (optional eof)
-\end{lstlisting} \label{code:parser}
+\end{lstlisting}
 
 Finally two code generators are implemented for the translation into
 second and third generation networks.
@@ -136,11 +143,6 @@ This translation will be presented along with the implementation
 for the two backends.
 
 \subsection{Futhark backend} \label{sec:volr-futhark}
-Futhark is a functional data-parallel programming language, that
-executes on a number of targets \autocite{Henriksen2017}.
-\gls{OpenCL} is one of them, which allows Futhark access to 
-hardware acceleration through \gls{GPU}s.
-
 This thesis builds on the work by \textcite{Minh2018}, who 
 implemented a functional library for deep learning.
 The library models \gls{NN} layers as records with three fields:
@@ -152,13 +154,14 @@ Because of its functional nature, layers can simply be joined
 sequentially by function composision.
 
 The library from \cite{Minh2018} has been modified to fit the
-additions in the thesis.
+additions in the thesis, and is available online (see links in 
+Appendix \ref{app:implementation}).
 In particular, a \textit{replicate} and a \textit{merge} layer has
 been added, to account for the parallel operator ($\ominus$).
 A connection that allows two parallel networks to connect to other
 layers has also been added, although it simply composes tuples of
 the layer structure (see the \texttt{neural\_networks.fut} file in
-appendix \ref{app:implementation}.
+Appendix \ref{app:implementation}, page \pageref{app:implementation_fut_nn}).
 
 \paragraph{Replicate layer}
 In practice this layer connects to two other networks, and densely
@@ -168,13 +171,14 @@ that each forward connection is assigned the correct value.
 Backpropagation works by calculating the error correction on the
 two sets of weights, and the final error sent to the previous layer
 is a simple average of the error for each neuron. 
-The algorithm is shown in an shortened form in listing \ref{code:bp-replicate}.
+The algorithm is shown in an shortened form in Listing \ref{code:bp-replicate}.
 Here the two errors and weights are independently calculated.
 The weights are stored in the layer as-is, but the errors are 
 averaged before they are output to the previous layer.
 
-\lstset{language=,caption=Part of the forward and backward propagation algorithms for the replicate layer. Abbreviated for clarity.}
-\begin{lstlisting}
+\begin{lstlisting}[language=Haskell,label={code:bp-replicate},caption={Part
+    of the forward and backward propagation algorithms for the replicate layer.
+Abbreviated for clarity.}]
 -- Forward propagation
 let forward (act:[]t -> []t)
 	    (training:bool)
@@ -196,13 +200,12 @@ let backward (act: []t -> []t)
   let (error2, w2) = backProp w2 c2 e2
   [...]
   in (average_sum_matrix [error1, error2], (w1, w2))
-\end{lstlisting} \label{code:bp-replicate}
+\end{lstlisting}
 
 This interpretation fits with the original specification, where
-where the parallel notation duplicates the 'work' in two separate 
-networks.
-The whole code for the replicate, and the code for translating the \gls{DSL}
-abstractions into Futhark, \index{Futhark} is shown in appendix 
+the parallel notation duplicates the 'work' in two separate networks.
+The whole code for the replication, and the code for translating the \gls{DSL}
+abstractions into Futhark,\index{Futhark} is shown in Appendix 
 \ref{app:implementation}.
 
 \paragraph{Merge layer}
@@ -212,11 +215,11 @@ layer.
 For that reason it also does not contain any weights.
 In the case of backprogapation it simply reroutes the errors back to
 the population, from which the neuron originated.
-All optimisation logic is thus left for the regular dense or replicated
+All optimisation logic is left for the regular dense or replicated
 layers.
 
-\lstset{language=,caption=Functions for forward and backward propagation in the merge layer.}
-\begin{lstlisting}
+\begin{lstlisting}[caption={Functions for forward and backward propagation in
+the merge layer.}]
 -- Forward propagation
 let forward  (_:[]t -> []t)
 	     (_:bool)
@@ -238,40 +241,6 @@ This interpretation is also aligned with the original specification,
 because it allows the parallel populations to propagate its output
 independent of each other.
 
-\begin{comment}
-, where the compiler can generate specifications for either Futhark
-or third generation neural networks.
-In the case of Futhark, a complete text file with correct Futhark syntax
-is generated. 
-In the other case, an intermediate JSON file is generated for a number of
-reasons: one is the heterogeneous nature of the backends.
-NEST \index{NEST} is written in C++ \index{C++} and can run on most platforms,
-but BrainScaleS requires access to the neuromorphic hardware.
-The BrainScaleS chips are expensive to produce and protected by a number of
-measures.
-One being that certain libraries are inaccessible, excluding the evaluation
-of Haskell binaries. 
-PyNN is normally configured to work with Python, so converting the 
-\end{comment}
-% An optimal approach would be to find a tool that leverages the similarities
-% of the network types, while integrating with the diverse simulated or emulated
-% targets.
-% That is, an abstract model of neural networks that can translate into
-% heterogeneous back-ends, while retaining a high degree of inter-model validity.
-
-% In practice a network is built by describing a graph
-% The nodes in the graph consist of \texttt{populations} of neurons and the edges
-% are connection-set matrices to other populations \autocite{Djurfeldt2012}.
-% % TODO: Describe CSA
-% \texttt{Populations} can consist of any positive number of neurons and is
-% required to have at least one connection.
-% Connections can be recursive, resulting in a potentially cyclic graph.
-% Both the connections and the \texttt{populations} can be annotated with features
-% such as connection weight and neuron parameters (see \nameref{appendix:volr}).
-% The parameters are treated differently depending on the experiment target (see
-% sections \ref{sec:volr-NEST} and \ref{sec:volr-BrainScaleS}).
-
-
 \subsection{PyNN backend}
 The interpretation to PyNN\index{PyNN} is done in two steps: a
 conversion from the \gls{DSL} into an \gls{SNN} representation,
@@ -288,8 +257,8 @@ Before Python code for PyNN can be generated a number of assumptions
 has to be met. 
 In particular the types of connections (referred to as projections in PyNN)
 and neuron models has to be described with a full set of neuron parameters.
-The modelling of this happens in yet another Haskell code base.
-The neuron parameters for an example LIF\index{LIF} neuron is seen in listing
+The modelling of this happens in Haskell.
+The neuron parameters for an example LIF\index{LIF} neuron is seen in Listing
 \ref{lst:lif-cond-exp} with their corresponding default values
 below\footnote{
 The current neuron models and their default parameters are taken from PyNN's
@@ -297,9 +266,8 @@ standard models, available at
 \url{http://neuralensemble.org/docs/PyNN/standardmodels.html}.
 }.
 
-\lstset{language=,caption={A LIF neuron with exponential decay and
-  conductance-based synapses, modelled in Haskell.},label=lst:lif-cond-exp}
-\begin{lstlisting}
+\begin{lstlisting}[language=Haskell,caption={A LIF neuron with exponential decay and
+  conductance-based synapses, modelled in Haskell.},label={lst:lif-cond-exp}]
 data NeuronType =
     = IFCondExp {
         _v_rest :: Float, -- ^ resting potential
@@ -333,14 +301,14 @@ if_cond_exp = IFCondExp {
 
 These neuron models form the basis of populations, which is determined by the
 neuron model and the number of neurons in the population.
-Populations can be understood as nodes in the network graph, along with
-spike sources, which generates stimulus per the input data.
+Populations can be understood as neuron groups or nodes in the network graph.
+Along spike sources, that generates spikes over time, they are the 
+basic components in a spiking neural network graph.
 The definition of nodes as either populations or spike sources is shown in
-listing \ref{lst:node}.
+Listing \ref{lst:node}.
 
-\lstset{language=,caption=The definition of a node as either a population or a
-spike source.,label=lst:node}
-\begin{lstlisting}
+\begin{lstlisting}[language=,caption={The definition of a node as either a population or a
+spike source.},label={lst:node}]
 data Node = Population {
         _numNeurons :: Integer,
         _neuronType :: NeuronType
@@ -352,11 +320,10 @@ data Node = Population {
 \end{lstlisting}
 
 The nodes in the spiking graph is connected through edges shown in 
-listing \ref{lst:projection}.
+Listing \ref{lst:projection}.
 
-\lstset{language=,caption=The definition of an edge as a projection between
-two nodes with a certain effect.,label=lst:projection}
-\begin{lstlisting}
+\begin{lstlisting}[language=,caption={The definition of an edge as a projection between
+two nodes with a certain effect.},label={lst:projection}]
 data Edge =
       Projection {
           _effect :: ProjectionEffect,
@@ -364,51 +331,117 @@ data Edge =
           _output :: Node
 \end{lstlisting}
 
-The type of the edges are determined by a projection effect that is
-not listed here, but available in appendix \ref{app:implementation}.
-This effect simply describes the connectivity between two nodes---which
-for now is exclusively all-to-all---and the type of the synapses--which
-for now is exclusively constant excitatory weights.
+The type of the edges are determined by projection effects, which
+in the current implementation is fixed to describe a 
+dense projection (\texttt{AllToAll} in PyNN) that solely
+excites (contrary to inhibit) post-synaptic neurons.
 
-The model here allows us to retain the connection graph from the \gls{DSL}
-description.
-The main difference being the activation functions which changes with the
-neuron types.
+The model presented here here allows us to completely reproduce the connection
+graph from the \gls{DSL} description.
+The only difference between the two is the lack of biases and activation functions
+in \glspl{SNN}, which changes with the neuron types.
 
-\subsubsection{PyNN code generation}
+\subsubsection{PyNN backend}
 The final step in the translation of the \gls{DSL} to PyNN code maps the
 \gls{SNN} model from above to executable Python code.
-Similar to the Futhark backend the PyNN API has been augmented to 
-incorporate learning, further described in the section ``Learning in PyNN''.
-Listing \ref{lst:PyNN-MNIST} shows an example of a non-executable MNIST network.
+A separate neural network library, VolrPyNN, has been developed for the
+occasion, and is included in Appendix \ref{app:implementation} on page
+\pageref{app:implementation_volrpynn}.
+Similar to the Futhark backend the Python backend models learning through
+backpropagation, but instead of using the traditional feedforward activation
+functions, the simulation backend is used to generate the spike data.
+This requires that the layer knows what derivation function to apply in
+the backpropagation step.
+To simplify the code, ReLU is the default gradient model for all layers.
+The Python library also contains the merge, dense,
+replicate layer, but because the connections appear through
+PyNN\index{PyNN} projections, the parallel layer can be omitted.
+
+Another divergence from the Futhark backend is the normalisation of the
+output data through a softmax normalisation (see Equation \ref{eq:softmax} on
+page \pageref{eq:softmax}).
+This is a commonly used technique for spiking networks to ensure that the 
+output stays positive, despite neurons that do not receive any inputs 
+\cite{Rueckauer2017}.
+This softmax normalisation is only applied in the feedforward step, and does
+not interfere with the backpropagation.
+
+The backpropagation algorithm was implemented in the dense layer, and a snippet
+is shown in Listing \ref{lst:volrpynn_backprop}.
+
+\begin{lstlisting}[language=Python,label={lst:volrpynn_backprop},caption={Part
+of the backpropagation algorithm implemented in PyNN.}]
+# Calculate activations for output layer
+input_decoded = self.decoder(self.input)
+output_activations = np.matmul(input_decoded, self.weights)
+
+# Calculate layer delta and weight optimisations
+output_gradients = self.gradient_model.prime(output_activations + self.biases)
+delta = np.multiply(error, output_gradients)
+
+# Ensure correct multiplication of data
+if len(input_decoded.shape) == 1:
+    weights_delta = np.outer(input_decoded, delta)
+else:
+    weights_delta = np.matmul(input_decoded.T, delta)
+
+# Calculate weight and bias optimisation and store
+(new_weights, new_biases) = optimiser(self.weights, weights_delta,
+                                      self.biases, delta)
+
+self.set_weights(new_weights)
+self.biases = new_biases
+\end{lstlisting}
+
+To test that the implementation was done correctly, a numerical gradient test
+was performed with a simulated feedforward step with a sigmoid function.
+In the test the layer weights are slightly skewed to approximate the movement
+along a gradient.
+The resulting changes in the backpropagated error should be minuscule, provided
+that the algorithm have been implemented correctly.
+A snippet of the test is shown below:
+The
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Python,label={lst:volrpynn_numerical},caption={Part
+of the numerical gradient test for the densely connected layer in PyNN.}]
+# Calculate numerical gradients
+numerical_gradients = compute_numerical_gradient(xs, ys)
+# Calculate 'normal' gradients
+gradients = compute_gradients(xs, ys)
+# Calculate the ratio between the difference and the sum of vector norms
+ratio = np.linalg.norm(gradients - numerical_gradients) /\
+           np.linalg.norm(gradients + numerical_gradients)
+assert ratio < 1e-07
+\end{lstlisting}
+\end{minipage}
+
+Listing \ref{lst:PyNN-MNIST} shows an example of an MNIST network.
 When activating the input node \texttt{node0} the connections are fed through
 the network to the \texttt{node2} output node.
 Each projection is initiated with random normal distributed weights, similar
 to the Futhark networks.
+\ref{app:implementation_volrpynn}.
 
-\lstset{language=,caption={A simple MNIST network in Python from the network in figure
-\ref{fig:volr-examples}. The dots illustrate the neuron parameters, given as a
-dictionary, as they appear in listing
-\ref{lst:lif-cond-exp}.},label=lst:PyNN-MNIST}
-\begin{lstlisting}
-node0 = LearningNode(Population(100, LIFCondExp(), ...))
-node1 = LearningNode(Population(50, LIFCondExp(), ...))
-node2 = LearningNode(Population(10, LIFCondExp(), ...))
-edge0 = Projection(node0, node1, AllToAllConnector())
-edge0.set(weight=numpy.random.normal)
-edge1 = Projection(node1, node2, AllToAllConnector())
-edge1.set(weight=numpy.random.normal)
+\begin{lstlisting}[caption={A simple MNIST network in the PyNN backend from the network in figure
+    \ref{fig:volr-examples} on page \pageref{fig:volr-examples}. The neuron parameters for the LIF populations have been
+omitted.}]
+p1 = pynn.Population(100, pynn.IF_cond_exp())
+p3 = pynn.Population(20, pynn.IF_cond_exp())
+p5 = pynn.Population(10, pynn.IF_cond_exp())
+layer0 = v.Dense(p1, p3)
+layer1 = v.Dense(p3, p5)
+l_decode = v.Decode(p5)
+model = v.Model(layer0, layer1, l_decode)
 \end{lstlisting}
+
 
 % The advantage of the static experiment representation being, that the experiment
 % easily a) transports to the target PyNN scripts without losing any information,
 % and b) duplexes between several experiment; the same experiment setup is
 % trivial to setup on multiple targets at once.
-\subsubsection{Code header for BrainScaleS} \label{ref:Cairo}
+\subsubsection{BrainScaleS backend} \label{ref:Cairo}
 %Because of the incompatible backends, each code is injected with a  
 %preample to perform the necessary setup steps 
-Describe hardware mappings for BrainScaleS
-
-\subsubsection{Learning in PyNN}
-\label{ref:PyNN-augmentation}
-Describe PyNN learning API
+%Describe hardware mappings for BrainScaleS
+\dots
