@@ -1,0 +1,139 @@
+To verify that the DSL implementation and was done
+correctly, and that the models perform as expected when evaluated on the
+backends, a number of tests were written and automated.
+This sections describes and explains the tests, divided in two categories: unit
+tests and integration tests.
+\\[0.2cm]
+The tests in their entirety are available online, see Appendix \ref{app:implementation}.
+
+\subsection{Unit tests}
+\subsubsection{Volr compiler}
+Each expression construct in the compiler---and their combinations---are
+tested to produce the expected output, such that the evaluator
+is guaranteed to output well-formed code.
+An example of this is shown in Listing \ref{lst:eval-test},
+where a unit test \index{unit test} verifies that the let
+binding of the constant \texttt{x} correctly
+evaluates to the network \texttt{(\textbf{dense} 1 1)}.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=haskell,caption={Part of the evaluation code in
+Haskell.},label={code:evaluator}]
+eval' :: Term -> EvalState Term
+eval' term =
+  case term of
+    TmNet n m -> return $ TmNet n m
+    TmSeq t1 t2 -> do
+      t1' <- eval' t1 
+      t2' <- eval' t2
+      return $ TmSeq t1' t2'
+\end{lstlisting}
+\end{minipage}
+
+\begin{lstlisting}[language=Haskell,label={lst:eval-test},caption={A unit test for the correct evaluation of a let binding.}]
+it "can evaluate a let binding with a reference" $ do
+  let e = TmLet "x" (TmNet 1 1) (TmRef "x")
+  eval e `shouldBe` Right (TmNet 1 1)
+\end{lstlisting} 
+
+\subsubsection{Futhark backend}
+The Futhark backend was tested by unit tests (using \texttt{futhark-test}
+\cite{Elsman2018}) for each indivitual layer, activation functions and loss functions.
+Tests for the dense layer already existed in the library (\cite{Minh2018}), but tests for the merge and
+replicate layers were added using manual calculations of the expected gradients, as shown in Listing
+\ref{lst:futhark-replicate-test} where the input should produce the expected weight
+gradients (\texttt{output}).
+Further tests for the combinations of parallel layers were also added.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=,label={lst:futhark-replicate-test},caption={A test for the
+correct calculation of the backwards weight gradient during backpropagation in a
+replicate layer}]
+-- ==
+-- entry: replicate_backward_w
+-- input {[[1.0, 2.0, 3.0, 4.0],
+--         [2.0, 3.0, 4.0, 5.0],
+--         [3.0, 4.0, 5.0, 6.0]]
+--
+--        [[1.0,  2.0,  3.0,  4.0],
+--         [5.0,  6.0,  7.0,  8.0],
+--         [9.0, 10.0, 11.0, 12.0]]
+--
+--         [1.0, 2.0, 3.0]}
+--
+-- output {[[-25.60,  -36.90,  -48.20,  -59.50],
+--          [-59.00,  -87.40, -115.80, -144.20],
+--          [-92.40, -137.90, -183.40, -228.90]]}
+
+entry replicate_backward_w input w b =
+  let ws = ((w, b), (w, b))
+  let (cache, output) = replicate.forward true ws input
+  let (_, ((w',_), (_, _))) = replicate.backward false updater ws cache output
+  in w'
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{PyNN}
+The backend-agnostic code of PyNN was tested using the \texttt{pytest} framework
+\cite{pytest2018}.
+This includes the activation functions, spike normalisation functions, error functions, 
+as well as general Python structure.
+Because of accessibility issues with the BrainScaleS hardware
+(detailed in Section \ref{sec:experiment}), no unit tests were written specifically for the
+BrainScaleS backend.
+However, since the code is similar (with the exception of the preample), the tests for the 
+NEST backend should also validate BrainScaleS.\index{BrainScaleS}
+
+Particularly the model class in the PyNN backend contains error-prone code, because it
+deals with a stateful BrainScaleS or NEST backend.
+The test shown in Listing \ref{lst:pynn-model-test} validates that the simulator is
+properly reset between runs:
+
+\begin{lstlisting}[language=Python,label={lst:pynn-model-test},caption={Unit test for
+PyNN model to validate that the model correctly updates weights}]
+def test_nest_model_backwards_reset():
+    p1 = pynn.Population(2, pynn.IF_cond_exp())
+    p2 = pynn.Population(2, pynn.IF_cond_exp())
+    l1 = v.Dense(p1, p2, v.ReLU(), decoder = v.spike_count_normalised, weights = 1)
+    m = v.Model(l1)
+    xs1 = np.array([1, 1])
+    ys1 = np.array([0, 1])
+    xs2 = np.array([1, 1])
+    ys2 = np.array([0, 1])
+    # First pass
+    target1 = m.predict(xs1, 50)
+    m.backward([0, 1], lambda w, g, b, bg: (w - g, b - bg))
+    expected_weights = np.array([[1, -1], [1, -1]])
+    assert np.allclose(l1.get_weights(), expected_weights)
+    # Second pass
+    target2 = m.predict(xs2, 50)
+    m.backward([1, 0], lambda w, g, b, bg: (w - g, b - bg))
+    expected_weights = np.array([[-1, -1], [-1, -1]])
+    assert np.allclose(l1.get_weights(), expected_weights)
+\end{lstlisting}
+
+The PyNN code for the NEST backend was similarly tested with \texttt{pytest}.
+A unit test for the backpropagation was written using numerical gradient descent
+with a simulated feedforward step.
+In the test, the layer weights are slightly skewed to approximate the movement
+along a gradient, which, in the test, was based on a sigmoid function.
+The resulting changes in the backpropagated error should be minuscule, provided
+that the algorithm have been implemented correctly.
+A snippet of the test is shown below.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Python,label={lst:volrpynn_numerical},caption={Part
+of the numerical gradient test for the densely connected layer in PyNN.}]
+# Calculate numerical gradients
+numerical_gradients = compute_numerical_gradient(xs, ys)
+# Calculate 'normal' gradients
+gradients = compute_gradients(xs, ys)
+# Calculate the ratio between the difference and the sum of vector norms
+ratio = np.linalg.norm(gradients - numerical_gradients) /\
+           np.linalg.norm(gradients + numerical_gradients)
+assert ratio < 1e-07
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Integration tests}
+TODO

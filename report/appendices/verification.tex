@@ -1,0 +1,107 @@
+The following code simulates the data and produces the plots in Section \ref{sec:verification}.
+
+\begin{lstlisting}[language=Python]
+import volrpynn.nest as v
+import numpy as np
+import pyNN.nest as pynn
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+parameters = {"tau_syn_I":5,"tau_refrac":0,"v_thresh":-50,"v_rest":-65,"tau_syn_E":5,"v_reset":-65,"tau_m":20,"e_rev_I":-70,"i_offset":0,"cm":1,"e_rev_E":0}
+
+pynn.setup()
+p1 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
+p1.record(['spikes', 'v'])
+
+def simulate(offset):
+    for recorder in pynn.simulator.state.recorders:
+        recorder.clear()
+    pynn.reset()
+    p1.set(i_offset=offset)
+    pynn.run(50)
+    return p1.get_data()
+
+def membrane_simulate(offset, pop):
+    simulate(offset)
+    b = pop.get_data()
+    return b.segments[0].filter(name='v')[0]
+    
+def plot_membrane_simulate(offset, pop):
+    current = membrane_simulate(offset, pop)
+    spikes = len(pop.get_data().segments[0].spiketrains[0])
+    plt.gca().set_title('Spikes: ' + str(spikes))
+    plt.plot(np.arange(0, 50.1, 0.1), current)
+    
+def spikes_simulate(offset, pop):
+    simulate(offset)
+    b = pop.get_data()
+    return len(b.segments[0].spiketrains[0])
+
+# Membrane current plot
+
+plot_membrane_simulate(2, p1)
+plt.gca().set_title('')
+plt.gcf().set_size_inches(6, 4)
+plt.gca().set_xlabel('Simulation time in ms')
+plt.gca().set_ylabel('Membrane potential in mV')
+plt.savefig('membrane.svg')
+
+xs = np.arange(0, 12.6, 0.1)
+spikes = [spikes_simulate(x, p1) for x in xs]
+
+reg = LinearRegression().fit(xs.reshape(-1, 1), spikes)
+print(reg.coef_, reg.intercept_)
+pred_y = reg.predict(xs.reshape(-1, 1))
+r2_score(spikes, pred_y)
+
+# Spike rate plot
+
+plt.gca().plot(xs, spikes)
+plt.gca().set_ylabel('Number of generated spikes')
+plt.gca().set_xlabel('Constant input current in nA')
+plt.gca().set_title('')
+plt.gcf().set_size_inches(6, 4)
+plt.plot(xs, pred_y, color='black', linewidth=0.6, label="f(x) = 3.225x - 1.615", linestyle="-.")
+plt.legend()
+ylim1, ylim2 = plt.gca().get_ylim()
+ax2 = plt.gca().twinx()
+ax2.set_ylim(ylim1 / 50, ylim2 / 50)
+ax2.set_ylabel('Spike rate (N = 50 ms)')
+plt.savefig('spike_rate.svg')
+
+# Deeper layers
+
+def spikes_simulate_deep(x, pop, proj, spike_data, index):
+    prev_rate = spike_data[index]
+    if prev_rate == 0:
+        proj.set(weight=0)
+    else:
+        proj.set(weight=(x / prev_rate))
+    return spikes_simulate(x, pop)
+
+p2 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
+p2.record(['v', 'spikes'])
+proj2 = pynn.Projection(p1, p2, pynn.AllToAllConnector())
+spikes2 = [spikes_simulate_deep(x, p2, proj2, spikes, i) for i, x in enumerate(xs)]
+
+p3 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
+p3.record('spikes')
+proj3 = pynn.Projection(p2, p3, pynn.AllToAllConnector())
+spikes3 = [spikes_simulate_deep(x, p3, proj3, spikes2, i) for i, x in enumerate(xs)]
+
+# Plot second and third population spikes
+
+plt.figure(figsize=(10, 4))
+ax = plt.subplot(121)
+ax.set_title('')
+plt.ylabel('Number of generated spikes')
+plt.xlabel('Constant input current in nA')
+plt.plot(xs, spikes2)
+plt.subplot(122)
+plt.xlabel('Constant input current in nA')
+plt.plot(xs, spikes3)
+plt.savefig('spike_rate2.svg')
+
+\end{lstlisting}

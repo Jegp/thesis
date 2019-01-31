@@ -11,7 +11,7 @@ digraph example3 {
     o [color=white, label=" "];
     s -> l1 [label="Input"];
     s -> l2 [headlabel="Input", labelangle=25, labeldistance=5];
-    l1 -> p [label="1"]
-    l2 -> p [headlabel="-1", labelangle=20, labeldistance=4.5]
+    l1 -> p
+    l2 -> p 
 
 }

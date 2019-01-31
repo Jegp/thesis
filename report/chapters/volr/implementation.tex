@@ -6,7 +6,7 @@ environments (backends) based on \gls{OpenCL} through Futhark\index{Futhark},
 the neuromorphic hardware BrainScaleS\index{BrainScaleS}.
 
 Futhark has been chosen because it is uncommonly concise and offers
-useful functional abstractions that cleanly composes functional
+useful abstractions that cleanly composes functional
 models \cite{Henriksen2017}.
 Considering \gls{NN}s as a structure of feedforward and feedback functions,
 Futhark is an elegant solution for the task.
@@ -64,40 +64,15 @@ data Type
 The evaluator component evaluates the expression tree into
 a reference-free model, checking the type integrity in the
 process.
-Each expression construct---and their combinations---are
-tested to produce the expected output, such that the evaluator
-is guaranteed to output well-formed code.
-An example of this is shown in Listing \ref{lst:eval-test},
-where a unit test \index{unit test} verifies that the let
-binding of the constant \texttt{x} correctly
-evaluates to the network \texttt{(Net 1 1)}.
-
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[language=haskell,caption={Part of the evaluation code in
-Haskell.},label={code:evaluator}]
-eval' :: Term -> EvalState Term
-eval' term =
-  case term of
-    TmNet n m -> return $ TmNet n m
-    TmSeq t1 t2 -> do
-      t1' <- eval' t1 
-      t2' <- eval' t2
-      return $ TmSeq t1' t2'
-\end{lstlisting}
-\end{minipage}
-
-\begin{lstlisting}[language=Haskell,label={lst:eval-test},caption={A unit test for the correct evaluation of a let binding.}]]
-it "can evaluate a let binding with a reference" $ do
-  let e = TmLet "x" (TmNet 1 1) (TmRef "x")
-  eval e `shouldBe` Right (TmNet 1 1)
-\end{lstlisting} 
 
 Listing \ref{code:eval-type} shows the type checking
 that also occurs in the evaluator step. 
 If the model is malformed, an error is output to explain why the
 model could not evaluate correctly.
-Tests for the type checks and the evaluator in its entirety
-can be found in Appendix \ref{app:implementation}.
+Tests for the type checks and the evaluator are written to ensure the
+correctness of the compilation.
+They are elaborated in Section \ref{sec:verification} on page
+\pageref{sec:verification}.
 
 \begin{lstlisting}[language=Haskell,caption={Part of the type checking code in
 Haskell.},label={code:eval-type}]
@@ -349,24 +324,24 @@ occasion, and is included in Appendix \ref{app:implementation} on page
 \pageref{app:implementation_volrpynn}.
 Similar to the Futhark backend the Python backend models learning through
 backpropagation, but instead of using the traditional feedforward activation
-functions, the simulation backend is used to generate the spike data.
+functions, the simulation backend (NEST) is used to generate the spike data.
 This requires that the layer knows what derivation function to apply in
 the backpropagation step.
-To simplify the code, ReLU is the default gradient model for all layers.
+To simplify the code, ReLU\index{activation!ReLU} is the default gradient model for all layers.
 The Python library also contains the merge, dense,
 replicate layer, but because the connections appear through
 PyNN\index{PyNN} projections, the parallel layer can be omitted.
 
 Another divergence from the Futhark backend is the normalisation of the
-output data through a softmax normalisation (see Equation \ref{eq:softmax} on
-page \pageref{eq:softmax}).
+output data through a softmax\index{normalisation!softmax} normalisation
+(see Equation \ref{eq:softmax} on page \pageref{eq:softmax}).
 This is a commonly used technique for spiking networks to ensure that the 
 output stays positive, despite neurons that do not receive any inputs 
 \cite{Rueckauer2017}.
 This softmax normalisation is only applied in the feedforward step, and does
 not interfere with the backpropagation.
 
-The backpropagation algorithm was implemented in the dense layer, and a snippet
+The backpropagation algorithm is implemented in the dense layer, and a snippet
 is shown in Listing \ref{lst:volrpynn_backprop}.
 
 \begin{lstlisting}[language=Python,label={lst:volrpynn_backprop},caption={Part
@@ -393,30 +368,8 @@ self.set_weights(new_weights)
 self.biases = new_biases
 \end{lstlisting}
 
-To test that the implementation was done correctly, a numerical gradient test
-was performed with a simulated feedforward step with a sigmoid function.
-In the test the layer weights are slightly skewed to approximate the movement
-along a gradient.
-The resulting changes in the backpropagated error should be minuscule, provided
-that the algorithm have been implemented correctly.
-A snippet of the test is shown below:
-The
-
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[language=Python,label={lst:volrpynn_numerical},caption={Part
-of the numerical gradient test for the densely connected layer in PyNN.}]
-# Calculate numerical gradients
-numerical_gradients = compute_numerical_gradient(xs, ys)
-# Calculate 'normal' gradients
-gradients = compute_gradients(xs, ys)
-# Calculate the ratio between the difference and the sum of vector norms
-ratio = np.linalg.norm(gradients - numerical_gradients) /\
-           np.linalg.norm(gradients + numerical_gradients)
-assert ratio < 1e-07
-\end{lstlisting}
-\end{minipage}
-
-Listing \ref{lst:PyNN-MNIST} shows an example of an MNIST network.
+Listing \ref{lst:mnist_pynn} shows an example of the network
+\texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10}, compiled to a PyNN model in Python.
 When activating the input node \texttt{node0} the connections are fed through
 the network to the \texttt{node2} output node.
 Each projection is initiated with random normal distributed weights, similar
@@ -424,8 +377,9 @@ to the Futhark networks.
 \ref{app:implementation_volrpynn}.
 
 \begin{lstlisting}[caption={A simple MNIST network in the PyNN backend from the network in figure
-    \ref{fig:volr-examples} on page \pageref{fig:volr-examples}. The neuron parameters for the LIF populations have been
-omitted.}]
+    \ref{fig:volr-examples} on page \pageref{fig:volr-examples}.
+    The neuron parameters for the LIF populations have been
+omitted.},label={lst:mnist_pynn}]
 p1 = pynn.Population(100, pynn.IF_cond_exp())
 p3 = pynn.Population(20, pynn.IF_cond_exp())
 p5 = pynn.Population(10, pynn.IF_cond_exp())
@@ -435,13 +389,8 @@ l_decode = v.Decode(p5)
 model = v.Model(layer0, layer1, l_decode)
 \end{lstlisting}
 
-
-% The advantage of the static experiment representation being, that the experiment
-% easily a) transports to the target PyNN scripts without losing any information,
-% and b) duplexes between several experiment; the same experiment setup is
-% trivial to setup on multiple targets at once.
-\subsubsection{BrainScaleS backend} \label{ref:Cairo}
+%\subsubsection{BrainScaleS backend}
 %Because of the incompatible backends, each code is injected with a  
 %preample to perform the necessary setup steps 
 %Describe hardware mappings for BrainScaleS
-\dots
+

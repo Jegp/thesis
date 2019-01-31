@@ -474,8 +474,8 @@ through the network, the networks and biases within the network will similarly
 have to scale.
 
 Transferring normalised input from \gls{ANN} to \gls{SNN}, then, is
-a question of determining the scaling factor between the input and neuron
-firing rates.
+a question of determining the exact scaling factor between the \gls{ANN} input
+and the \gls{SNN} spiking rate.
 
 \section{Learning} \index{learning} \label{sec:learning}
 % TODO: http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
@@ -711,6 +711,23 @@ see \cite{Sutskever2013, LeCun1998}.
 Several other techniques have been invented to circumvent the problem of 
 local minima and optimise the learning of the model \cite{LeCun1998,
 Schmidhuber2014}, but they will not be covered here.
+
+\subsection{Weight and bias normalisation}
+When applying backpropagation in \gls{SNN} it is important to be aware of the dissonance
+between the gradient, differentiable activation models and the LIF models
+\cite{Diehl2015, Rueckauer2017}.
+The approximated coding scheme from Section \ref{sec:coding} assists in the translation
+of the input, but it is reasonable to normalise the weights and biases to avoid vanishing gradients.
+\textcite{Rueckauer2017} proposed a scheme where weights are scaled according to the activation
+potential of the previous layer, over the activation potential $a$ over the current layer:
+
+\begin{equation}
+w^l \rightarrow w^l {a^{l - 1} \over a^l}
+\label{eq:weight_norm}
+\end{equation}
+
+Unfortunately this model is prone to outliers, and they propose a robust normalisation scheme,
+where $a$ is set to a percentile of the activation values of a layer \cite{Rueckauer2017}.
 
 \section{Neuromorphic computing}
 Neuromorphic hardware is based on the idea of \gls{NN}s where the activation

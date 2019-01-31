@@ -1,93 +1,57 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
-This chapter describes the experimental setup of the thesis and aims to clarify the methods with which the hypothesis is tested.
+This chapter describes the experimental setup that tests the hypotheses
+from Section \ref{sec:hypotheses}.
+It will begin by describing the assumptions and parameters that underlies the
+future simulations, and continue to detail the datasets and methods with which
+the hypotheses are tested.
 
-This thesis approaches the simulation of biological learning systems in two ways: as \gls{ANN}s and \gls{SNN}s (see section \ref{sec:hypothesis-criteria}).
+\section{Neuron parameters}
+\input{chapters/experiment/parameters}
+
+\section{Parameter translation}
+\input{chapters/experiment/translation}
+
+% The Volr DSL can translate into spiking and non-spiking neural networks such that the network topologies are retained.
+% Using training it is possible for spiking and non-spiking models to solve an MNIST recognition task.
+\section{Problem sets}
+A number of problem sets are employed to test the second hypothesis regarding the training of 
+spiking and non-spiking models.
+First the NAND and XOR logical gates will be trained, as they are simple logic gates
+that are often used to validate neural networks.
+The NAND and XOR can be expressed as $\neg(A \land B)$ and $\oplus$ respectively.
+
+To solve this problem set the same two different network structures will be built: a sequental
+model
+\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2} and a parallel model
+\texttt{\textbf{dense} (\textbf{dense} 2 2 $\ominus$ \textbf{dense} 2 2) $\obar$ \textbf{dense} 4 2}.
+The two networks exists to compare the performance of the parallel structure with 
+a traditional sequential one.
+
+The second problem set is the Modified National Institute of Standards and Technology
+(MNIST) database\index{MNIST}, which is a famous collection of 60,000 training images
+and 10,000 testing images of handwritten digits \cite{LeCun1998}.
+The MNIST dataset is a widely used for training neural networks to classify digits (0 - 9),
+and are commonly used as implementation benchmarks \cite{Schmidhuber2014, Schmitt2017}.
+
+To solve this problem set a sequential and parallel network will be constructed:
+\texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10} and
+\texttt{(\textbf{dense} 100 10 $\ominus$ \textbf{dense} 100 10) $\obar$ \textbf{dense 20 10}}.
+
+\begin{comment}
+\gls{ANN}s have been studied extensively and have surpassed human performance
+in a number of tasks (most recently the 
+advanced real-time strategy game Starcraft II \cite{DeepMind2019})
+\autocite{Schmidhuber2014, Nilsson2009, Russel2007}.
+\gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies 
+\autocite{Dayan2001, Indiveri2015}, but studies in larger scale are still rare,
+although \textcite{Hunsberger2015, Jordan2018, Lin2018, Pfeil2013,
+Rueckauer2017, Schmitt2017} have constructed classifiers that reach
+near-\gls{ANN} precision, but with a 
+
+
 \gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies, but less so in larger setups such as learning and classification tasks \autocite{dayan2001, Indiveri2015}.
 Conversely \gls{ANN}s have been extensively studied in more complex tasks where architectures such as \gls{DNN} have excelled \autocite{schmidhuber2014, Nilsson2009, russel2007}.
-
-While the hypothesis is centred around \gls{SNN}s, the \gls{SNN} necessary to cope with the complexity of the \gls{REF} model, will be closer to the previously mentioned \gls{DNN} in complexity.
-For that reason a comparison of to \gls{ANN}s is interesting because it allows the thesis to tap into the vast amount of research on \gls{ANN} while providing a context for traditional machine learning metrics like learning rate and accuracy, regardless of the emerging properties of the REF model \autocite{schmidhuber2014, russel2007}.
-\footnote{This relates to the second criteria of the hypothesis (see section \ref{sec:hypothesis-criteria})}.
-
-\gls{ANN}s are, however, architecturally similar to \gls{SNN}s and both are inspired by biological domain \autocite{Nilsson2009, dayan2001}.
-To pave the grounds for the experimental setup, this chapter will describe the model that  both the artificial and spiking \gls{NN}s.
-
- and describes how it projects \gls{NN} models to both ANN and SNN backends.
-
-The section is structured as follows.
-First the nature and structure of the experiment is described and motivated.
-Second, a practical approach to the modelling of neuronal networks is discussed.
-Lastly the three backends on which the model will be evaluated are presented:
-  a "regular" machine learning neural network, a neuronal network simulator and a neuromorphic hardware platform.
-
-\section{Krechevsky maze experiment}
-To test the hypothesis described in section \ref{sec:hypothesis}, a maze experiment will be constructed.
-Mazes have been employed in numerous animal experiment because of their small scale and limited scope \autocite{Krechevsky1932,Tolman1927}.
-To encompass the diverse nature of the experiments a number of temporal and spatial arrangements have been devised \autocite{Tolman1927}.
-A complicated maze is however outside of the scope of this thesis, since the maze features will have to be modelled in environments with limited capacity for complexity; particularly some neuromorphic hardware limits the degree of experimental complexity (see section \ref{sec:brainscales-limits}).
-Further, it is desirable for the human experimenter to introspect the maze and the choices of the agents within the maze.
-This would be practically impossible with a large and complex maze setup.
-For these reasons the experiment is built around a simple Krechevsky T-maze \ref{Krechevsky1932}.
-The maze is is sufficiently simply to be modelled in the experiment environments, while still retaining its relevance for the hypothesis.
-
-A Krechevsky maze is dubbed after its inventor who experimented with rats in the early 20th century.
-The maze is built as a T-maze with a series of consecutive left-right corridors.
-Taking a wrong choice leads to a dead end, while the right choice leads to the next junction and eventually the exit (with a reward for the rats).
-The depth of the maze denotes the amount of choices to make before finding the exit.
-A significant property of a Krechevsky maze is the categorial features associated with each junction (e. g. light/darkness, colour or shape).
-One task could be for the rat to learn that the colour \texttt{red} consistently leads to a dead end, or that \texttt{darkness} consistently leads to the exit.
-More sophisticated, a maze could combine features (\texttt{red} and \texttt{darkness}) or let them alternate (first \texttt{red} then \texttt{darkness}) to lead the rat to its reward.
-
-In the digital realm these features can be encoded using a vector of boolean flags.
-For the current experiment this is exploited to construct three digital Krechevsky mazes with one or more binary features.
-The three mazes will be build with different levels of complexity: a maze with a depth of one with a single feature, to verify that all models are capable of learning above chance, and two two-feature mazes with a depth of 10.
-The second maze (the first two-feature maze) will display each feature one at the time, never showing both features at once.
-To learn this pattern requires a temporal memory of the actor.
-The third maze displays the features so as to alternate between showing the correct and wrong path.
-Specifically the first feature will show the correct path in the first junction, but the incorrect path at the second junction, and vice-versa for the second feature.
-
-The logic of the three mazes will be adapted to suit the different environments described below.
-
-\section{Modelling learning systems} \label{sec:learning}
-This section focuses on the practical challenges in constructing ANN and SNN models.
-Specifically the models are required to fulfil a number of criteria.
-The SNN model should relate to the structure of networks found in the mammalian brain.
-The ANN model should closely resemble the SNN model in structure, to allow for a comparison between the two models.
-And naturally both models should display a capacity for learning.
-
-... To be continued when models and theory have progressed ...
-%, a model will be built in the learning model DSL Volr \autocite{Pedersen2018:volr-report}.
-
-\subsection{Volr}
-Volr is a declarative language designed to model \gls{NN}.
-Volr offers a trade-off between complete, but verbose, descriptions of small networks and more general designs of large and complex networks.
-The language solves this by separating the topology of the networks from the detailed physiological properties of each neuron or neuron population.
-A network is constructed in practice by describing a number of neurons (a \texttt{population}) and the connections of these neurons to other \texttt{populations}.
-In Volr the \texttt{populations} can be understood as nodes in a graph, and the \texttt{population} connections as edges.
-
-%Using connection-set algebra, Volr is capable of concisely describing the network topology \autocite{Djurfeldt2012}
-
-In Volr the same model can be projected to networks in different environments; currently as either ANNs, simulated SNNs or hardware-backed SNNs.
-%The principles for learning vary (see section \ref{sec:futhark} and \ref{sec:neuromorphic}) but the topology in all cases remain the same.
-The remainder of this section describes the principles for the translation between the model and the backends.
-Following this, learning in each backend will be discussed.
-
-\subsubsection{Emulating neural networks in Volr}
-
-
-In other words the resulting emulations are derived from the same description, making it simple to compare them, depending on the principles for learning.
-The remainder of the section will
-Some principles
-Volr further supports detailing the type (inhibitory vs. excitatory), cardinality and weights for connections between \texttt{populations}, but is still missing a number of configuration options.
-\footnote{TODO}
-If necessary additional information can beeach node or edge can
-%experiment the machine learning backend (described in section \ref{futhark}) and neuromorphic backend is
-
-%\subsection{Machine learning backend} \label{sec:Futhark}
-%Evaluation of the machine learning
-
-\subsection{Neural network simulation backend}
 
 \subsection{Neuromorphic backend} \label{sec:neuromorphic}
 % \subsubsection{Experiment stimuli}
@@ -113,4 +77,6 @@ If necessary additional information can beeach node or edge can
 % considered as the outcome of the network for training purposes.
 % The response block only contains an optional specification of a location for
 % the experiment output data.
+
+\end{comment}
 \end{document}
