@@ -1,5 +1,6 @@
 The following code simulates the data and produces the plots in Section \ref{sec:verification}.
 
+\section{Single-neuron population rate experiments}
 \begin{lstlisting}[language=Python]
 import volrpynn.nest as v
 import numpy as np
@@ -7,11 +8,12 @@ import pyNN.nest as pynn
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+get_ipython().magic('matplotlib inline')
 
 parameters = {"tau_syn_I":5,"tau_refrac":0,"v_thresh":-50,"v_rest":-65,"tau_syn_E":5,"v_reset":-65,"tau_m":20,"e_rev_I":-70,"i_offset":0,"cm":1,"e_rev_E":0}
-
 pynn.setup()
+
+# Setup initial population
 p1 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
 p1.record(['spikes', 'v'])
 
@@ -40,7 +42,6 @@ def spikes_simulate(offset, pop):
     return len(b.segments[0].spiketrains[0])
 
 # Membrane current plot
-
 plot_membrane_simulate(2, p1)
 plt.gca().set_title('')
 plt.gcf().set_size_inches(6, 4)
@@ -48,16 +49,15 @@ plt.gca().set_xlabel('Simulation time in ms')
 plt.gca().set_ylabel('Membrane potential in mV')
 plt.savefig('membrane.svg')
 
-xs = np.arange(0, 12.6, 0.1)
+# Spike rate regression model
+xs = np.arange(0, 12.6, 0.02)
 spikes = [spikes_simulate(x, p1) for x in xs]
-
 reg = LinearRegression().fit(xs.reshape(-1, 1), spikes)
 print(reg.coef_, reg.intercept_)
 pred_y = reg.predict(xs.reshape(-1, 1))
 r2_score(spikes, pred_y)
 
-# Spike rate plot
-
+# Plot spike count and rate for first population
 plt.gca().plot(xs, spikes)
 plt.gca().set_ylabel('Number of generated spikes')
 plt.gca().set_xlabel('Constant input current in nA')
@@ -71,37 +71,150 @@ ax2.set_ylim(ylim1 / 50, ylim2 / 50)
 ax2.set_ylabel('Spike rate (N = 50 ms)')
 plt.savefig('spike_rate.svg')
 
-# Deeper layers
 
-def spikes_simulate_deep(x, pop, proj, spike_data, index):
-    prev_rate = spike_data[index]
-    if prev_rate == 0:
-        proj.set(weight=0)
-    else:
-        proj.set(weight=(x / prev_rate))
-    return spikes_simulate(x, pop)
-
+# Deeper layer
 p2 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
-p2.record(['v', 'spikes'])
 proj2 = pynn.Projection(p1, p2, pynn.AllToAllConnector())
-spikes2 = [spikes_simulate_deep(x, p2, proj2, spikes, i) for i, x in enumerate(xs)]
-
 p3 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
-p3.record('spikes')
 proj3 = pynn.Projection(p2, p3, pynn.AllToAllConnector())
-spikes3 = [spikes_simulate_deep(x, p3, proj3, spikes2, i) for i, x in enumerate(xs)]
+p4 = pynn.Population(1, pynn.IF_cond_exp(**parameters))
+proj4 = pynn.Projection(p3, p4, pynn.AllToAllConnector())
+p2.record(['v', 'spikes'])
+p3.record(['v', 'spikes'])
+p4.record(['v', 'spikes'])
 
-# Plot second and third population spikes
+def spikes_simulate_deep(offset, weight_function):
+    proj2.set(weight=weight_function(offset, p1.size, p2.size))
+    proj3.set(weight=weight_function(offset, p2.size, p3.size))
+    proj4.set(weight=weight_function(offset, p3.size, p4.size))
+    simulate(offset)
+    return (p1.get_data(), p2.get_data(), p3.get_data(), p4.get_data())
 
-plt.figure(figsize=(10, 4))
-ax = plt.subplot(121)
-ax.set_title('')
+def to_spikes(d):
+    return d.segments[0].spiketrains[0].size
+
+def to_potential(d):
+    return d.filter('v')
+
+# Plot spike counts with constant weights
+data_constant = [spikes_simulate_deep(x, lambda r, x, y: 1) for x in xs]
+spikes_constant = np.array([(to_spikes(x[0]), to_spikes(x[1]), to_spikes(x[2]), to_spikes(x[3])) for x in data_constant])
+
+plt.figure(figsize=(15, 4))
+ax = plt.subplot(131)
+ax.set_ylim(0, 500)
+ax.set_title('Second population (N = 1)')
 plt.ylabel('Number of generated spikes')
 plt.xlabel('Constant input current in nA')
-plt.plot(xs, spikes2)
-plt.subplot(122)
+plt.plot(spikes_constant[:, 0], spikes_constant[:, 1])
+ax2 = plt.subplot(132)
+ax.set_ylim(0, 500)
+ax2.set_title('Third population (N = 1)')
+plt.ylabel('Number of generated spikes')
+plt.xlabel('Number of input spikes')
+plt.plot(spikes_constant[:, 1], spikes_constant[:, 2])
+ax3 = plt.subplot(133)
+ax.set_ylim(0, 500)
+ax3.set_title('Fourth population (N = 1)')
+plt.xlabel('Number of input spikes')
+plt.plot(spikes_constant[:, 2], spikes_constant[:, 3])
+plt.savefig('spike_rate_not_weighted.svg')
+
+# Spike rates with adjusted weights
+data = [spikes_simulate_deep(x, lambda r, x, y: 0.065 / x) for x in xs]
+spikes = np.array([(to_spikes(x[0]), to_spikes(x[1]), to_spikes(x[2]), to_spikes(x[3])) for x in data])
+
+plt.figure(figsize=(15, 4))
+ax = plt.subplot(131)
+ax.set_ylim(0, 40)
+ax.set_title('Second population (N = 1)')
+plt.ylabel('Number of generated spikes')
+plt.xlabel('Number of input spikes')
+plt.plot(spikes[:, 0], spikes[:, 1])
+ax2 = plt.subplot(132)
+ax2.set_ylim(0, 40)
+ax2.set_title('Third population (N = 1)')
+plt.ylabel('Number of generated spikes')
+plt.xlabel('Number of input spikes')
+plt.plot(spikes[:, 1], spikes[:, 2])
+ax3 = plt.subplot(133)
+ax3.set_ylim(0, 40)
+ax3.set_title('Fourth population (N = 1)')
+plt.xlabel('Number of input spikes')
+plt.plot(spikes[:, 2], spikes[:, 3])
+plt.savefig('spike_rate_chain.svg')
+\end{lstlisting}
+
+\section{MNIST neuron rate experiments}
+\begin{lstlisting}[language=Python]
+import volrpynn.nest as v
+import numpy as np
+import pyNN.nest as pynn
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+import matplotlib.pyplot as plt
+get_ipython().magic('matplotlib inline')
+parameters = {"tau_syn_I":5,"tau_refrac":0,"v_thresh":-50,"v_rest":-65,"tau_syn_E":5,"v_reset":-65,"tau_m":20,"e_rev_I":-70,"i_offset":0,"cm":1,"e_rev_E":0}
+pynn.setup()
+
+# Setup populations and projections 
+
+p1 = pynn.Population(100, pynn.IF_cond_exp(**parameters))
+p2 = pynn.Population(100, pynn.IF_cond_exp(**parameters))
+proj2 = pynn.Projection(p1, p2, pynn.AllToAllConnector())
+p3 = pynn.Population(10, pynn.IF_cond_exp(**parameters))
+proj3 = pynn.Projection(p2, p3, pynn.AllToAllConnector())
+p1.record(['spikes', 'v'])
+p2.record(['spikes', 'v'])
+p3.record(['spikes', 'v'])
+
+def simulate(offset):
+    for recorder in pynn.simulator.state.recorders:
+        recorder.clear()
+    pynn.reset()
+    p1.set(i_offset=offset)
+    pynn.run(50)
+
+def simulate_spikes(offset, weight_function):
+    proj2.set(weight=weight_function(offset, p1.size, p2.size))
+    proj3.set(weight=weight_function(offset, p2.size, p3.size))
+    simulate(offset)
+    return (p1.get_data(), p2.get_data(), p3.get_data())
+
+def count_spikes(data):
+    return np.array([s.size for s in data.segments[0].spiketrains]).mean()
+
+def simulate_offsets(rates, weight_function):
+    return np.array([simulate_spikes(rate, weight_function) for rate in rates])
+    
+# Define weight normalisation function
+weight_function = lambda r, x, y: 0.065 / x
+xs = np.arange(0, 12, 0.1)
+data = simulate_offsets(ct, weight_function)
+
+spikes = np.array([(count_spikes(d1), count_spikes(d2), count_spikes(d3)) for (d1, d2, d3) in data])
+
+# Plot population rates
+
+plt.figure(figsize=(15, 4))
+ax = plt.subplot(131)
+ax.set_ylim(0, 40)
+ax.set_title('First population (N = 100)')
+plt.ylabel('Number of generated spikes')
 plt.xlabel('Constant input current in nA')
-plt.plot(xs, spikes3)
-plt.savefig('spike_rate2.svg')
+plt.plot(xs, spikes[:, 0])
+ax2 = plt.subplot(132)
+ax2.set_ylim(0, 40)
+ax2.set_title('Second population (N = 100)')
+plt.ylabel('Average number of generated spikes')
+plt.xlabel('Average number of input spikes per neuron')
+plt.plot(spikes[:, 0], spikes[:, 1])
+ax3 = plt.subplot(133)
+ax3.set_ylim(0, 40)
+ax3.set_title('Third population (N = 10)')
+plt.ylabel('Average number of generated spikes')
+plt.xlabel('Average number of input spikes per neuron')
+plt.plot(spikes[:, 1], spikes[:, 2])
+plt.savefig('spike_rate_mnist.svg')
 
 \end{lstlisting}
