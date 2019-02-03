@@ -1,6 +1,7 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
-This chapter describes the experimental setup that tests the hypotheses
+This chapter describes the experimental setup that aims to validate the
+implementation and test the hypotheses
 from Section \ref{sec:hypotheses}.
 It will begin by describing the assumptions and parameters that underlies the
 future simulations, and continue to detail the datasets and methods with which
@@ -12,24 +13,33 @@ the hypotheses are tested.
 \section{Parameter translation}
 \input{chapters/experiment/translation}
 
-% The Volr DSL can translate into spiking and non-spiking neural networks such that the network topologies are retained.
-% Using training it is possible for spiking and non-spiking models to solve an MNIST recognition task.
 \section{Problem sets}
-A number of problem sets are employed to test the second hypothesis regarding the training of 
-spiking and non-spiking models.
-First the NAND and XOR logical gates will be trained, as they are simple logic gates
-that are often used to validate neural networks.
-The NAND and XOR can be expressed as $\neg(A \land B)$ and $\oplus$ respectively.
+Three problem sets will be tested: the NAND ($\neg(A \land B)$) and XOR
+($\oplus$) logical gates and the 
+Modified National Institute of Standards and Technology
+(MNIST) database\index{MNIST}.
+The NAND and XOR problems are trivial for \glspl{ANN} to learn, and are used as
+a means to test and compare the rudimentary learning capacities of the NEST and
+BrainScaleS backends.
 
-To solve this problem set the same two different network structures will be built: a sequental
-model
-\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2} and a parallel model
+The NAND and XOR experiments will be based on the same network topology
+(\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2}). 
+All backends will execute the experiment with randomly initialised weights, but
+because the experiments are structurally similar, and because Futhark is
+expected to outperform the \glspl{SNN}, the spiking backends will evaluated
+a second time with imported weights and biases from previously optimised networks.
+The weights and biases from the optimised Futhark will be imported into NEST,
+and, after discretising them, the optimised weights and biases from NEST will be
+inserted into the BrainScaleS model.
+Because of the imprecision in the coding translation scheme between \glspl{ANN} and
+\glspl{SNN}, this is expected to improve the performance in the \glspl{SNN} significantly.
+
+The MNIST network will 
 \texttt{\textbf{dense} (\textbf{dense} 2 2 $\ominus$ \textbf{dense} 2 2) $\obar$ \textbf{dense} 4 2}.
 The two networks exists to compare the performance of the parallel structure with 
 a traditional sequential one.
 
-The second problem set is the Modified National Institute of Standards and Technology
-(MNIST) database\index{MNIST}, which is a famous collection of 60,000 training images
+, which is a famous collection of 60,000 training images
 and 10,000 testing images of handwritten digits \cite{LeCun1998}.
 The MNIST dataset is a widely used for training neural networks to classify digits (0 - 9),
 and are commonly used as implementation benchmarks \cite{Schmidhuber2014, Schmitt2017}.

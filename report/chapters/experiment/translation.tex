@@ -74,8 +74,8 @@ For the post-synaptic neurons this means that the input potential for a neuron
 is linearly correlated with the number of pre-synaptic connections.
 
 A number of experiments has been conducted to find the appropriate scaling values,
-and, given $N^{l-1}$ neurons in the previous layer, a normalisation value of
-$0.065 / N^{l-1}$
+and, given a population of size $N^l$ and its preceding population of size $N^{l-1}$,
+a normalisation value of $w_{N^l} = 0.065 / N^{l-1}$
 has been shown to provide a stable linear approximation of spike rates in a
 network.
 Figure \ref{fig:spike_rates_chain} shows the same populations as in 

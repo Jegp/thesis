@@ -2,8 +2,11 @@
 \begin{document}
 
 This first chapter presents the theoretical foundation for the thesis.
-The theory is grouped into three sections: \glspl{NN}, learning and
-neuromorphic hardware.\index{neuromorphic}
+The theory is grouped into three major section: 
+\glspl{NN} from perceptron models to \glspl{ANN} and \glspl{SNN}, 
+learning within \glspl{NN} and cognitive theories.
+The chapter will finish with a brief presentation on
+neuromorphic hardware and its limits.\index{neuromorphic}
 
 \section{Neural networks} \label{sec:nn}
 \Glspl{NN} is a broad term that originates in the neuronal models from
@@ -729,6 +732,10 @@ w^l \rightarrow w^l {a^{l - 1} \over a^l}
 Unfortunately this model is prone to outliers, and they propose a robust normalisation scheme,
 where $a$ is set to a percentile of the activation values of a layer \cite{Rueckauer2017}.
 
+
+\section{Cognitive theories}
+%TODO: 
+
 \section{Neuromorphic computing}
 Neuromorphic hardware is based on the idea of \gls{NN}s where the activation
 units are modelled outside the classical \gls{vonNeumann}, either in 
@@ -746,6 +753,7 @@ The noise problems are caused by noise in the integrated circuit components
 The technology is still relatively young and suffers from a number
 of practical problems, why networks above a couple of thousand neurons remains
 problematic in the available platforms \cite{Schmitt2017}.
+
 
 The state-of-the-art neuromorphic platforms are presented in Section
 \ref{sec:similar-neuromorphic} along with their implementation details,
