@@ -3,14 +3,14 @@ The main purpose of Volr is to define clear and reproducible
 experiments whose semantics are retained regardless of
 the runtime environment.
 It is built for the concise specification and straight-forward
-translation of neural models into both artificial as well as
+translation of neural models into both artificial, as well as
 spiking network models.
 Volr focuses solely on the topology of networks, thus
 separating the network description from generation-specific
 properties of neurons or neuron populations.
 
-The first requirement on semantic consistency is met through an unambiguous
-syntax, heavily inspired by the lamdba calculus \cite{Pierce2002}.
+The first requirement on semantic consistency explained in the previous section is met through an unambiguous
+syntax, heavily inspired by lamdba calculus \cite{Pierce2002}.
 Figure \ref{fig:volr-expr} shows the BNF notation for expressions, values and types
 in Volr. 
 Figure \ref{fig:volr-rules} lists evaluation rules for the correct
@@ -19,7 +19,7 @@ interpretation of the expressions.
 \input{chapters/volr/expr.tex}
 \input{chapters/volr/evaluation.tex}
 
-The constant expression $n$ is simply an integer that evaluates to the type 
+The constant expression $n$ is an integer that evaluates to the type 
 \texttt{\textbf{int}} ($e1$). 
 Similarly to traditional functional languages, the \texttt{\textbf{let}} binding binds
 the string constant $x$ to the expression $e$ when evaluating $e'$ \cite{Pierce2002}.
@@ -36,9 +36,9 @@ that are densely connected to a number of outputs (see Section
 To calculate the output of the layer, the layer bias is added to the
 weighted input (output from the previous layer) and given 
 to the activation function.
-Remembering the definition of layers as functions over vectors, each neuron 
+Taking into account the definition of layers as functions over vectors as described previously, each neuron 
 accounts for the activation of a single dimension in the input/output vectors.
-In turn, $n$ and $m$ illustrates the \textit{dimensionality} of the network,
+In turn, $n$ and $m$ illustrate the \textit{dimensionality} of the network,
 such that the number of dimensions in the input is truncated (or expanded) to
 the dimensionality of the output layer.
 

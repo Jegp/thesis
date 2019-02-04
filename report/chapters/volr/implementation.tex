@@ -1,23 +1,23 @@
-The compiler for the \gls{DSL} itself is implemented in the functional language
+The compiler for the \gls{DSL} is implemented in the functional language
 Haskell \cite{Haskell}.
 Currently, Volr translates its network models into three runtime
 environments (backends) based on \gls{OpenCL} through Futhark\index{Futhark},
 \glspl{SNN} simulations through NEST\index{NEST} and 
 the neuromorphic hardware BrainScaleS\index{BrainScaleS}.
 
-Futhark has been chosen because it is uncommonly concise and offers
-useful abstractions that cleanly composes functional
+Futhark was chosen because it is concise and offers
+useful abstractions that cleanly compose functional
 models \cite{Henriksen2017}.
-Considering \gls{NN}s as a structure of feedforward and feedback functions,
+Considering \glspl{NN} as a structure of feedforward and feedback functions,
 Futhark is an elegant solution for the task.
 
-PyNN has been chosen for its general purpose API that translates to both the
-neuromorphic BrainScaleS \index{BrainScaleS} backend and the NEST 
+PyNN was chosen for its general purpose API that translates to both, the
+neuromorphic BrainScaleS \index{BrainScaleS} backend, as well as the NEST 
 \index{NEST} simulator.
 \\[0.2cm]
 Figure \ref{fig:volr-architecture} shows the workflow starting with the
 compilation of the network model, down to the runtime evaluation on each backend.
-The following section explains the diagram one component at the time.
+The following section explains the diagram one component at a time.
 
 \begin{figure}
   \centering
@@ -29,10 +29,10 @@ The following section explains the diagram one component at the time.
   \label{fig:volr-architecture}
 \end{figure}
 
-\subsection{DSL compiler}
+\subsection{The DSL compiler}
 The Haskell compiler consists of five different parts:
-An \gls{AST}, evaluator, language parser and two
-code generators for \gls{ANN}s and \gls{SNN}s.
+An \gls{AST}, an evaluator, a language parser and two
+code generators for \glspl{ANN} and \glspl{SNN}.
 
 \lstset{mathescape=false,showstringspaces=false}
 \begin{minipage}{\linewidth}
@@ -49,7 +49,7 @@ data Term
 \end{minipage}
 
 The AST reflects the expressions given in the 
-specification (see Section \ref{sec:volr}) and is
+specification (see section \ref{sec:volr}) and is
 shown in Listing \ref{code:term}.
 It is accompanied by a simple type system (in Listing \ref{code:type})
 that similarly maps to the types given above.
@@ -67,11 +67,11 @@ process.
 
 Listing \ref{code:eval-type} shows the type checking
 that also occurs in the evaluator step. 
-If the model is malformed, an error is output to explain why the
+If the model is malformed, an error is generated to explain why the
 model could not evaluate correctly.
 Tests for the type checks and the evaluator are written to ensure the
 correctness of the compilation.
-They are elaborated in Section \ref{sec:verification} on page
+They are elaborated in section \ref{sec:verification} on page
 \pageref{sec:verification}.
 
 \begin{lstlisting}[language=Haskell,caption={Part of the type checking code in
@@ -93,7 +93,7 @@ typeOf term =
                      "be equal to input " ++ (show rightIn)
 \end{lstlisting}
 
-The language parser, built via the monadic parser combinator library Megaparsec
+The language parser, built with the help of the monadic parser combinator library Megaparsec
 \cite{megaparsec}, interprets textual input into the AST. \index{AST}
 The main component of the parser is shown in Listing \ref{code:parser}
 and the whole parser is available in Appendix \ref{app:implementation} on page
@@ -114,19 +114,19 @@ parseTerm = (lexeme $ choice
 
 Finally two code generators are implemented for the translation into
 second and third generation networks.
-This translation will be presented along with the implementation
+This translation will be presented along the implementation
 for the two backends.
 
 \subsection{Futhark backend} \label{sec:volr-futhark}
 This thesis builds on the work by \textcite{Minh2018}, who 
-implemented a functional library for deep learning.
+implemented a functional library in Futhark for deep learning.
 The library models \gls{NN} layers as records with three fields:
 a function for forward propagation, a function for backward propagation
 and a cache for weights. 
 The backward propagation uses gradient descent to find optimal
 weight configurations.
 Because of its functional nature, layers can simply be joined 
-sequentially by function composision.
+sequentially by function composition.
 
 The library from \cite{Minh2018} has been modified to fit the
 additions in the thesis, and is available online (see links in 
@@ -135,7 +135,7 @@ In particular, a \textit{replicate} and a \textit{merge} layer has
 been added, to account for the parallel operator ($\ominus$).
 A connection that allows two parallel networks to connect to other
 layers has also been added, although it simply composes tuples of
-the layer structure (see the \texttt{neural\_networks.fut} file in
+the layer structure (see the file \texttt{neural\_networks.fut} in
 Appendix \ref{app:implementation}, page \pageref{app:implementation_fut_nn}).
 
 \paragraph{Replicate layer}
@@ -144,12 +144,12 @@ replicates the output to each layer.
 This happens by storing two separate collections of weights, such
 that each forward connection is assigned the correct value.
 Backpropagation works by calculating the error correction on the
-two sets of weights, and the final error sent to the previous layer
-is a simple average of the error for each neuron. 
-The algorithm is shown in an shortened form in Listing \ref{code:bp-replicate}.
+two sets of weights. The final error sent to the previous layer
+is the average of the error for each neuron. 
+The algorithm is shown in a shortened form in Listing \ref{code:bp-replicate}.
 Here the two errors and weights are independently calculated.
 The weights are stored in the layer as-is, but the errors are 
-averaged before they are output to the previous layer.
+averaged before they are passed to the previous layer.
 
 \begin{lstlisting}[language=Haskell,label={code:bp-replicate},caption={Part
     of the forward and backward propagation algorithms for the replicate layer.
@@ -177,19 +177,19 @@ let backward (act: []t -> []t)
   in (average_sum_matrix [error1, error2], (w1, w2))
 \end{lstlisting}
 
-This interpretation fits with the original specification, where
+This interpretation fits with the original specification, after which
 the parallel notation duplicates the 'work' in two separate networks.
-The whole code for the replication, and the code for translating the \gls{DSL}
+The complete code for the replication, and the code for translating the \gls{DSL}
 abstractions into Futhark,\index{Futhark} is shown in Appendix 
 \ref{app:implementation}.
 
 \paragraph{Merge layer}
 The merge layer is significantly simpler than the replication layer,
-because it simply concatenates the inputs from two parallel layer into one single
+because it merely concatenates the inputs from two parallel layer into one single
 layer. 
 For that reason it also does not contain any weights.
-In the case of backprogapation it simply reroutes the errors back to
-the population, from which the neuron originated.
+In the case of backprogapation, the errors are rerouted back to
+the population from which the neuron originated.
 All optimisation logic is left for the regular dense or replicated
 layers.
 
@@ -213,7 +213,7 @@ let backward (_:[]t -> []t) (l1_sz:i32)
 \end{lstlisting}
 
 This interpretation is also aligned with the original specification, 
-because it allows the parallel populations to propagate its output
+because it allows the parallel populations to propagate their output
 independent of each other.
 
 \subsection{PyNN backend}
@@ -223,17 +223,17 @@ and a translation between that representation into backend-specific
 Python code.
 The steps are decoupled to enforce the same semantics on the code
 generation for the neuromorphic and simulation backends.
-While PyNN is designed as a simulator-dependent \gls{API} 
+While PyNN is designed as a simulator-dependent \gls{API}, 
 it is unlikely that the backends will fully support it in the
-immediate future (see section \ref{sec:SNN-simulators}).
+near future (see section \ref{sec:SNN-simulators}).
 
 \subsubsection{\gls{SNN} translation step}
-Before Python code for PyNN can be generated a number of assumptions
-has to be met. 
+Before Python code for PyNN can be generated, a number of assumptions
+have to be met. 
 In particular the types of connections (referred to as projections in PyNN)
-and neuron models has to be described with a full set of neuron parameters.
-The modelling of this happens in Haskell.
-The neuron parameters for an example LIF\index{LIF} neuron is seen in Listing
+and neuron models have to be described with a full set of neuron parameters.
+The modelling of this is in Haskell.
+The neuron parameters for a LIF\index{LIF} neuron can be seen in Listing
 \ref{lst:lif-cond-exp} with their corresponding default values
 below\footnote{
 The current neuron models and their default parameters are taken from PyNN's
@@ -277,7 +277,7 @@ if_cond_exp = IFCondExp {
 These neuron models form the basis of populations, which is determined by the
 neuron model and the number of neurons in the population.
 Populations can be understood as neuron groups or nodes in the network graph.
-Along spike sources, that generates spikes over time, they are the 
+Along spike sources, which generate spikes over time, they are the 
 basic components in a spiking neural network graph.
 The definition of nodes as either populations or spike sources is shown in
 Listing \ref{lst:node}.
@@ -294,7 +294,7 @@ data Node = Population {
     }
 \end{lstlisting}
 
-The nodes in the spiking graph is connected through edges shown in 
+The nodes in the spiking graph are connected through edges shown in 
 Listing \ref{lst:projection}.
 
 \begin{lstlisting}[language=,caption={The definition of an edge as a projection between
@@ -311,21 +311,20 @@ in the current implementation is fixed to describe a
 dense projection (\texttt{AllToAll} in PyNN) that solely
 excites (contrary to inhibit) post-synaptic neurons.
 
-The model presented here here allows us to completely reproduce the connection
-graph from the \gls{DSL} description.
+The model presented here allows to completely reproduce the connection
+graph of the \gls{DSL} description.
 The only difference between the two is the lack of biases and activation functions
 in \glspl{SNN}, which changes with the neuron types.
 
 \subsubsection{PyNN backend}
 The final step in the translation of the \gls{DSL} to PyNN code maps the
 \gls{SNN} model from above to executable Python code.
-A separate neural network library, VolrPyNN, has been developed for the
-occasion, and is included in Appendix \ref{app:implementation} on page
+A separate neural network library, VolrPyNN, has been developed for this purpose, and is included in Appendix \ref{app:implementation} on page
 \pageref{app:implementation_volrpynn}.
-Similar to the Futhark backend the Python backend models learning through
+Similarly to the Futhark backend, the Python backend models learning through
 backpropagation, but instead of using the traditional feedforward activation
 functions, the simulation backend (NEST) is used to generate the spike data.
-This requires that the layer knows what derivation function to apply in
+This requires that the layer knows which derivation function to apply in
 the backpropagation step.
 To simplify the code, ReLU\index{activation!ReLU} is the default gradient model for all layers.
 The Python library also contains the merge, dense,

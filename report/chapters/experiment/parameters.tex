@@ -1,14 +1,14 @@
 Since the neural network topologies between the backends are shown to be similar,
 the parameters related to this topology are shared as well.
-By applying the theory from \textcite{Rueckauer2017} (see Section
+By applying the theory from \textcite{Rueckauer2017} (see section
 \ref{sec:coding}), this section will explain how input data, network weights,
 and network biases can be transferred from \glspl{ANN} to \glspl{SNN}.
 It will then proceed to describe the setup with which 
-
+%TODO KK finish above sentence
 
 As explained in Section \ref{sec:coding}, normalised input in \glspl{ANN} can
-be inserted in \glspl{SNN} with a linear transformation.
-This transformation have been examined empirically, by constructing a simple 
+be inserted into \glspl{SNN} with the help of a linear transformation.
+This transformation has been examined empirically, by constructing a simple 
 one-neuron network, and injecting a constant current over time.
 By running a number of experiments, it is possible to measure the integrated
 current in the neuron and the amount of spikes it produces over time.
@@ -21,17 +21,17 @@ current in the neuron and the amount of spikes it produces over time.
   \label{fig:membrane}
 \end{figure}
 
-Figure \ref{fig:membrane} shows one such experiment, where the membrane
+Figure \ref{fig:membrane} shows one such experiment, in which the membrane
 potential of a single neuron is plotted over time.
-The neuron is given a constant input current of 1.3 nA, and is 
-producing 5 spikes during the 100 ms the neuron is simulated. 
-As expected from Section \ref{sec:coding}, the interspike interval is constant.
+The neuron is given a constant input current of 1.3 nA, and 
+produces 5 spikes during the 100 ms simulation time. 
+As expected in section \ref{sec:coding}, the interspike interval is constant.
 
 A neuron only spikes when its membrane potential exceeds its excitation threshold
 $V_{thr}$, but depends on a number of parameters to describe the neuron
 conductivity, current decay time etc.
-In both PyNN, NEST and BrainScaleS these parameters can be programatically
-defined, and Table \ref{tab:neuron_parameters} shows the default parameters
+In ll three, PyNN, NEST and BrainScaleS, these parameters can be programatically
+defined. Table \ref{tab:neuron_parameters} shows the default parameters for
 NEST (also shown in Listing \ref{lst:lif-cond-exp}).
 The $\tau_{syn}$ parameters denote the decay time for the input spike currents. 
 Similarly, the membrane time constant, $\tau_m$, expresses the time it takes for the

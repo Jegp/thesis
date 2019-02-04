@@ -1,11 +1,8 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 This chapter describes the experimental setup that aims to validate the
-implementation and test the hypotheses
-from Section \ref{sec:hypotheses}.
-It will begin by describing the assumptions and parameters that underlies the
-future simulations, and continue to detail the datasets and methods with which
-the hypotheses are tested.
+implementation and test the hypotheses introduced in section \ref{sec:hypotheses}.
+Firstly, the assumptions and parameters that are the basis of the simulations are described. The second part elaborates on the datasets and methods that are used to test the hypotheses.
 
 \section{Neuron parameters}
 \input{chapters/experiment/parameters}
@@ -15,7 +12,7 @@ the hypotheses are tested.
 
 \section{Problem sets}
 Three problem sets will be tested: the NAND ($\neg(A \land B)$) and XOR
-($\oplus$) logical gates and the 
+($\oplus$) logical gates, as well as the 
 Modified National Institute of Standards and Technology
 (MNIST) database\index{MNIST}.
 The NAND and XOR problems are trivial for \glspl{ANN} to learn, and are used as
@@ -24,44 +21,28 @@ BrainScaleS backends.
 
 The NAND and XOR experiments will be based on the same network topology
 (\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2}). 
-All backends will execute the experiment with randomly initialised weights, but
-because the experiments are structurally similar, and because Futhark is
-expected to outperform the \glspl{SNN}, the spiking backends will evaluated
-a second time with imported weights and biases from previously optimised networks.
-The weights and biases from the optimised Futhark will be imported into NEST,
+All backends will execute the experiment with randomly initialised weights. However, the spiking backends will be evaluated
+a second time with imported weights and biases from previously optimised networks, because the experiments are structurally similar, and Futhark is
+expected to outperform the \glspl{SNN}.
+The weights and biases from the optimised Futhark model will be imported into NEST,
 and, after discretising them, the optimised weights and biases from NEST will be
 inserted into the BrainScaleS model.
 Because of the imprecision in the coding translation scheme between \glspl{ANN} and
-\glspl{SNN}, this is expected to improve the performance in the \glspl{SNN} significantly.
+\glspl{SNN}, this is expected to improve the performance of the \glspl{SNN} significantly.
 
+%TODO KK check the following sentence. Looks weird, but maybe it'S fine?
 The MNIST network will 
 \texttt{\textbf{dense} (\textbf{dense} 2 2 $\ominus$ \textbf{dense} 2 2) $\obar$ \textbf{dense} 4 2}.
-The two networks exists to compare the performance of the parallel structure with 
+The two networks exist to compare the performance of the parallel structure with 
 a traditional sequential one.
 
-, which is a famous collection of 60,000 training images
-and 10,000 testing images of handwritten digits \cite{LeCun1998}.
-The MNIST dataset is a widely used for training neural networks to classify digits (0 - 9),
-and are commonly used as implementation benchmarks \cite{Schmidhuber2014, Schmitt2017}.
+The MNIST dataset is a widely used for training neural networks to classify digits (0 - 9),and is commonly used for implementation benchmarks \cite{Schmidhuber2014, Schmitt2017}. It is a famous collection of 60,000 training images and 10,000 testing images of handwritten digits \cite{LeCun1998}.
 
-To solve this problem set a sequential and parallel network will be constructed:
+To solve this problem set, a sequential and a parallel network will be constructed:
 \texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10} and
 \texttt{(\textbf{dense} 100 10 $\ominus$ \textbf{dense} 100 10) $\obar$ \textbf{dense 20 10}}.
 
 \begin{comment}
-\gls{ANN}s have been studied extensively and have surpassed human performance
-in a number of tasks (most recently the 
-advanced real-time strategy game Starcraft II \cite{DeepMind2019})
-\autocite{Schmidhuber2014, Nilsson2009, Russel2007}.
-\gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies 
-\autocite{Dayan2001, Indiveri2015}, but studies in larger scale are still rare,
-although \textcite{Hunsberger2015, Jordan2018, Lin2018, Pfeil2013,
-Rueckauer2017, Schmitt2017} have constructed classifiers that reach
-near-\gls{ANN} precision, but with a 
-
-
-\gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies, but less so in larger setups such as learning and classification tasks \autocite{dayan2001, Indiveri2015}.
-Conversely \gls{ANN}s have been extensively studied in more complex tasks where architectures such as \gls{DNN} have excelled \autocite{schmidhuber2014, Nilsson2009, russel2007}.
 
 \subsection{Neuromorphic backend} \label{sec:neuromorphic}
 % \subsubsection{Experiment stimuli}

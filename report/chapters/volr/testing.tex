@@ -1,18 +1,17 @@
-To verify that the DSL implementation and was done
-correctly, and that the models perform as expected when evaluated on the
+To verify that the DSL implementation was successful, and that the models perform as expected when evaluated on the
 backends, a number of tests were written and automated.
-This sections describes and explains the tests, divided in two categories: unit
+This sections elaborates on the reasoning and design of the tests, which are divided into two categories: unit
 tests and integration tests.
 \\[0.2cm]
-The tests in their entirety are available online, see Appendix \ref{app:implementation}.
+All tests are available online, see Appendix \ref{app:implementation}.
 
 \subsection{Unit tests}
 \subsubsection{Volr compiler}
 Each expression construct in the compiler---and their combinations---are
-tested to produce the expected output, such that the evaluator
-is guaranteed to output well-formed code.
-An example of this is shown in Listing \ref{lst:eval-test},
-where a unit test \index{unit test} verifies that the let
+tested as to whether the expected output is produced, such that the evaluator
+is guaranteed to generate well-formed code.
+An example is shown in Listing \ref{lst:eval-test},
+in which a unit test \index{unit test} verifies that the let
 binding of the constant \texttt{x} correctly
 evaluates to the network \texttt{(\textbf{dense} 1 1)}.
 
@@ -37,13 +36,13 @@ it "can evaluate a let binding with a reference" $ do
 \end{lstlisting} 
 
 \subsubsection{Futhark backend}
-The Futhark backend was tested by unit tests (using \texttt{futhark-test}
-\cite{Elsman2018}) for each indivitual layer, activation functions and loss functions.
-Tests for the dense layer already existed in the library (\cite{Minh2018}), but tests for the merge and
+The Futhark backend was tested using unit tests (using \texttt{futhark-test}
+\cite{Elsman2018}) for each layer, activation function and loss function.
+Tests for the dense layer already existed in the library used (\cite{Minh2018}). Tests for the merge and
 replicate layers were added using manual calculations of the expected gradients, as shown in Listing
-\ref{lst:futhark-replicate-test} where the input should produce the expected weight
-gradients (\texttt{output}).
-Further tests for the combinations of parallel layers were also added.
+\ref{lst:futhark-replicate-test}.The input should produce the expected weight
+gradients (\texttt{output}) here.
+Further tests for the different combinations of parallel layers were also added.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[language=,label={lst:futhark-replicate-test},caption={A test for the
@@ -76,16 +75,16 @@ entry replicate_backward_w input w b =
 \subsubsection{PyNN}
 The backend-agnostic code of PyNN was tested using the \texttt{pytest} framework
 \cite{pytest2018}.
-This includes the activation functions, spike normalisation functions, error functions, 
+This includes test for the activation functions, spike normalisation functions, error functions, 
 as well as general Python structure.
 Because of accessibility issues with the BrainScaleS hardware
-(detailed in Section \ref{sec:experiment}), no unit tests were written specifically for the
+(detailed in Section \ref{sec:experiment}), no unit tests were written for the
 BrainScaleS backend.
 However, since the code is similar (with the exception of the preample), the tests for the 
-NEST backend should also validate BrainScaleS.\index{BrainScaleS}
+NEST backend are assumed to also validate BrainScaleS.\index{BrainScaleS}
 
-Particularly the model class in the PyNN backend contains error-prone code, because it
-deals with a stateful BrainScaleS or NEST backend.
+Especially the model class in the PyNN backend contains error-prone code, because it
+deals with a stateful BrainScaleS or NEST backend. Unit tests are therefore particularly crucial.
 The test shown in Listing \ref{lst:pynn-model-test} validates that the simulator is
 properly reset between runs:
 
@@ -118,7 +117,7 @@ with a simulated feedforward step.
 In the test, the layer weights are slightly skewed to approximate the movement
 along a gradient, which, in the test, was based on a sigmoid function.
 The resulting changes in the backpropagated error should be minuscule, provided
-that the algorithm have been implemented correctly.
+that the algorithm has been implemented correctly.
 A snippet of the test is shown below.
 
 \begin{minipage}{\linewidth}
