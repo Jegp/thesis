@@ -7,8 +7,15 @@ Firstly, the assumptions and parameters that are the basis of the simulations ar
 \section{Neuron parameters}
 \input{chapters/experiment/parameters}
 
-\section{Parameter translation}
+\section{Parameter translation} \label{sec:translation}
 \input{chapters/experiment/translation}
+
+\section{Neuromorphic parameter configurations}
+TODO
+%Because of the limits of the BrainScaleS platform a number of steps have to be
+%performed to correctly evaluate the experiments on the wafers.
+%Firstly the weights have to be discretised to . . 
+%TODO
 
 \section{Problem sets}
 Three problem sets will be tested: the NAND ($\neg(A \land B)$) and XOR
@@ -22,52 +29,70 @@ BrainScaleS backends.
 The NAND and XOR experiments will be based on the same network topology
 (\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2}). 
 All backends will execute the experiment with randomly initialised weights. However, the spiking backends will be evaluated
-a second time with imported weights and biases from previously optimised networks, because the experiments are structurally similar, and Futhark is
-expected to outperform the \glspl{SNN}.
-The weights and biases from the optimised Futhark model will be imported into NEST,
-and, after discretising them, the optimised weights and biases from NEST will be
-inserted into the BrainScaleS model.
-Because of the imprecision in the coding translation scheme between \glspl{ANN} and
-\glspl{SNN}, this is expected to improve the performance of the \glspl{SNN} significantly.
+a second time with imported weights and biases from the optimised Futhark
+networks.
+This is interesting because Futhark is expected to outperform the \glspl{SNN}, and since the
+network topology is shared, network parameters can be inserted 1:1.
+In theory this should improve the initial training of the spiking models and
+lead to an increased accuracy.
 
-%TODO KK check the following sentence. Looks weird, but maybe it'S fine?
-The MNIST network will 
-\texttt{\textbf{dense} (\textbf{dense} 2 2 $\ominus$ \textbf{dense} 2 2) $\obar$ \textbf{dense} 4 2}.
-The two networks exist to compare the performance of the parallel structure with 
-a traditional sequential one.
+The weights and biases from the optimised Futhark model will only be imported into NEST,
+which then trains the weights to fit the spiking neuron model.
+The spiking weights can now be discretised and copied to the BrainScaleS
+simulations. 
+The models share the same PyNN code and their parameters are directly
+transferrable.
+Because training is impossible on this particular neuromorphic chip, this is the
+only practical method for `training' the network.
 
-The MNIST dataset is a widely used for training neural networks to classify digits (0 - 9),and is commonly used for implementation benchmarks \cite{Schmidhuber2014, Schmitt2017}. It is a famous collection of 60,000 training images and 10,000 testing images of handwritten digits \cite{LeCun1998}.
+The MNIST dataset is a widely used for training neural networks to classify
+images of digits between 0 and 9. 
+It is also commonly used for implementation benchmarks \cite{Schmidhuber2014,
+Schmitt2017}, with the best networks scoring an error rate of 0.21\%
+\cite{LeCun2019}.
+MNIST consists of a collection of 60,000 training images and 10,000 testing images of handwritten digits \cite{LeCun1998}.
 
-To solve this problem set, a sequential and a parallel network will be constructed:
-\texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10} and
-\texttt{(\textbf{dense} 100 10 $\ominus$ \textbf{dense} 100 10) $\obar$ \textbf{dense 20 10}}.
+To predict the MNIST digits two networks will be constructed.
+MNIST images contain 784 pixes (28x28), but due to the hardware limitations
+of the BrainScaleS wafers, it is necessary to limit the network to below ~250 neurons.
+The images have been cropped and scaled to 10x10 pixels, such that the initial
+network layer can be scaled to 100 neurons.
+The topology for the sequential model is \texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10}.
 
-\begin{comment}
+To test the parallel structures of the \gls{DSL}, a second and parallel network
+will be constructed.
+The network will resemble the sequential model, but consist of two separate
+parallel subnetworks (\texttt{\textbf{dense} 20 10}), that is merged to produce
+an output of 20 neurons.
+The full model is as follows:
+\texttt{\textbf{dense} 100 20 $\obar$ (\textbf{dense} 20 10 $\ominus$\
+\textbf{dense} 20 10) $\obar$ \textbf{dense} 20 10}.
+The idea of the model is that the two parallel subsystems can learn semantically
+different tasks, and the final layer will be able to `choose' which subnetwork to
+use, based on its weights.
 
-\subsection{Neuromorphic backend} \label{sec:neuromorphic}
-% \subsubsection{Experiment stimuli}
-% The stimuli describes the ``input'' of the model.
-% Such input is defined either as an array of elements directly in the DSL
-% or as a reference to a file.
+\section{Experiment method}
+To avoid one-off effects such as local minima or (un)fortunate weight
+initialisation, all experiments have been repeated 10 times.
+The results reported below are accumulations of the prediction accuracies
+and errors from the runs.
 
-% \subsubsection{Experiment populations}
-% The populations describe the topology of the neural network itself.
-% As with the stimuli, the populations are built around a block structure that
-% contains a number of sub-expressions.
+Weights have been initialised in the models using a normal distribution with a
+mean of 1 and a standard deviation of 1.
 
-% The \texttt{connection} defines the source stimulus for the population,
-% i.e. the population \textit{from} which action-potentials will be forwarded.
-% A population can receive stimulus from more than one source.
-% The connections are modelled as per the \gls{CSA} described in section
-% \ref{sec:volr-csa}.
+The experiments use a 80/20 training/testing split with a fixed learning rate of
+0.1, and the batch size has been set to 64.
 
-% % TODO: Describe and invent archetypes... or not?
+To make the experiments as reproducible as possible, they have all been
+initialised with constant random seeds.
+Since all randomness in Futhark is based on this seed, all results are constant and
+standard deviations are effectively 0.
+This is not the case in PyNN, where the randomness is highly backend-specific.
+A configuration for setting the initial seed exists
+(\texttt{rng\_seed\_seeds})---and have been set for all experiments---but
+PyNN does not fully support the randomness configurations in NEST
+\cite{Gewaltig2007}.
+For BrainScaleS randomness is a larger factor that cannot be eliminated because of the analogue
+components.
 
-% \subsubsection{Experiment responses}
-% The responses are the ``output'' of the model to be recorded, and can be
-% considered as the outcome of the network for training purposes.
-% The response block only contains an optional specification of a location for
-% the experiment output data.
-
-\end{comment}
 \end{document}
