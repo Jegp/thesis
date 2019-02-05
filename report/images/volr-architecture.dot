@@ -2,11 +2,13 @@ graph {
   "Volr compiler"
   subgraph cluster_ann {
     label="ANN";
+    style="dashed";
     OpenCL [shape="box"]
     Futhark -- OpenCL
   }
   subgraph cluster_snn {
     label="SNN"
+    style="dashed";
     BrainScaleS [shape="box"]
     NEST [shape="box"]
     PyNN0 -- NEST
