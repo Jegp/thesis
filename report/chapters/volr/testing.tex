@@ -77,16 +77,12 @@ The backend-agnostic code of PyNN was tested using the \texttt{pytest} framework
 \cite{pytest2018}.
 This includes test for the activation functions, spike normalisation functions, error functions, 
 as well as general Python structure.
-Because of accessibility issues with the BrainScaleS hardware
-(detailed in Section \ref{sec:experiment}), no unit tests were written for the
-BrainScaleS backend.
-However, since the code is similar (with the exception of the preample), the tests for the 
-NEST backend are assumed to also validate BrainScaleS.\index{BrainScaleS}
 
 Especially the model class in the PyNN backend contains error-prone code, because it
-deals with a stateful BrainScaleS or NEST backend. Unit tests are therefore particularly crucial.
-The test shown in Listing \ref{lst:pynn-model-test} validates that the simulator is
-properly reset between runs:
+deals with stateful backends.
+Unit tests are therefore particularly crucial.
+The test shown in Listing \ref{lst:pynn-model-test} shows an example of such a
+test that, in this case, validates that the simulator is properly reset between runs:
 
 \begin{lstlisting}[language=Python,label={lst:pynn-model-test},caption={Unit test for
 PyNN model to validate that the model correctly updates weights}]
@@ -111,7 +107,8 @@ def test_nest_model_backwards_reset():
     assert np.allclose(l1.get_weights(), expected_weights)
 \end{lstlisting}
 
-The PyNN code for the NEST backend was similarly tested with \texttt{pytest}.
+The PyNN code for the NEST backend was also tested with \texttt{pytest}
+\cite{Pytest2018}.
 A unit test for the backpropagation was written using numerical gradient descent
 with a simulated feedforward step.
 In the test, the layer weights are slightly skewed to approximate the movement
@@ -134,5 +131,26 @@ assert ratio < 1e-07
 \end{lstlisting}
 \end{minipage}
 
+\subsubsection{Continuous integration}
+Continuous integration (CI) is a tool to automatically trigger the unit tests, and is
+typically associated with updates in a version control system. \index{Continuous
+integration}
+The projects in this thesis are all exploiting this to continually verify that
+the software does not regress.
+Whenever changes are committed and published to their respective repositories on
+GitHub, the unit tests are executed.
+Unit tests for NEST are, however too computationally expensive for the
+continuous integration service due and are left out.
+
 \subsection{Integration tests}
-TODO
+Integration tests exists to verify that the entire toolchain is functioning.
+It is not intended to test the correctness of the individual parts, but rather
+that they correctly integrate with each other.
+The tests are performed inside a containerised environment, as a
+method to ensure a homogeneous environment. 
+
+One integration test per backend was built, using the arbitrary network
+structure \texttt{\textbf{dense}1 2 $\obar$ \textbf{2 1}}. 
+They simply test that the text can be compiled and executed, such that the
+network will provide a singular output, given a singular input.
+

@@ -1,9 +1,11 @@
 The compiler for the \gls{DSL} is implemented in the functional language
 Haskell \cite{Haskell}.
-Currently, Volr translates its network models into three runtime
-environments (backends) based on \gls{OpenCL} through Futhark\index{Futhark},
-\glspl{SNN} simulations through NEST\index{NEST} and 
-the neuromorphic hardware BrainScaleS\index{BrainScaleS}.
+Currently, Volr translates its network models into two runtime
+environments (backends) based on \gls{OpenCL} through Futhark\index{Futhark} and
+\glspl{SNN} simulations through PyNN and NEST.\index{PyNN}\index{NEST}
+However, using the learning-to-learn paradigm above, the PyNN implementations
+opens for the possibility to transfer the optimised models into neuromorphic
+hardware such as BrainScaleS\index{BrainScaleS}.
 
 Futhark was chosen because it is concise and offers
 useful abstractions that cleanly compose functional
@@ -200,7 +202,7 @@ let forward  (_:[]t -> []t)
 	     (_:bool)
 	     (_: weights)
 	     ((i1, i2):input) : (cache, output) =
-  ((), map2 concat i1 i2)
+  ((), concat i1 i2)
 
 -- Backward propagation
 let backward (_:[]t -> []t) (l1_sz:i32)
@@ -209,7 +211,7 @@ let backward (_:[]t -> []t) (l1_sz:i32)
 	     (_:weights)
 	     (_:cache)
 	     (error_concat:error_in) : b_output =
-  (unzip (map (split l1_sz) error_concat), ())
+  ((error_concat[0:l1_sz], error_concat[l1_sz:]), ())
 \end{lstlisting}
 
 This interpretation is also aligned with the original specification, 
@@ -220,7 +222,7 @@ independent of each other.
 The interpretation to PyNN\index{PyNN} is done in two steps: a
 conversion from the \gls{DSL} into an \gls{SNN} representation,
 and a translation between that representation into backend-specific
-Python code.
+NEST code in Python. \index{NEST}
 The steps are decoupled to enforce the same semantics on the code
 generation for the neuromorphic and simulation backends.
 While PyNN is designed as a simulator-dependent \gls{API}, 
@@ -279,7 +281,7 @@ neuron model and the number of neurons in the population.
 Populations can be understood as neuron groups or nodes in the network graph.
 Along spike sources, which generate spikes over time, they are the 
 basic components in a spiking neural network graph.
-The definition of nodes as either populations or spike sources is shown in
+The definition of nodes as populations of neurons are shown in
 Listing \ref{lst:node}.
 
 \begin{lstlisting}[language=,caption={The definition of a node as either a population or a
@@ -287,10 +289,6 @@ spike source.},label={lst:node}]
 data Node = Population {
         _numNeurons :: Integer,
         _neuronType :: NeuronType
-    }
-    | SpikeSourcePoisson {
-        _rate :: Float,
-        _start :: Integer
     }
 \end{lstlisting}
 
@@ -308,13 +306,13 @@ data Edge =
 
 The type of the edges are determined by projection effects, which
 in the current implementation is fixed to describe a 
-dense projection (\texttt{AllToAll} in PyNN) that solely
-excites (contrary to inhibit) post-synaptic neurons.
+dense projection (\texttt{AllToAll} in PyNN), whose weights are static and
+do not change during the simulation.
 
 The model presented here allows to completely reproduce the connection
 graph of the \gls{DSL} description.
 The only difference between the two is the lack of biases and activation functions
-in \glspl{SNN}, which changes with the neuron types.
+during the feedforward sted in \glspl{SNN}.
 
 \subsubsection{PyNN backend}
 The final step in the translation of the \gls{DSL} to PyNN code maps the
@@ -346,25 +344,24 @@ is shown in Listing \ref{lst:volrpynn_backprop}.
 \begin{lstlisting}[language=Python,label={lst:volrpynn_backprop},caption={Part
 of the backpropagation algorithm implemented in PyNN.}]
 # Calculate activations for output layer
-input_decoded = self.decoder(self.input)
+input_decoded = np.array(self.input_cache)
 output_activations = np.matmul(input_decoded, self.weights)
 
-# Calculate layer delta and weight optimisations
+# Calculate output gradients and layer delta
 output_gradients = self.gradient_model.prime(output_activations + self.biases)
 delta = np.multiply(error, output_gradients)
 
-# Ensure correct multiplication of data
-if len(input_decoded.shape) == 1:
-    weights_delta = np.outer(input_decoded, delta)
-else:
-    weights_delta = np.matmul(input_decoded.T, delta)
-
-# Calculate weight and bias optimisation and store
+# Calculate layer backprop and weights, bias updates
+backprop = np.matmul(delta, self.weights.T)
+weights_delta = np.matmul(input_decoded.T, delta)
 (new_weights, new_biases) = optimiser(self.weights, weights_delta,
-                                      self.biases, delta)
+                                      self.biases, error.sum(axis=0))
 
 self.set_weights(new_weights)
 self.biases = new_biases
+
+# Return layer errors
+return backprop
 \end{lstlisting}
 
 Listing \ref{lst:mnist_pynn} shows an example of the network
@@ -387,9 +384,4 @@ layer1 = v.Dense(p3, p5)
 l_decode = v.Decode(p5)
 model = v.Model(layer0, layer1, l_decode)
 \end{lstlisting}
-
-%\subsubsection{BrainScaleS backend}
-%Because of the incompatible backends, each code is injected with a  
-%preample to perform the necessary setup steps 
-%Describe hardware mappings for BrainScaleS
 

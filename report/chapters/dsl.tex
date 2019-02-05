@@ -1,7 +1,7 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 
-This chapter presents the \gls{DSL} Volr \index{Volr}.
+This chapter presents the \gls{DSL} Volr. \index{Volr}
 
 Before presenting and specifying the language itself, 
 it is beneficial to examine existing work within the
@@ -28,7 +28,7 @@ and articles, which will be referenced below.
 
 \subsection{Second generation}
 The perhaps most notable product for this type of networks is the Tensorflow \index{Tensorflow}
-framework \cite{Abadi2016}.
+framework.\cite{Abadi2016}
 Tensorflow is an \gls{API} for the description and execution of directed graph 
 structures,
 that connects varying activation functions and learning mechanisms through the common abstraction
@@ -43,10 +43,10 @@ Other frameworks have adapted a similar approach, such as PyTorch \cite{PyTorch2
 scikit-learn \cite{Sklearn2018}, Microsoft Cognitive Toolkit (CNTK) \cite{CNTK2018},
 Caffe \cite{Caffe2018} and Theano \cite{Theano2018}.
 
-THe frameworks Lasagne and Keras are a higher-level abstraction built on top of Theano and Tensorflow respectively,
-and work similarly well \cite{Lasagne2018, Keras2018}.
+The frameworks Lasagne and Keras are effectively higher-level abstraction
+built on top of Theano and Tensorflow respectively \cite{Lasagne2018, Keras2018}.
 They both provide imperative \gls{API}s for constructing models in steps, while
-including useful utilities for preprocessing of data.
+including useful utilities for preprocessing data.
 
 Whereas scikit-learn, CNTK, Tensorflow and Theano target \glspl{NN} in general,
 PyTorch and Caffe are frameworks that specifically target \gls{DL} 
@@ -54,7 +54,7 @@ PyTorch and Caffe are frameworks that specifically target \gls{DL}
 All of them, however, rely on second generation \gls{NN} architecture.
 
 To provide a comparison between them, a number of examples are provided below.
-The Listing \ref{code:caffe} shows a network with a single fully connected
+Listing \ref{code:caffe} shows a network with a single fully connected
 layer in Caffe, built to recognise handwritten digits from the 
 popular MNIST dataset \cite{LeCun1998}.
 Caffe is verbose compared to the full network definitions in PyTorch 
@@ -123,9 +123,12 @@ edges with certain activations (operations).
 \subsubsection{Neural networks in Futhark}
 \index{Futhark}
 The data-parallel language Futhark is designed to produce efficient parallel
-code, suitable for parallel application \cite{Henriksen2017}.
-Second generation \glspl{NN} are such an application, because they can be reduced
-to a large number of parallel matrix multiplications.
+code, suitable for parallel application \cite{Henriksen2017, Elsman2018}.
+Futhark is a functional language which operates with higher-order functions as
+well as modules \cite{Elsman2018b, Hovgaard2018}.
+As argued above, second generation \glspl{NN} can be understood as compositions
+of functions, which makes Futhark a suitable language for the implementation of
+\glspl{NN}. 
 
 Futhark supports hardware acceleration through the \gls{OpenCL} framework,
 and can integrate with other languages, such as \gls{Python} through the
@@ -136,7 +139,9 @@ allows the construction of densely connected layers and gradient descent
 training \cite{Minh2018}.
 
 \subsection{Third generation}
-The landscape for third generation software is less homogeneous, which is primarily due to the fact that the field is still young \cite{Maass1997}.
+The landscape for third generation software is less homogeneous, which is
+primarily due to the fact that the field is still young \cite{Maass1997,
+Albeda2018}.
 Secondly, there are two different approaches to the evaluation of \glspl{SNN}:
 through simulation on general purpose hardware or specialised analogue
 (neuromorphic\index{neuromorphic}) hardware \cite{Maass1997, Davison2009, Albada2018}.

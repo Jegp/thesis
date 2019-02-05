@@ -2,20 +2,15 @@
 \begin{document}
 This chapter describes the experimental setup that aims to validate the
 implementation and test the hypotheses introduced in section \ref{sec:hypotheses}.
-Firstly, the assumptions and parameters that are the basis of the simulations are described. The second part elaborates on the datasets and methods that are used to test the hypotheses.
+Firstly, the assumptions and parameters that are the basis of the simulations are described.
+Second, datasets and methods that are used to test the hypotheses are
+elaborated.
 
 \section{Neuron parameters}
 \input{chapters/experiment/parameters}
 
 \section{Parameter translation} \label{sec:translation}
 \input{chapters/experiment/translation}
-
-\section{Neuromorphic parameter configurations}
-TODO
-%Because of the limits of the BrainScaleS platform a number of steps have to be
-%performed to correctly evaluate the experiments on the wafers.
-%Firstly the weights have to be discretised to . . 
-%TODO
 
 \section{Problem sets}
 Three problem sets will be tested: the NAND ($\neg(A \land B)$) and XOR
@@ -38,12 +33,6 @@ lead to an increased accuracy.
 
 The weights and biases from the optimised Futhark model will only be imported into NEST,
 which then trains the weights to fit the spiking neuron model.
-The spiking weights can now be discretised and copied to the BrainScaleS
-simulations. 
-The models share the same PyNN code and their parameters are directly
-transferrable.
-Because training is impossible on this particular neuromorphic chip, this is the
-only practical method for `training' the network.
 
 The MNIST dataset is a widely used for training neural networks to classify
 images of digits between 0 and 9. 
@@ -53,8 +42,8 @@ Schmitt2017}, with the best networks scoring an error rate of 0.21\%
 MNIST consists of a collection of 60,000 training images and 10,000 testing images of handwritten digits \cite{LeCun1998}.
 
 To predict the MNIST digits two networks will be constructed.
-MNIST images contain 784 pixes (28x28), but due to the hardware limitations
-of the BrainScaleS wafers, it is necessary to limit the network to below ~250 neurons.
+MNIST images contain 784 pixes (28x28), but to avoid too complex simulations
+it is necessary to limit the network size.
 The images have been cropped and scaled to 10x10 pixels, such that the initial
 network layer can be scaled to 100 neurons.
 The topology for the sequential model is \texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10}.
@@ -72,6 +61,12 @@ different tasks, and the final layer will be able to `choose' which subnetwork t
 use, based on its weights.
 
 \section{Experiment method}
+All the above mentioned experiments are classification tasks, and the labels
+are encoded as one-hot vectors.
+To compare the network output with the labels, the argmax value of the network
+output is taken and converted to a one-hot vector of the same shape as the label
+data.
+
 To avoid one-off effects such as local minima or (un)fortunate weight
 initialisation, all experiments have been repeated 10 times.
 The results reported below are accumulations of the prediction accuracies
@@ -92,7 +87,5 @@ A configuration for setting the initial seed exists
 (\texttt{rng\_seed\_seeds})---and have been set for all experiments---but
 PyNN does not fully support the randomness configurations in NEST
 \cite{Gewaltig2007}.
-For BrainScaleS randomness is a larger factor that cannot be eliminated because of the analogue
-components.
 
 \end{document}

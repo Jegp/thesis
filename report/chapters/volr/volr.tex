@@ -1,10 +1,10 @@
-This sections presents the \gls{DSL} Volr. \index{Volr}
+This sections presents the implementation for the Volr \gls{DSL}. \index{Volr}
 The main purpose of Volr is to define clear and reproducible
 experiments whose semantics are retained regardless of
 the runtime environment.
 It is built for the concise specification and straight-forward
 translation of neural models into both artificial, as well as
-spiking network models.
+spiking, network models.
 Volr focuses solely on the topology of networks, thus
 separating the network description from generation-specific
 properties of neurons or neuron populations.
@@ -21,7 +21,7 @@ interpretation of the expressions.
 
 The constant expression $n$ is an integer that evaluates to the type 
 \texttt{\textbf{int}} ($e1$). 
-Similarly to traditional functional languages, the \texttt{\textbf{let}} binding binds
+Similar to traditional functional languages, the \texttt{\textbf{let}} binding binds
 the string constant $x$ to the expression $e$ when evaluating $e'$ \cite{Pierce2002}.
 That constant can later be referenced in the $e'$ expression 
 through the string $x$ as shown in $e2$.

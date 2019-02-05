@@ -20,7 +20,7 @@ of neurons \index{neuron} connected through weighted edges
 
 In this abstract sense, a neuron is a computational unit that
 takes a number of signals (inputs) and processes them through a
-function $f$,that outputs a single value \cite{Eliasmith2004}.
+function $f$, that outputs a single value \cite{Eliasmith2004}.
 Composed in a network, neurons can \textit{compute} 
 complex non-linear functions \cite{Eliasmith2004, Dayan2001}.
 
@@ -137,9 +137,6 @@ In this thesis, a layer is defined as computational units that transform input
 with a non-linear function to produce some output.
 Thus the network in Figure \ref{fig:nn-example} consists of two layers.
 
-The layered design is typical for first and second generation networks, but 
-can be generalised to the third generation as well, despite their parallel
-nature \cite{Eliasmith2015}. %TODO: Move to 3rd gen
 Neuron groups or layers that are not directly connected to the input or output
 of the network are traditionally denoted as `hidden'\index{layer!hidden} because they is only
 stimulated indirectly \cite{Russel2007}.
@@ -159,12 +156,12 @@ where $\sigma$ is the neuron function
 For a single neuron $x$, the output signal is calculated through a weight ($w$)
 and a bias ($b$). 
 Weights and biases allow the model to adapt the relative importance of each
-input neuron by modifying their weights and biases, thus allowing the
+input neuron, thus allowing the
 model to \textit{train} to a given domain \cite{Schmidhuber2014, Russel2007}.
 
 For each neuron $x$ in the layer $j$, the output $x_j$ can be calculated given the activation value,
-weight and bias from the previous layer ($i$) (see Equation
-\ref{eq:weightedoutput}).
+weight and bias from the previous layer ($i$) as shown in Equation
+\ref{eq:weightedoutput}.
 Here $u_j$ is the weighted sum of the output from the previous layer $i$, before
 applying the activation function $\sigma$.
 
@@ -214,13 +211,15 @@ f(x) = \begin{cases}
 
 \subsubsection{Normalisation}
 \index{normalisation}
-To align with the activation output domain ($[0, 1]$), the input data
+To align with the activation output domain $[0, 1]$, the input data
 is typically normalised \cite{Bishop2006}.
 One naïve approach is to divide by the maximum value of the input, but
-that produces a linear effect, which is undesirable for reasons that will be
-discussed later.
-Instead, a sigmoidal function is typically used, because of its abovementioned
-qualities.
+that produces a linear effect, which can provide challenges for some networks
+during classifications.
+Instead, a sigmoidal function is typically used, because of its resemblance to
+the step function which polarises the input values. 
+In differentiable neural networks this incentivises the network to favour
+extreme values, thus helping its accuracy in some cases.
 One common variant for normalisation is the softmax\index{normalisation!softmax}
 function, defined below given the input vector $x$ with $N$ elements:
 
@@ -236,7 +235,6 @@ This transformative view can be adopted to biological (third generation)
 \glspl{SNN}, where the data being transferred are no longer vectors, but 
 \textit{spikes}\index{neuron!spike}
 of electrical current over time \cite[p. 32]{Dayan2001, Eliasmith2004}.
-
 In biological networks there is a temporal dimension, in that neurons
 produce and fire spikes asynchronously to other neurons in the same
 group \cite{Eliasmith2004}.
@@ -246,13 +244,17 @@ process dubbed the \textit{integrate-and-fire} \index{neuron model!integrate-and
 \index{integrate-and-fire|see {neuron model}}
 model.
 The model essentially integrates received current over time, and
-if the integrated current reaches a certain threshold $V_{thr}$, the neuron
+if the integrated current reaches a certain voltage threshold $V_{thr}$, the neuron
 fires \cite{Dayan2001, Eliasmith2004}.
 In biological neurons this also implies a spatial dimension, because the
-current is sent through 	neurons that extend in space \cite{Dayan2001}.
-The cell body (soma)\index{neuron!soma} receives impulses from a number
+current is sent through	neurons that extend in space \cite{Dayan2001}.
+
+The biological cell body (soma)\index{neuron!soma} separates the neuron cell from the
+exterior with a membrane.\index{neuron!membrane}
+The soma receives impulses from a number
 of dendrites\index{neuron!dendrite}, and emits spikes through an 
-axon\index{neuron!axon} \cite{Dayan2001}.
+axon\index{neuron!axon}, when the currents across the cell membrane exceeds the
+voltage threshold ($V_{thr}$) \cite{Dayan2001}.
 The geometry of the components influence the time as well as the amount of current
 it requires to send impulses through the neuron \cite{Eliasmith2004}.
 This has been modelled to a high degree of precision in the 
@@ -288,7 +290,7 @@ it reaches a threshold voltage ($V_{th}$) and emits a spike
 The spike carries a charge and is received by a post-synaptic neuron as
 input current, which, in turn, decides whether to fire \cite{Dayan2001}.
 
-After spiking the voltage inside the neuron is reset to a value ($\tau_{reset}$),
+After spiking, the voltage inside a neuron is reset to a value ($\tau_{reset}$),
 from which it begins to accumulate charge again.
 In a brief period after the activation the neuron enters a period of
 refraction, \index{refractory period}
@@ -337,7 +339,7 @@ into the model, that acts as a type of memory \index{memory}
 for the neuron integration \cite{Eliasmith2004, Eliasmith2015}.
 In the leaky model, input voltages decays exponentially over time,
 meaning that the present voltage depends more strongly on recent input
-voltages \cite[p. 85]{Eliasmith2004}.
+current \cite[p. 85]{Eliasmith2004}.
 
 \begin{equation}
   \frac{dv}{dt} = - {1 \over \tau_{RC}} (v - cr)
@@ -372,11 +374,13 @@ Spikes convey information in the form of amplitude, duration, and
 inter-spike intervals \cite{Dayan2001}.
 A number of methods exist to decode the information in the spikes, by a 
 combination of the three parameters \cite{Dayan2001, Eliasmith2015, Diehl2015, Rueckauer2017}.
-However, this thesis will
-focus on so-called rate models\index{rate encoding|see {encoding}}\index{encoding!rate}.
+This thesis will focus on so-called rate
+models, which are commonly used because of their simplicity
+\cite{Eliasmith2004}.
+\index{rate encoding|see {encoding}}\index{encoding!rate}
 Recording neuron spikes over time provides an array of timestamps called a
 spike train\index{spike train} \cite{Eliasmith2015}.
-Rate models count the timestamps and divide them by the duration of
+Rate models count the number of spikes in such a train and divide them by the duration of
 the trial to produce the spike \textit{rate}, shown
 in Equation \ref{eq:spikerate} \cite{Dayan2001, Eliasmith2004}.
 Semantically this is the equivalent of averaging the number of spikes propagated
@@ -440,9 +444,8 @@ provide a coding scheme that transfers between the two representations.
 During the following, it is assumed that the input represents a constant
 input current, and that the spike propagation follows the distribution
 above.
-The full proof is available in Appendix \ref{app:transfer}.
+The full proof for the following argument is available in Appendix \ref{app:transfer}.
 
-The argument is presented as follows.
 When simulating a LIF\index{neuron model!leaky-integrate-and-fire}
 neuron at time $t$, the firing rate depends on the neuron firing threshold $V_{thr}$,
 some input current $v(t)$, a maximum
@@ -483,7 +486,6 @@ a question of determining the exact scaling factor between the \gls{ANN} input
 and the \gls{SNN} spiking rate.
 
 \section{Learning} \index{learning} \label{sec:learning}
-% TODO: http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
 Defining an \gls{agent} as a system that can act on previous knowledge
 \cite{Russel2007}, learning in the context of an \gls{agent}
 refers to ``the process of gaining
@@ -495,7 +497,7 @@ patterns, given the same input.
 Within the \gls{ml} literature, this is commonly referred to as 
 \textit{prediction}. \index{learning!prediction}
 In practice this is expressed in terms of general functions or
-\textit{rules} \index{rule} in a network \cite[p. 704.]{Russel2007}.
+\textit{rules}\index{rule} in a network \cite[p. 704.]{Russel2007}.
 
 Within \gls{ml}, systems are typically classified into
 supervised, \index{learning!supervised}
@@ -525,8 +527,7 @@ it performed the task, leaving the \gls{agent} to infer rules or
 behaviours by itself \cite[p. 873]{Russel2007}.
 
 The process of learning can either be \textit{inductive}
-\index{learning!induction}
-or \textit{deductive} \index{learning!deduction} \cite[p. 704]{Russel2007}.
+\index{learning!induction}or \textit{deductive}\index{learning!deduction} \cite[p. 704]{Russel2007}.
 The latter requires a basis in rule-based systems from which new knowledge can
 be deduced, while the former requires a measurement of success \cite[p. 705]{Russel2007}.
 Such a measurement is typically referred to as the \textit{error} or \textit{loss}
@@ -544,7 +545,7 @@ inductive learning.
 
 \subsection{Errors in learning}
 It is worth noting that \gls{NN}s may learn \index{learn}
-rules \index{learning!rule} that are not optimal \cite{Russel2007}.
+rules\index{learning!rule} that are not optimal \cite{Russel2007}.
 This can happen in one of two ways: either the
 network is structurally incapable of learning the domain, 
 or the learned rule is incorrect \cite{Russel2007, Eliasmith2015}.
@@ -579,7 +580,7 @@ the default \cite{Russel2007, Schmidhuber2014}.
 In the search for optimal weight/bias configurations,
 such that prediction errors are minimised \cite{Rumelhart1988},
 the network weights constitute the search space, 
-and the loss function \index{loss function}
+and the loss function\index{loss function}
 is the subject of optimisation \cite{Russel2007}.
 
 One loss function to minimize for a supervised network
@@ -645,7 +646,7 @@ The chain rule for partial derivations can now be applied \cite{Bishop2006}:
   \label{eq:bp-chain}
 \end{equation}
 
-and replace the following terms
+\noindent and replace the following terms
 
 \begin{equation}
   \delta_j = 
@@ -655,7 +656,7 @@ and replace the following terms
   \label{eq:bp-d}
 \end{equation}
 
-to get 
+\noindent to get 
 \begin{equation}
   {\partial E_n \over \partial w_{ji} } =
   { \partial E_n \over \partial u_j}
@@ -674,7 +675,8 @@ that receives input from unit $j$ such that
   \label{eq:bp-d2}
 \end{equation}
 \noindent
-and substituting Equation \ref{eq:bp-d} into Equation \ref{eq:bp-d2} while applying the chain rule, such that
+then Equation \ref{eq:bp-d} can be substituted into Equation \ref{eq:bp-d2}
+while applying the chain rule to produce:
 
 \begin{equation}
   \begin{split}
@@ -737,7 +739,7 @@ where $a$ is set to a percentile of the activation values of a layer \cite{Rueck
 \section{Cognitive theories}
 The theoretical development of neural networks has been heavily inspired
 by the mammalian brain \cite{Russel2007, Nilsson2009}.
-AT the same time, cognitive systems have been studied extensively, outside of computer science. 
+At the same time, cognitive systems have been studied extensively, outside of computer science. 
 However, a convincing connection between cognitive processes and neurophysiology
 has yet to be made \cite{sep:cognitive-science, Nilsson2009, Robertson1999,
 sep:cognitive-science, Walter2015}. 
@@ -748,9 +750,9 @@ Depending on the location and rehabilitation of the lesions, theories can
 be tested on their ability to correctly predict the empirical evidence
 \cite{Mogensen2011, Mogensen2012b}.
 
-\citeauthor{Mogensen2012b} studied such lesions and arrived at the theoretical
-framework for the reorganisation of elementary functions (\gls{REF}). 
-The \gls{REF} divides the brain into localized and highly specialised,
+\citeauthor{Mogensen2012b} studied such lesions and arrived at a theoretical
+framework he dubbed the reorganisation of elementary functions (\gls{REF}). 
+The \gls{REF} theory divides the brain into localized and highly specialised,
 information processing elementary functions (EF).\index{Elementary function}
 These basic modular functions are contained within substructures in the brain, 
 that interact with each other to form more advanced processing units, dubbed
@@ -792,14 +794,24 @@ The noise problems are caused by noise in the integrated circuit components
 \cite{Lin2018, Pfeil2013}.
 
 The technology is still relatively young and suffers from a number
-of practical problems. That is why networks above a couple of thousand neurons remain
-problematic in the available platforms \cite{Schmitt2017}.
+of practical problems. 
+For instance, networks above a couple of thousand neurons remain
+problematic with the current technology \cite{Schmitt2017}.
+Training is also challenging because of the embedded components.
+Both memory and processing power is limited, which makes is practically
+difficult to store enough data to recall the spiketrains and calculate the,
+sometimes complex, weight update rules \cite{Albada2018}.
 
+One practical approach to combat this problem is to model and simulate the neuromorphic
+system \textit{outside} the hardware, in a system with sufficient resources.
+Because the simulated systems have the same topology, the optimised model
+parameters can be directly transferred to the hardware. 
+This paradigm is dubbed `learning-to-learn\index{learning-to-learn}', and
+have already been shown to produce decent results \cite{Schmitt2017,
+Albada2018}.
+However it has still not been generalised to support arbitrary \gls{ml} models.
 
 The state-of-the-art neuromorphic platforms are presented in Section
-\ref{sec:similar-neuromorphic} along with their implementation details,
-advantages, as well as disadvantages.
-
-%TODO: Add section on REF and the need for parallel networks
+\ref{sec:similar-neuromorphic} along with their implementation details.
 
 \end{document}
