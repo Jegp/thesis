@@ -56,7 +56,7 @@
 \usepackage{cleveref}
 
 % Bibliography
-\usepackage{biblatex}
+\usepackage[maxbibnames=99]{biblatex}
 \bibliography{bib}
 
 % Promote sections and subsections
@@ -100,6 +100,10 @@
 %\newenvironment{shadequote}%
 %{\begin{snugshade}\begin{quote}\openquote}
 %{\hfill\closequote\end{quote}\end{snugshade}}
+
+% Fix listing right margin
+\lstset{mathescape=false,showstringspaces=false,breaklines=true,basicstyle=\ttfamily\scriptsize}
+
 
 %%  Begin document
 %%  ==================================================================
@@ -155,16 +159,13 @@
 
 \chapter*{Acknowledgements}
 I would like to thank my supervisor Martin Elsman for his patience and counsel. 
-
 Christian Pehle and Sebastian Schmitt from the Kirchhoff-Institute for Physics
 at the University of Heidelberg deserves my gratitude for their time and
 guidance and for their contributions to the Myelin codebase.
-
 Both Nicolaj Dauggaard and Jesper Mogensen at the Unit for Cognitive
 Neuroscience at the University of Copenhagen have been instrumental in the
 conceptual phases of the thesis, and I am grateful for the physical and mental
 frame they provided during the thesis work.
-
 Finally, I would like to thank Kerem for providing internet in Sicily.
 \mainmatter
 
@@ -187,6 +188,11 @@ Finally, I would like to thank Kerem for providing internet in Sicily.
   \subfile{chapters/discussion}
 
 \appendix
+
+\begingroup
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+\chapter{Acknowledgments}\label{chap:ack}
 \chapter{Transfer functions for spiking neurons} \label{app:transfer}
   \include{appendices/transfer}
 \chapter{Volr implementation code} \label{app:implementation}
@@ -196,6 +202,7 @@ Finally, I would like to thank Kerem for providing internet in Sicily.
 \chapter{Experiment details} \label{app:experiment}
   \include{appendices/data}
 
+\endgroup
 \backmatter
 
 \printglossary

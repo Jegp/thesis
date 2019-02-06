@@ -9,14 +9,11 @@ graph {
   subgraph cluster_snn {
     label="SNN"
     style="dashed";
-    BrainScaleS [shape="box"]
     NEST [shape="box"]
     PyNN0 -- NEST
-    PyNN1 -- BrainScaleS
   }
 
   "Volr compiler" -- PyNN0
-  "Volr compiler" -- PyNN1
   "Volr compiler" -- Futhark
-  PyNN0, PyNN1 [label="PyNN"]
+  PyNN0 [label="PyNN"]
 }

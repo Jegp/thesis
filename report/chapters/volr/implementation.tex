@@ -13,9 +13,9 @@ models \cite{Henriksen2017}.
 Considering \glspl{NN} as a structure of feedforward and feedback functions,
 Futhark is an elegant solution for the task.
 
-PyNN was chosen for its general purpose API that translates to both, the
-neuromorphic BrainScaleS \index{BrainScaleS} backend, as well as the NEST 
-\index{NEST} simulator.
+PyNN was chosen for its general purpose API that translates to NEST, but also
+supports translation into neuromorphic platforms like BrainScaleS. \index{BrainScaleS} 
+\index{NEST}
 \\[0.2cm]
 Figure \ref{fig:volr-architecture} shows the workflow starting with the
 compilation of the network model, down to the runtime evaluation on each backend.
@@ -23,10 +23,9 @@ The following section explains the diagram one component at a time.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.6\textwidth]{images/volr-architecture.png}
+  \includegraphics[width=0.4\textwidth]{images/volr-architecture.png}
   \caption{The workflow from the Volr compiler to 
-    \gls{ANN} simulations in Futhark or \gls{SNN} simulations in NEST and
-    \gls{BrainScaleS}.
+    \gls{ANN} simulations in Futhark and gls{SNN} simulations in NEST.
   }
   \label{fig:volr-architecture}
 \end{figure}

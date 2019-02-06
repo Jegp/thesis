@@ -73,8 +73,8 @@ entry replicate_backward_w input w b =
 \end{minipage}
 
 \subsubsection{PyNN}
-The backend-agnostic code of PyNN was tested using the \texttt{pytest} framework
-\cite{pytest2018}.
+The backend-agnostic code of PyNN was tested using the \texttt{Pytest} framework
+\cite{Pytest2018}.
 This includes test for the activation functions, spike normalisation functions, error functions, 
 as well as general Python structure.
 
@@ -107,7 +107,7 @@ def test_nest_model_backwards_reset():
     assert np.allclose(l1.get_weights(), expected_weights)
 \end{lstlisting}
 
-The PyNN code for the NEST backend was also tested with \texttt{pytest}
+The PyNN code for the NEST backend was also tested with \texttt{Pytest}
 \cite{Pytest2018}.
 A unit test for the backpropagation was written using numerical gradient descent
 with a simulated feedforward step.

@@ -76,7 +76,7 @@ best.
   \label{tab:nand}
 \end{table}
 
-Figure \ref{fig:nand_snn} shows a plot of the average backpropagated errors of
+Figure \ref{fig:nand_snn_error} shows a plot of the average backpropagated errors of
 the model.
 The gradient errors are interesting to explore because the relative values reveal
 the average performance of the model (smaller is better), and the absolute
@@ -101,7 +101,7 @@ input currents.
   \includegraphics[width=\linewidth]{images/nand.png}
   \caption{Mean gradient error rates for the NAND network simulated in NEST. The rates
   are produced by averaged over 10 simulations.}
-  \label{fig:nand_snn}
+  \label{fig:nand_snn_error}
 \end{figure}
 \FloatBarrier
 
@@ -216,13 +216,13 @@ standard deviations are so small that it cannot be ascribed to chance.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{images/mnist_snn.png}
-  \caption{Summed gradient error rates for the NAND network simulated in NEST. The rates
+  \caption{Summed gradient error rates for the sequential MNIST network simulated in NEST. The rates
   are produced following each batch and are averaged over 10 simulations.}
-  \label{fig:nand_snn}
+  \label{fig:mnist_snn}
 \end{figure}
 \FloatBarrier
 
-Figure \ref{fig:nand_snn} shows the summed gradient error rates for the MNIST
+Figure \ref{fig:mnist_snn} shows the summed gradient error rates for the MNIST
 models.
 Unlike the above experiments the rates does not improve initially.
 Instead they worsen shortly in the beginning, again indicating that they are not training towards
