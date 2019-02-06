@@ -149,8 +149,11 @@ that they correctly integrate with each other.
 The tests are performed inside a containerised environment, as a
 method to ensure a homogeneous environment. 
 
-One integration test per backend was built, using the arbitrary network
-structure \texttt{\textbf{dense}1 2 $\obar$ \textbf{2 1}}. 
-They simply test that the text can be compiled and executed, such that the
-network will provide a singular output, given a singular input.
+Integration tests have been performed during the construction of the software,
+but no automated tests are in place.
 
+The tests assert that the \gls{DSL} compiler is capable of compiling the models
+into code for the individual backends that executes and provides the correctly
+formatted result.
+The actual values are not verified, because the integration tests assume that
+the projects are well-behaved independently.

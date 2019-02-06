@@ -1,80 +1,38 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 
-This section discusses the results above to understand their meaning in the
-context of the hypotheses.
-This is followed by summary of the hypotheses and a discussion on whether or not
-the hypotheses have been proved.
-Finally, further improvements and future work will be discussed.
-
-\section{Findings}
-First of all it is noteworthy that the experiments translate and perform above
-chance. 
-All else being equal this shows that the models are structurally and
-semantically comparable to some degree.
-
-For the binary NAND and XOR experiments, Futhark performed as expected.
-The bad results in NEST proves that the approximated spiking model is flawed.
-The visualisations show that the models are capable of performing some form of
-learning, but it does not take long before they loose momentum. 
-This also goes for the weight transfer models, although the error rates are
-smaller than the models with random weight initialisation.
-
-This is a consistent pattern in all experiments, and could be the 
-result of a somewhat effective, but incomplete gradient model.
-According to this, the model would initially improve, but 
-the fixed learning rate would later destroy this without proper learning
-rate momentum.
-That would explain the learning rates in the beginning as well as the later
-imprecisions.
-
-The Futhark model accuracy for the MNIST data set was fixed around 0.7.
-This must be partially due to data compression, but it is still far below 
-contemporary performance.
-The spiking models however roughly degrade to chance, with a single experiment
-achieving an accuracy of 0.25\%.
-While it is not much, it proves that the models are learning, and that they are
-capable of expressing complex visual stimuli.
-
-%TODO: Error term in spiking translation
-%TODO: Not a product of structural complexity
-
-Looking at the data from the experiments in depth, a large number of 
-`dead neurons' can be found.\index{dead neuron}
-`Dead neurons` are neurons where the weights for a large number of
-neurons have decreased to a point where they no longer fire.
-This is detrimental to the result because of the argmax classification that
-brings the network closer to chance level.
-\\[0.1cm]
 
 % TODO: Functional requirements
-\paragraph{1. Semantic consistency}
-\paragraph{2. Translation to second and third generation}
-\paragraph{3. Learning}
-\paragraph{4. Well-typed}
 
-This thesis sat out to test two hypotheses, namely that:
+This thesis sat out to explore \glspl{SNN} and their future relevance to the field of
+\gls{ml}.
+It did so by putting forward two hypotheses and by designing experiments to
+falsify the hypotheses.
+During the thesis, a \gls{DSL} for neural models was presented, along with two \gls{ml}
+supporting \gls{ml} libraries for the training of second and third generation
+\glspl{NN}. 
+For the latter, a theory for the translation of model parameters was developed
+and emperically tested.
 
-\begin{enumerate}
-  \item The Volr DSL can translate into spiking and non-spiking neural networks such that the network topologies are retained.
-  \item Using training it is possible for spiking and non-spiking models to solve an MNIST recognition task.
-\end{enumerate}
+Three experiments, each executed on two different backends, were conducted to
+prove two things: that the \gls{DSL} VOLR can translate into second and third
+generation neural networks and adapt to a well-known recognition task by
+backpropagation learning.
 
-The majority of the thesis has been concerned with establishing the foundations
-for the Volr \gls{DSL}. 
-The implementation section of the thesis proved that the abstract \gls{DSL}
-terms indeed does translate to both spiking and non-spiking models, and the
-experiments (particularly the weight transfers)
-have shown that the topologies are at least related. 
+The experimental results prove that the \gls{DSL} concepts indeed are
+translatable between the \gls{NN} paradigms, and that the \gls{DSL} can generate
+executable programs that retain the abstract network topologies.
 
-The Futhark model performed well over chance in all the experiments.
-The spiking models, however, did not prove that they could consistently learn a
-domain. 
-In particular the MNIST model was close to chance level.
-For that reason it cannot be concluded that the spiking models can learn the
-MNIST problem set to a convincing degree.
+The results further showed that some form of learning was taking place in the
+spiking experiments
+However, flaws in the gradient approximation model and the spike rate coding scheme
+caused the model to learn consistently wrong patterns and produce a large
+quantity of dead neurons.
+The experiments does not disprove that training within \gls{SNN} is possible,
+but further adaptations to the gradient and coding models are required.
+\\[0.1cm]
 
-Table \ref{tab:findings} concludes on the thesis hypotheses:
+Table \ref{tab:findings} concludes the findings in the thesis:
 
 \def\arraystretch{1.5}
 \begin{table}
@@ -89,75 +47,75 @@ Table \ref{tab:findings} concludes on the thesis hypotheses:
   \label{tab:findings}
 \end{table}
 
-This thesis focused on the theoretical foundation of the DSL.
-Its hypotheses were conceived with the assumption that the
-technical tools for constructing and simulating the spiking neural networks were
-in place.
-This turned out not to be the case.
-For future research, an early benchmark of framework candidates for DSL backends
-should be part of early initial feasibility studies.
+While this thesis focused on the theoretical foundations of the DSL, its hypotheses were conceived with the assumption that the
+technical tools for constructing and simulating spiking neural networks were in place.
+During the experimental phase of the project, this assumption proved to be wrong.
+For future research, an early benchmark of framework candidates for DSL backends should be part of early initial feasibility studies to avoid similar obstacles. For this reason hypothesis 2 could not conclusively be confirmed or disproved. The corresponding experiment could not be conducted.
 
-That being said there are a number of obvious steps that can be taken to improve
-the results.
-Firstly it is common to operate with a momentum in the learning rate, such that
-larger errors causes larger adaptations \cite{Montavon1998, Sutskever2013}.
-Secondly, the layer normalisation scheme could be further explored and tested
-empirically, for instance by extending the tests from Section
-\ref{ref:translation}.
+Research within \gls{ml}---surrounding \glspl{NN} in particular---offers a large
+number of optimisation techniques, which could be employed to improve the above
+models.
+It is common to operate with a momentum in the learning rate, such that
+larger errors cause larger adaptations \cite{Montavon1998, Sutskever2013}.
+It is also popular to add a layer normalisation scheme to force the layers to
+adhere to a certain property such as a sigmoid distribution.
+This could be attempted to avoid the large number of dead neurons, because the
+layers could be normalised into a distribution that minimises the likelihood of
+zero signals.
 
-In the context of optimisation the rate models are interesting to discuss,
-because they ignore a large part of the expressiveness of spiking neurons.
-By fixing the simulation time and only looking at the spike rates,
-temporal patterns and signal strengths are entirely overlooked.
-An interesting next step would be to explore other coding schemes that
-adequately express such complexity. 
-One such scheme might even allow for continuous experiments, that uses online or
-even reinforced learning to improve a long-running model over time.
+In the context of optimisation, the spike rate models are another obvious point
+of improvement.
+The current rate models ignore the amplitude and inter-spike intervals, and are
+effectively discarding valuable informatino.
+A possible next step could be to explore other coding schemes that
+allows for more stable and concise gradient models.
 
-Regarding training it is also feasible to explore other paradigms that does not
-rely on the same assumptions about differentiability. 
-One example is evolution learning, where the search is much less efficient, but
-can be done without requiring a gradient model.
+To improve training and learning of the models, alternative paradigms can be explored that do not
+rely on differentiability. 
+One example is evolution learning, where the search for optima is more time 
+consuming compared to gradient descent, but that can be done without requiring a gradient model.
 
-The problem of dead neurons might be partially avoided by exploring different
-activation functions. 
-The ReLU model\index{ReLU} does not penalise smaller weights, which is
-unproportinally hurtful for spiking models.
-Other activation functions such as a sigmoid function---or simply a linear term
+Another step to avoid dead neurons is to explore different activation functions. 
+The currently used ReLU function\index{ReLU} as flawed in two ways: it is not
+differentiable around zero and it does not penalise values close to
+zero.
+Other activation functions, such as the sigmoid function---or a linear term
 that favours larger weights---could deincentivise dead neurons.
 \\[0.1cm]
 
-To adapt to the PyNN backend it was necessary to develop an entire machine
-learning library (VolrPyNN). 
-It could be interesting to integrate one of the plethora of machine
-learning libraries with \gls{SNN} simulations.
-Doing so would leverage the robust and proven efficacy of the library learning
-implementations, but would require a re-implementation of the neuron models.
-
-Another possibility is to look into entirely different backend implementations
-altogether.
-The Haskell \gls{DSL} compiler can easily be extended to support a fourth
-backend.
-A first step towards this could be to omit the PyNN interface, and compile
-directly to NEST, or to some other framework that does not suffer from the same
-malfunctions.
-\\[0.1cm]
-
-Regarding the REF theory and the cognitive models, not much can be concluded.
-However, the scope of the models in the thesis are too minuscule to be understood
-in a cognitive context.
-Before such connections can be understood, it is necessary to analyse far bigger
-networks which starts to resemble the complexity of biological systems.
+The thesis also touched on the subject of cognitive science, because the field
+is highly invested in the prospects of the simulation of neurophysiology.
+Regarding the cognitive REF theory in the context of this thesis, however, not much can be concluded.
+It can be said though, that it is necessary to analyse far bigger systems before
+any connections can be made.
 The work done in this thesis to compose neural components are an essential first
 step towards being able to not just construct, but also understand, the neural
 network models and its semantics.
 \\[0.1cm]
 
-As a final perspective it is interesting to imagine the advantages of the
-computational speed of neuromorphic computers.
+The PyNN interface has proven to be less stable and scaleable than anticipated.
+However, the architecture of the \gls{DSL} permits it to generalise to numerous
+other backends.
+The Haskell compiler is entirely independent from the experiment
+results and, since the because the underlying neural network model stays constant, 
+it is a small matter to compile to other targets such as BrainScaleS or
+SpiNNaker.
+This could also be used to omit the unstable PyNN interface and compile direclty
+to NEST or a similar framework.
+
+As a final perspective one can imagine the advantages of models that seamlessly
+compile between platforms. 
+Particularly in the context of neuromorphic computing.
+If a better model for the parameter translation is found, \gls{ANN} models can
+be compiled directly to neuromorphic hardware.
+One application is recognition models for faces or objects, but if it is
+possible to translate functionally complete logical gates (like the NAND gate)
+into neural circuits, any logical circuit can be translated.
+This extends to algorithmic problems like sorting.
 If the accuracies can be improved and translated into neuromorphic hardware, it
-would gain significant speed-ups compared to regular von Neumann machine
-architectures.
+would accelerate the current computational capacities of the von Neumann machine
+architectures by a factor of at least 100.
+\\[0.1cm]
 
 \FloatBarrier
 
