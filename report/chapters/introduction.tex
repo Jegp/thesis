@@ -1,48 +1,22 @@
 \begin{document}
 
-%TODO: Describe what is to be expected in the thesis
-%TODO 
-%Det ser godt ud synes jeg selvom det jo er vigtigt at du får forfattet en intro der sætter specialet i perspektiv, beskriver din tese, beskriver din test- og evalueringsform samt giver en læsevejledning til læseren, som vi snakkede om. Således handler tests om hvorvidt det du har lavet virker og evalueringen handler om hvorvidt din tese kan bekræftes og i hvilken grad.
-
-% Write: using hypothetical deductive method
-\begin{comment}
-\gls{ANN}s have been studied extensively and have surpassed human performance
-in a number of tasks (most recently the 
-advanced real-time strategy game Starcraft II \cite{DeepMind2019})
-\autocite{Schmidhuber2014, Nilsson2009, Russel2007}.
-\gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies 
-\autocite{Dayan2001, Indiveri2015}, but studies in larger scale are still rare,
-although \textcite{Hunsberger2015, Jordan2018, Lin2018, Pfeil2013,
-Rueckauer2017, Schmitt2017} have constructed classifiers that reach
-near-\gls{ANN} precision, but with a 
-
-
-\gls{SNN}s have been studied extensively in smaller applications such as single-neuron studies, but less so in larger setups such as learning and classification tasks \autocite{dayan2001, Indiveri2015}.
-Conversely \gls{ANN}s have been extensively studied in more complex tasks where architectures such as \gls{DNN} have excelled \autocite{schmidhuber2014, Nilsson2009, russel2007}.
-\end{comment}
-
-The field of \gls{ml} is rapidly evolving, and have in
+The field of \gls{ml} is evolving rapidly, and have in
 some recognition tasks surpassed human-level precision
 \autocite{Schmidhuber2014}.
-This acceleration is propelled by the advances in \gls{ANN}s
-\autocite{Rumelhart1988, Schmidhuber2014, Nilsson2009}, or
-so-called \textit{second} generation \gls{ANN}s\footnote{Not to be 
-understood as more advanced than previous generations, see definition on page
-\pageref{sec:glossary}.} \cite{Maass1997}.
-While the first generation networks build on the \textit{McCulluch-Pitts}
-neuron model that only produces binary outputs (0 or 1), the second
-generation uses a sequentiasl layered approach with a continuous set of 
-possible outcomes \cite{Maass1997, Russel2007}.
-Contemporary cognitive neuroscience however, tells us that the computation
-in the biological brain uses temporally separated \textit{spikes}, 
-dispatched within a highly connected and recurrent architecture 
-\cite{Dayan2001, Eliasmith2004}.
-This \textit{third} generation of \gls{NN}s permit the encoding
-of information over time, but at the cost of stability and 
-noise \autocite{Maass1997}.
+This acceleration is propelled by the advances in \gls{ANN}s, 
+which recently managed to defeat a human in the
+advanced real-time strategy game Starcraft II \cite{DeepMind2019})
+\autocite{Schmidhuber2014, Nilsson2009, Russel2007}.
+\citeauthor{Maass1997} calls \glspl{ANN} for second generation
+\glspl{NN}, because they supercede the first generation networks
+(based on the perceptron), and because he believes they themselves will be
+superceded by a third generation of neuron models.
+These neurons resembles the biological neurons in the brain that communicates
+not through continuous values in a matrix, but by neuron spikes over time
+\cite{Maass1997}.
 
 Because of their biological similarities, third generation 
-networks are of great interest to (cognitive) neuroscientists
+\glspl{NN} are of great interest to (cognitive) neuroscientists
 \autocite{Dayan2001,Bruderle2011,Eliasmith2015}.
 Compared to experimental studies involving living neural substrate,
 it is significantly cheaper and faster to build neural 
@@ -53,53 +27,30 @@ that resemble the physical structure of neural networks
 Furthermore, researchers have complete control over virtual models
 to pause, lesion, or even disassembled at will.
 
-This is particularly interesting for the
-mapping of functional connectivity (the human connectome) to the
-processes of cognition \autocite{Eliasmith2015, Mogensen2011}. 
-\textcite{Mogensen2011} presented a model for the 
-\gls{REF} based on numerous clinical trials and lesion studies.
-However, the theory is challenging to verify in vivo because of
-the high level of interconnectivity in the mammalian brain
-\autocite{Hohwy2009, Mogensen2017}.
+Neuromorphic computation is a paradigm that aims to exploit this new
+generation of network models, by constructing circuits that encode information
+in spikes over time instead of digital signals \cite{Eliasmith2015, Albada2018}.
+The advantage being that the neuromorphic neuron model can be built in
+silicon and accelerate the performance of \glspl{NN} by a factor of up to
+$10^5$ \cite{Albada2018, Schmitt2017}.
 
 A challenge for third generation networks is the relatively
 poor understanding of learning mechanisms \autocite{Tavanei2015,
 Walter2015}.
 Several different techniques have been applied, but they are
 difficult to validate because of the heterogeneous environments and
-the incommensurability of the models \autocite{Bohte2002, Bruderle2011}.
+the incommensurability of the models \autocite{Bruderle2011, Albada2018}.
 
-This thesis sets out to create a unified domain specific language (DSL), Volr, 
-for modelling both second and third generation neural networks.
-The DSL aims to provide a concise description of neural networks and to 
-ensure the correct translation into executable neural network models.
-This thesis will implement translations into three heterogenous backends: 
-\gls{OpenCL} for non-spiking second generation \gls{NN}s, NEST for simulated third
-generation \gls{NN}s, and finally
-BrainScaleS for analogue third generation \gls{NN}s.
+This thesis sets out to explore \glspl{SNN} and their potential for the 
+field of \gls{ml}, focusing on two major challenges for the
+third generation models: homogeneous modelling and learning.
+\\[0.1cm]
 
-% TODO: Add section describing the backends
+The thesis is built around the hypothetico-deductive model, in which 
+falsifiable hypotheses are formulated, tested and evaluated.
+The remainder of the introduction will present the hypotheses, the methods for
+evaluating the hypotheses and finally the thesis structure.
 
-To validate the DSL, a cognitive model inspired by the theory for the Reorganisation
-of Elementary Functions [8] is constructed and applied to solve a small MNIST classification task.
-The present study aims to extend the innovations within
-second and third generation \gls{NN}s to the field of
-cognitive \index{cognitive} neuroscience. 
-Constructing a \gls{DSL} as a means to translate higher-order
-neural concepts into \gls{NN} simulations, allows for a higher
-degree of verification and permits rigorous analyses of the networks.
-For concepts such as those found in the \gls{REF} theory, 
-this can lead to a further understanding, verification and falscification
-of simple neural models.
-
-%TODO: Add section on problem with state of the art
-%TODO: Add section describing the contributions of this thesis
-%TODO: What will I do that is not done before
-%   - What is the problem?
-%   - Define problem statement
-%TODO: Introductory state of the art
-%   - DSL section is 
-%TODO: Why is it interesting to look at these types of networks
 \section{Hypotheses} \label{sec:hypotheses}
 This thesis examines two hypotheses:
 
@@ -108,101 +59,59 @@ This thesis examines two hypotheses:
   \item Using training it is possible for spiking and non-spiking models to solve an MNIST recognition task.
 \end{enumerate}
 
-Topology is understood as typed declarations of neural network structure, such
-that the topology of a network is defined as a collection of nodes, edges and connectivity descriptions.
+The hypotheses are driven by two inquiries around modelling and learning.
 
-The first hypothesis tests that the neural networks generated by the DSL is translated without significant
-deviations, regardless of the backend.
+\paragraph{Hypothesis 1: DSL modelling}
+The first hypothesis tests that the neural networks generated by the DSL is
+modelled correctly, and that they translate---without significant
+deviations---to second and third generation neural networks.
 Consistent translations are important to ensure correct and reproducible experiments,
 but are also vital to further the understanding of spiking neural networks:
 correct rendition bridges the semantics of artificial and spiking neural networks.
 In turn, this allows users of the DSL to draw on the vast literature of
 second generation \gls{NN}s.
 
-The second hypothesis tests that the DSL adequately models the domain it sets
-out to describe: cognitive neural networks.
-By drawing on the REF theory, a network model is written, trained, and evaluated to verify
-that the DSL can capture complex neural network concepts.
+To test this hypothesis it is necessary to derive a common abstraction for
+\glspl{NN} of both second and third generation, and to provide proof that the
+abstraction can be converted into functioning spiking and non-spiking neural
+models.
 
-Three \textit{implementation}s of the \gls{REF} model will be
-produced to test the hypothesis: 
-  1) a second generation \gls{NN} based on the data-parallel language Futhark, \index{Futhark}
-  2) a third generation \gls{NN} based on the neural simulator NEST and
-  3) a third generation \gls{NN} based on the neuromorphic \index{neuromorphic}
-     hardware platform BrainScaleS \index{BrainScaleS}.
+To test the hypothesis a compiler will be built that translated neural models
+into two target paradigms:
+  1) a second generation \gls{NN} based on the data-parallel language Futhark, and
+  2) a third generation \gls{NN} based on the neural simulator Neural Simulation
+  Toolkit (NEST).
+  \index{Futhark}\index{NEST}
+The model are expected to resemble each other in topology, meaning that they
+consist of identical collections of nodes, edges and connectivity descriptions.
 
-The above models will be compared based on:
-1) the ability to learn the maze problem as well as 
-2) the proximity of the neural model to the components of the
-   \gls{REF} theory.
-
-Regarding 1) it is known that second generation \gls{NN}s are
-capable of learning pattern-recognition problems (see Section \ref{sec:learning})
-\cite{Russel2007}.
+\paragraph{Hypothesis 2: Learning}
+It is known that second generation \gls{NN}s are capable of learning
+pattern-recognition problems \cite{Russel2007}.
 This adaptation is a fundamental property of neural systems, so a
 similar behaviour is expected in third generation \gls{NN}s.
-If that is not the case, the \gls{DSL} has failed to translate
-the learning capacities of the second generation networks,
-disproving the hypothesis.
+The second hypothesis verifies that this property exists in both spiking and
+non-spiking neural networks.
+If it does not, the \gls{DSL} has failed to capture
+the learning capacities of the second generation networks.
+Additionally, it provides a mean of comparison between the two paradigms.
 
-Specifically a third generation \gls{NN} is expected to
-achieve a precision within 10\% of a topologically similar
-second generation \gls{NN}.
-
-Regarding 2) the presence of significant
-dissimilarities\footnote{See \ref{sec:ref} for a definition of
-\enquote{dissimilar}.} between the neural network implementations 
-and the abstract \gls{REF} model also falsifies the hypothesis. 
-In that case the \gls{DSL} is unable to accurately express the
-theoretical model.
-
-Specifically, it is expected that the generated \gls{NN}s resemble
-the structures from the \gls{REF} theory.
-
-\section{Scope} \label{sec:scope}
-The \gls{REF} model is a general and abstract blueprint of cognitive
-processes, and no attempts have as of yet been made to map it to
-a computational model.
-This first attempt is only made feasible by focusing on select parts
-of the \gls{REF} model, explained in Section \ref{sec:ref}.
-It is outside the scope of this thesis to examine
-higher-order cognitive functions as well as detailed biological
-similarities.
-
-While this thesis aims to build models that shows some of the same
-properties that are present in the biological brain,  
-it is not the goal to provide a mapping between the
-implementations and their neurophysiological equivalent.
-Neither is it a goal to translate the \gls{DSL} into exact replicas
-of second and third generation networks, for the reason that the
-two modelling paradigms are vastly different.\footnote{See \ref{sec:nn}
-for a detailed description of the dissimilarities.}
-This will naturally have consequences for the subsequent analysis of the
-experimental results (see Section \ref{sec:discussion}).
+To test whether this is the case, it is necessary to prove that learning occurs
+in both paradigms.
+Three experiments have been constructed to test this: two trivial
+logical gates, NAND and XOR, and a recognition task of handwritten digits
+(MNIST).
+The experiments will be executed in both second and third generation
+environments and compared based on their ability to predict the correct outcome,
+and the speed and quality of their learning.
+While the hypothesis is strictly only concerned with the MNIST dataset, the NAND
+and XOR provides a frame of reference for the experiments.
 
 \section{Thesis structure}
-Before the hypothesis can be formally tested, Chapter \ref{sec:theory}
-presents the foundation for \gls{NN}s, the \gls{REF} theory and
-concepts of learning.
-The translation of the constituent parts of the \gls{REF} theory
-into \gls{NN} components is presented in Chapter \ref{sec:volr} in 
-the form of the \gls{DSL} \textit{Volr}. \index{Volr}
-The fourth Chapter defines an \gls{NN} model built with the above
-\gls{DSL} as well as a delimited T-maze experiment, on which the 
-\gls{NN} model will be trained.
-This Chapter also presents the three \gls{backend}s on which the 
-model will be trained, as well as the accuracy scores of the models
-before and after the alterations.
-Chapter \ref{sec:analysis} analyses the test scores and the third 
-generation models themselves to measure how well they capture the
-concepts of the \gls{REF} model.
-
-In the fifth and final part of the thesis, the analysis and the benchmark
-results will be discussed and related to the hypothesis.
-This part also concludes on the findings of the thesis and
-reflects on the prospects for employing Volr to study neurocognitive
-models in the future.
-
-% TODO: Write contributions
+The thesis is structured into five parts:
+a theoretical part that defines and establishes theoretical concepts,
+a section on the design and implementation of the \gls{DSL}, a section on the
+experimental setup, a section on the thesis results and finally a discussion
+that concludes on the result and considers future work.
 
 \end{document}
