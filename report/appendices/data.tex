@@ -38,10 +38,9 @@ NEST.
 \lstinputlisting[language=]{../experiments/mnist_par.fut}
 \lstinputlisting[language=]{../experiments/mnist_par_snn.py}
 
-\section{PyNN exception in weight initialisation}
-
+\section{PyNN exception in weight initialisation} \label{sec:pynn-exception}
 \begin{lstlisting}[caption={PyNN exception when performing weight
-initialisation during a test in \texttt{test\_merge.py}.},label={lst:pynn_exception}]
+initialisation during a test in \texttt{test\_merge.py}.}]
 ../../volrpynn/model.py:108: in predict    return self.simulate(time)                                                                                         
 ../../volrpynn/model.py:138: in simulate    self.reset_weights()
 ../../volrpynn/model.py:121: in reset_weights    layer.restore_weights()                                                                                            

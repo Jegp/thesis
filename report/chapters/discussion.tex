@@ -3,33 +3,33 @@
 
 This thesis sat out to explore \glspl{SNN} and their future relevance to the field of
 \gls{ml}.
-It did so by putting forward two hypotheses and by designing experiments to
-falsify the hypotheses.
-During the thesis, a \gls{DSL} for neural models was presented, along with two \gls{ml}
+A \gls{DSL} for neural models was presented, along with two
 supporting \gls{ml} libraries for the training of second and third generation
 \glspl{NN}. 
-For the latter, a theory for the translation of model parameters was developed
-and emperically tested.
+To validate that \gls{DSL}, two hypotheses were put forward and experiments were
+designed to attempt to falsify these hypotheses.
+Finally, a theory for the translation of model parameters for \glspl{SNN} was
+developed and tested empirically.
 
 Three experiments, each executed on two different backends, were conducted to
 prove two things: that the \gls{DSL} VOLR can translate into second and third
-generation neural networks and adapt to a well-known recognition task by
+generation neural networks and adapt to a well-known recognition task, using
 backpropagation learning.
 
-The experimental results prove that the \gls{DSL} concepts indeed are
+The experimental results prove that the \gls{DSL} concepts are
 translatable between the \gls{NN} paradigms, and that the \gls{DSL} can generate
 executable programs that retain the abstract network topologies.
 
-The results further showed that some form of learning was taking place in the
-spiking experiments
-However, flaws in the gradient approximation model and the spike rate coding scheme
-caused the model to learn consistently wrong patterns and produce a large
-quantity of dead neurons.
-The experiments does not disprove that training within \gls{SNN} is possible,
+The results further show, that some form of learning was taking place in the
+experiments with \glspl{SNN}.
+However, flaws in the gradient approximation model and the spike rate coding
+scheme, suggests that the model learns consistently wrong patterns and produces a
+large quantity of dead neurons.
+The experimental results do not disprove that training within \glspl{SNN} is possible,
 but further adaptations to the gradient and coding models are required.
 \\[0.1cm]
 
-Table \ref{tab:findings} concludes the findings in the thesis:
+Table \ref{tab:findings} concludes the findings of the thesis:
 
 \def\arraystretch{1.5}
 \begin{table}
@@ -47,7 +47,10 @@ Table \ref{tab:findings} concludes the findings in the thesis:
 While this thesis focused on the theoretical foundations of the DSL, its hypotheses were conceived with the assumption that the
 technical tools for constructing and simulating spiking neural networks were in place.
 During the experimental phase of the project, this assumption proved to be wrong.
-For future research, an early benchmark of framework candidates for DSL backends should be part of early initial feasibility studies to avoid similar obstacles. For this reason hypothesis 2 could not conclusively be confirmed or disproved. The corresponding experiment could not be conducted.
+For future research, an early benchmark of framework candidates for \gls{DSL} backends
+should be part of early initial feasibility studies, to avoid similar obstacles.
+For this reason hypothesis 2 could not conclusively be confirmed or disproved.
+The corresponding experiment could not be conducted.
 
 Research within \gls{ml}---surrounding \glspl{NN} in particular---offers a large
 number of optimisation techniques, which could be employed to improve the above
@@ -57,68 +60,68 @@ larger errors cause larger adaptations \cite{Montavon1998, Sutskever2013}.
 It is also popular to add a layer normalisation scheme to force the layers to
 adhere to a certain property such as a sigmoid distribution.
 This could be attempted to avoid the large number of dead neurons, because the
-layers could be normalised into a distribution that minimises the likelihood of
+layers can be normalised into a distribution that minimises the likelihood of
 zero signals.
 
-In the context of optimisation, the spike rate models are another obvious point
-of improvement.
-The current rate models ignore the amplitude and inter-spike intervals, and are
-effectively discarding valuable informatino.
-A possible next step could be to explore other coding schemes that
-allows for more stable and concise gradient models.
+In the context of optimisation, the spike rate models are another possibility
+for improvement.
+The present rate models ignore the amplitude, inter-spike intervals as well as
+sub-threshold activity, and are effectively discarding valuable information.
+A possible next step can be to explore other coding schemes that
+allow for more stable and concise gradient models.
 
 To improve training and learning of the models, alternative paradigms can be explored that do not
 rely on differentiability. 
-One example is evolution learning, where the search for optima is more time 
-consuming compared to gradient descent, but that can be done without requiring a gradient model.
+One example is evolution learning, in which the search for optima is more time 
+consuming compared to gradient descent, but can be performed without a gradient model.
 
-Another step to avoid dead neurons is to explore different activation functions. 
-The currently used ReLU function\index{ReLU} as flawed in two ways: it is not
+Another measure to avoid dead neurons is to explore different activation functions. 
+The currently used ReLU function\index{ReLU} is flawed in two ways: it is not
 differentiable around zero and it does not penalise values close to
 zero.
-Other activation functions, such as the sigmoid function---or a linear term
-that favours larger weights---could deincentivise dead neurons.
+Other activation functions, such as the sigmoid function, or a linear term
+that favours larger weights, could disincentivise dead neurons.
 
-The recent paper published Januar 2019 by \citeauthor{Tavanaei2019} reviews
+The PyNN interface has proven to be less stable and scaleable than anticipated
+based on its widespread use and documentation.
+However, the architecture of the \gls{DSL} permits a generalise to other
+backends, and the Haskell compiler is entirely independent from the experiment
+results.
+Since the underlying abstract \gls{NN} model stays constant, 
+it is possible to compile to other targets such as BrainScaleS or
+SpiNNaker.\index{BrainScaleS}
+This could also be used to omit the unstable PyNN interface and compile directly
+to NEST.
+
+A paper yet to be published by \citeauthor{Tavanaei2019} reviews
 techniques for applying deep learning techniques in \glspl{SNN}.
-They conclude that \glspl{ANN} still performs significantly better, but that the
-gap is closing.
-They proceed to mention spiking networks with high accuracy rates that are starting to
-compete with \glspl{ANN}. 
-If work is to be continued within this topic, it is advisable to analyse and
-such networks in depth to learn from their results.
+The authors conclude that \glspl{ANN} still perform significantly better than
+\glspl{SNN} when it comes to recognition tasks, but that the gap is closing.
+Further research on the thesis could include the studies from
+\citeauthor{Tavanaei2019} and use them to improve the \gls{DSL}.
 \\[0.1cm]
 
-The thesis also touched on the subject of cognitive science, because the field
+The thesis also picked up on the subject of cognitive science, because the field
 is highly invested in the prospects of the simulation of neurophysiology.
-Regarding the cognitive REF theory in the context of this thesis, however, not much can be concluded.
-It can be said though, that it is necessary to analyse far bigger systems before
+Regarding the cognitive REF theory in the context of this thesis, however,
+conclusions have to be drawn carefully.
+The composition of neural components with a \gls{DSL} are an essential first
+step towards being able to not just construct, but also understand, the 
+\glspl{NN} models and its semantics.
+It is, however, necessary to analyse far bigger and more complex systems before
 any connections can be made.
-The work done in this thesis to compose neural components are an essential first
-step towards being able to not just construct, but also understand, the neural
-network models and its semantics.
 \\[0.1cm]
 
-The PyNN interface has proven to be less stable and scaleable than anticipated.
-However, the architecture of the \gls{DSL} permits it to generalise to numerous
-other backends.
-The Haskell compiler is entirely independent from the experiment
-results and, since the because the underlying neural network model stays constant, 
-it is a small matter to compile to other targets such as BrainScaleS or
-SpiNNaker.
-This could also be used to omit the unstable PyNN interface and compile direclty
-to NEST or a similar framework.
-
-As a final perspective one can imagine the advantages of models that seamlessly
-compile between platforms. 
-Particularly in the context of neuromorphic computing.
-If a better model for the parameter translation is found, \gls{ANN} models can
+As a final perspective, theare are many merits to the models that seamlessly
+compile between platforms, particularly in the context of neuromorphic
+computation.
+Using a better performing model for the parameter translation, \gls{ANN} models can
 be compiled directly to neuromorphic hardware.
-One application is recognition models for faces or objects, but if it is
-possible to translate functionally complete logical gates (like the NAND gate)
-into neural circuits, any logical circuit can be translated.
-This extends to algorithmic problems like sorting.
-If the accuracies can be improved and translated into neuromorphic hardware, it
+Translating functionally complete logical gates (like the NAND gate) into neural
+circuits, implies that any logical circuit can be translated.
+Tasks like recognition models for faces or objects, as well as algorithmic
+problems like sorting, are just a few out many possible applications.
+In short, if the accuracies can be improved and translated into neuromorphic hardware, it
 would accelerate the current computational capacities of the von Neumann machine
 architectures by a factor of at least 100.
 \\[0.1cm]
