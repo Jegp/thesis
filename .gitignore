@@ -225,3 +225,4 @@ TSWLatexianTemp*
 # Vim
 *.swp
 *.swo
+__pycache__
