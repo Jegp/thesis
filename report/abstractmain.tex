@@ -1,0 +1,93 @@
+\documentclass[a4paper,oneside]{memoir}
+% Divide report into subfiles
+\usepackage{subfiles}
+
+\usepackage[english]{babel}
+\usepackage[margin=1cm]{caption}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{wallpaper}
+\usepackage{palatino}
+\usepackage{hyperref}
+\usepackage{csquotes}
+\usepackage{fvextra}
+\usepackage{xpatch}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{nameref}
+\usepackage{url}
+\usepackage[inline]{enumitem}
+\usepackage{lineno}
+
+% tikz drawing
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,matrix,chains,positioning,decorations.pathreplacing,arrows}
+\usepackage{pgfplots}
+
+% Listings
+\usepackage{listings}
+\usepackage{color}
+\lstset{
+  basicstyle=\small \ttfamily,
+  numbers=left,
+  frame=tb,
+  mathescape
+}
+
+% Proofs
+\usepackage{bussproofs}
+
+% Floats and figures
+\usepackage{float}
+\usepackage{wrapfig}
+\restylefloat{figure}
+\usepackage{caption}
+\DeclareCaptionLabelFormat{cont}{#1~#2\alph{ContinuedFloat}}
+\captionsetup[ContinuedFloat]{labelformat=cont}
+\usepackage{placeins}
+\usepackage{pdfpages}
+
+%linespacing
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.1}
+
+% Grammar
+\usepackage{fancyvrb}
+
+% Internal references
+\usepackage{cleveref}
+
+% Bibliography
+\usepackage[maxbibnames=99]{biblatex}
+\bibliography{bib}
+
+% Promote sections and subsections
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{1mm}{*}
+
+% Index 
+\usepackage{makeidx}
+\makeindex
+
+% Glossary
+\usepackage[numberedsection=nameref, toc]{glossaries}
+\usepackage[automake]{glossaries-extra}
+\renewcommand{\glossarypreamble}{\label{sec:glossary}}
+\makeglossaries
+\include{glossary}
+
+% TOC
+\maxsecnumdepth{subsection}
+
+% Chapter settings
+\chapterstyle{default}
+
+%%  Begin document
+%%  ==================================================================
+\frontmatter
+
+\begin{document}
+\begin{abstract}
+\input{chapters/abstract}
+\end{abstract}
+\end{document}

@@ -1,0 +1,39 @@
+Spiking neural networks receive increasing attention
+due to their advantages over traditional artificial
+neural networks.
+They have proven to be 
+energy efficient,
+biological plausible, and 
+up to $10^5$ times faster if they are simulated on analogue 
+(neuromorphic) chips.
+Artificial neural network libraries use computational graphs
+as a pervasive representation, however, spiking models remain heterogeneous and 
+difficult to train.
+
+Using the hypothetico-deductive method, the thesis posits 
+two hypotheses that examines whether 
+\begin{enumerate*}[label={\arabic*)}]
+\item there exists a common representation for both neural networks paradigms, and whether
+\item spiking and non-spiking models can learn a simple recognition task.
+\end{enumerate*}
+The first hypothesis is confirmed by specifying and implementing a domain-specific language,
+that generates semantically similar spiking and non-spiking
+neural networks.
+Through three classification experiments, the second hypothesis is shown to hold
+for non-spiking models, but cannot be proven for the spiking models.
+
+The thesis contributes three findings: 
+\begin{enumerate*}[label={\arabic*)}]
+\item a domain-specific language for modelling neural network topologies,
+\item a preliminary model for generalisable learning through backpropagation in
+spiking neural networks, and
+\item a method for transferring optimised non-spiking parameters to spiking
+neural networks.
+\end{enumerate*}
+
+The latter contribution is promising because the vast machine learning
+literature can spill-over to the emerging field of spiking neural networks and
+neuromorphic computing.
+Future work includes improving the backpropagation model, exploring time-dependent
+models for learning, and adding support for neuromorphic chips.
+

@@ -16,6 +16,8 @@
 \usepackage{bbm}
 \usepackage{nameref}
 \usepackage{url}
+\usepackage[inline]{enumitem}
+\usepackage{lineno}
 
 % tikz drawing
 \usepackage{tikz}
@@ -146,9 +148,9 @@
 
 \frontmatter
 
-%\begin{abstract}
-%TODO
-%\end{abstract}
+\begin{abstract}
+\input{chapters/abstract}
+\end{abstract}
 
 \pagebreak
 
@@ -189,6 +191,7 @@ their help in structuring and revising the final versions of the thesis.
   \subfile{chapters/discussion}
 
 \appendix
+\clearpage
 
 \begingroup
 \renewcommand{\cleardoublepage}{}
