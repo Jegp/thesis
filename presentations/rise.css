@@ -1,0 +1,23 @@
+/* TODO: maybe we need to port this to main.css?  */
+@font-face {
+    font-family: 'NanumGothic', sans-serif;
+    src: url('fonts/NanumGothic-Regular.ttf');
+}
+
+.container .present {
+ margin-bottom: -140px !important;
+ padding-top: 180px !important;
+}
+
+.present h1, .present h2, .present h3, .present h4, .present h5, .present h6 {
+    font-family: 'NanumGothic' !important;
+}
+
+.backgrounds {
+    background: url(diku-background.png) no-repeat 100px 20px;
+    background-size: 54% 18%;
+}
+
+.rendered_html table {
+    font-size: 70%;
+}

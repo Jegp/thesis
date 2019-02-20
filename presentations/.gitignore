@@ -1,0 +1,9 @@
+.ipynb_checkpoints/
+*.tar
+*.npy
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
