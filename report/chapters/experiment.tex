@@ -46,7 +46,7 @@ MNIST images contain 784 pixes (28x28), but to avoid too complex simulations
 it is necessary to limit the network size.
 The images have been cropped and scaled to 10x10 pixels, such that the initial
 network layer can be scaled to 100 neurons.
-The topology for the sequential model is \texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10}.
+The topology for the sequential model is \texttt{\textbf{dense} 100 100 $\obar$ \textbf{dense} 100 10}.
 
 To test the parallel structures of the \gls{DSL}, a second and parallel network
 will be constructed.
