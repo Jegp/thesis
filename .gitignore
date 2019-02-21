@@ -13,6 +13,7 @@
 *.cb2
 *.ps
 *.pdf
+!report/report.pdf
 
 ## Intermediate documents:
 *.dvi
