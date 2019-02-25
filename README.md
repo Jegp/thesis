@@ -61,7 +61,7 @@ The tasks involved in this thesis are as follows:
 * Implement a translation from the DSL to an executable and trainable NEST simulation
 * Implement a translation from the DSL to an executable program on the BrainScaleS platformn
 * Implement encoders and decoders for the spiking neural networks to correctly translate stimuli and outputs between spiking and non-spiking network models
-* Build a model that can solve a simple 2-feature MNIST experiment in the DSL
+* Build a model that can solve an MNIST experiment in the DSL
 * Translate the MNIST model to Futhark, NEST and BrainScaleS
 * Train the Futhark and NEST programs, and emulate the BrainScaleS program using the weights from the NEST model
 * Compare the performance of the experiments, with a focus on learning rate and accuracy.
