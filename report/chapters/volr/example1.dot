@@ -9,8 +9,8 @@ digraph example1 {
 
     i_0 -> s_0 [taillabel="Input", labelangle=-20, labeldistance=2];
     i_1 -> s_1 [taillabel="Input", labelangle=20, labeldistance=2];
-    s_0 -> s_01;
-    s_1 -> s_11;
+    s_0 -> s_01 [taillabel="s1", labelangle=-20, labeldistance=2];
+    s_1 -> s_11 [taillabel="s2", labelangle=20, labeldistance=2];
     s_01 -> p_0 [weight=2];
     s_11 -> p_0 [weight=2];
 

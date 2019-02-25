@@ -1,7 +1,7 @@
 \documentclass[report.tex]{subfiles}
 \begin{document}
 This chapter describes the experimental setup that aims to validate the
-implementation and test the hypotheses introduced in section \ref{sec:hypotheses}.
+implementation and test the hypotheses introduced in Section \ref{sec:hypotheses}.
 Firstly, the assumptions and parameters that are the basis of the simulations are described.
 Second, datasets and methods that are used to test the hypotheses are
 elaborated.
@@ -18,8 +18,8 @@ Three problem sets will be tested: the NAND ($\neg(A \land B)$) and XOR
 Modified National Institute of Standards and Technology
 (MNIST) database\index{MNIST}.
 The NAND and XOR problems are trivial for \glspl{ANN} to learn, and are used as
-a means to test and compare the rudimentary learning capacities of the NEST and
-BrainScaleS backends.
+a means to test and compare the rudimentary learning capacities of the NEST
+backend.
 
 The NAND and XOR experiments will be based on the same network topology
 (\texttt{\textbf{dense} 2 4 $\obar$ \textbf{dense} 4 2}). 
@@ -34,7 +34,7 @@ lead to an increased accuracy.
 The weights and biases from the optimised Futhark model will only be imported into NEST,
 which then trains the weights to fit the spiking neuron model.
 
-The MNIST dataset is a widely used for training neural networks to classify
+The MNIST dataset is widely used for training neural networks to classify
 images of digits between 0 and 9. 
 It is also commonly used for implementation benchmarks \cite{Schmidhuber2014,
 Schmitt2017}, with the best networks scoring an error rate of 0.21\%
@@ -46,7 +46,8 @@ MNIST images contain 784 pixes (28x28), but to avoid too complex simulations
 it is necessary to limit the network size.
 The images have been cropped and scaled to 10x10 pixels, such that the initial
 network layer can be scaled to 100 neurons.
-The topology for the sequential model is \texttt{\textbf{dense} 100 100 $\obar$ \textbf{dense} 100 10}.
+The topology for the sequential model is 
+\texttt{\textbf{dense} 100 100 $\obar$ \textbf{dense} 100 10}.
 
 To test the parallel structures of the \gls{DSL}, a second and parallel network
 will be constructed.

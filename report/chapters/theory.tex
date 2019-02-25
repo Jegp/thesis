@@ -95,9 +95,9 @@ Figure \ref{fig:nn-example} shows an example of such a network.
 \end{figure}
 
 The number of groups determines the depth\index{neural network!depth} of
-a network\cite{Russel2007}.
+a network graph \cite{Russel2007}.
 Each group applies a non-linear transformation to the input that is forwarded
-to the next layer and so on \cite{Bishop2006, Russel2007}.
+to the next layer, and so on \cite{Bishop2006, Russel2007}.
 From a computational point of view, a neuron group is simply a computational
 unit, which allows \glspl{NN} to be abstracted as circuits of units connected in
 a directed graph
@@ -138,7 +138,7 @@ with a non-linear function to produce some output.
 Thus the network in Figure \ref{fig:nn-example} consists of two layers.
 
 Neuron groups or layers that are not directly connected to the input or output
-of the network are traditionally denoted as `hidden'\index{layer!hidden} because they is only
+of the network are traditionally denoted as `hidden'\index{layer!hidden} because they are only
 stimulated indirectly \cite{Russel2007}.
 
 In this representation the `input' is a vector, whose
@@ -196,8 +196,7 @@ hyperbolic tangent ($tanh$) and
 the rectified linear unit \index{activation!ReLU} (ReLU, see Equation \ref{eq:ReLU}). 
 
 They are applied either in a feed-forward or recurrent (cyclic) manner, where
-the recurrent variant performs temporal transformations
-\footnote{It is possible to \textit{unfold} recurrent
+the recurrent variant performs temporal transformations\footnote{It is possible to \textit{unfold} recurrent
 networks to resemble the circular processes until a certain point, achieving
 a similar effect to temporal signal transformation, see \cite{Mozer1995}.}
 \cite{Schmidhuber2014}.
@@ -234,7 +233,7 @@ response to a given numerical vector \cite{Russel2007}.
 This transformative view can be adopted to biological (third generation)
 \glspl{SNN}, where the data being transferred are no longer vectors, but 
 \textit{spikes}\index{neuron!spike}
-of electrical current over time \cite[p. 32]{Dayan2001, Eliasmith2004}.
+of electrical signals over time \cite[p. 32]{Dayan2001, Eliasmith2004}.
 In biological networks there is a temporal dimension, in that neurons
 produce and fire spikes asynchronously to other neurons in the same
 group \cite{Eliasmith2004}.
@@ -260,14 +259,14 @@ it requires to send impulses through the neuron \cite{Eliasmith2004}.
 This has been modelled to a high degree of precision in the 
 Hudgkin-Huxley model \cite{Dayan2001}.
 While it is more precise than models below, it is
-more complex \cite[p. 195]{Dayan2001} and rarely used in simulations
+more complex \cite[p. 195]{Dayan2001}, and rarely used in simulations
 \cite{Albada2018, Dayan2001, Eliasmith2015}.
 
 An idealised version of this is given in the Dirac ($\delta$) function \index{Dirac function}
 in Equation \ref{eq:dirac} \cite[p. 404]{Dayan2001}.
 For all values it approaches 0, except when its argument is
 0 where it will grow infinitely.
-In a trial starting at time $0$ and ending at time $t$, this
+In a trial starting at time $0$, and ending at time $t$, this
 is the equivalent of summing up the $n$ neuronal events that occurred in 
 the duration of the trial.
 The total area of these `spikes' sum together to 1 over time $t$. \index{neuron spike}
@@ -284,10 +283,10 @@ instead of continuous-valued (as in second generation \glspl{NN})
 \cite{Maass1997}.\index{neuron spike}\index{spike|see {neuron spike}}
 
 The spiking model is based on a neuron that builds voltage over time, until
-it reaches a threshold voltage ($V_{th}$) and emits a spike
+it reaches a threshold voltage ($V_{th}$)m and emits a spike
 \mbox{($\delta(t-t_n)$)}
 \cite{Dayan2001, Eliasmith2004}.
-The spike carries a charge and is received by a post-synaptic neuron as
+The spike carries a charge, and is received by a post-synaptic neuron as
 input current, which, in turn, decides whether to fire \cite{Dayan2001}.
 
 After spiking, the voltage inside a neuron is reset to a value ($\tau_{reset}$),
@@ -325,7 +324,7 @@ $\tau_{ref}$, illustrated in Figure \ref{fig:spiking}
 
 \end{tikzpicture}
 \caption{A model of how a constant, low input current produces a buildup of
-	voltage inside a integrate-and-fire neuron, which eventually produces a spike.
+	voltage inside an integrate-and-fire neuron, which eventually produces a spike.
 	\index{neuron model!integrate-and-fire} 
 	After spiking the neuron enters a refractory period, $\tau_{ref}$,
    	where no voltage is integrated.}
@@ -347,7 +346,7 @@ current \cite[p. 85]{Eliasmith2004}.
 \end{equation}
 
 The LIF equation is given in Equation \ref{eq:lif}, where
-$v$ is the membrane voltage difference between the interior
+$v$ is the membrane voltage difference between the interior,
 and exterior of the neuron membrane, $c$ is the input current, $r$
 is the ionic current (or leak) of charge across the membrane, and
 $\tau_{RC}$ is the membrane time constant that determines how
@@ -477,12 +476,9 @@ For large simulations over long periods of time, however, this assumption has pr
 But for minor networks Equation \ref{eq:spike_conversion} shows a 
 linear relationship between the spike rate and the input
 \cite{Rueckauer2017}.
-Because of the assumption that the constant input currents propagate as poisson rates
-through the network, the networks and biases within the network will similarly
-have to scale.
 
 Transferring normalised input from \gls{ANN} to \gls{SNN}, then, is
-a question of determining the exact scaling factor between the \gls{ANN} input
+a question of determining the exact scaling factor between the \gls{ANN} input,
 and the \gls{SNN} spiking rate.
 
 \section{Learning} \index{learning} \label{sec:learning}
@@ -501,7 +497,7 @@ In practice this is expressed in terms of general functions or
 
 Within \gls{ml}, systems are typically classified into
 supervised, \index{learning!supervised}
-unsupervised \index{learning!unsupervised} and reinforced learning systems.
+unsupervised \index{learning!unsupervised}, and reinforced learning systems.
 \index{learning!reinforcement}
 
 \textit{Supervised} learning relies on a set of expected outputs which 
@@ -520,7 +516,7 @@ patterns, which then form the basis for future predictions or classifications
 \cite{Russel2007}.
 
 \textit{Reinforced} learning reinforces the \gls{agent} through
-rewards and discourages it through punishments \cite{Russel2007}.
+rewards, and discourages it through punishments \cite{Russel2007}.
 Contrary to supervised learning the rewards and punishments are not
 instructing the agent on what the output should be, but rather how well
 it performed the task, leaving the \gls{agent} to infer rules or

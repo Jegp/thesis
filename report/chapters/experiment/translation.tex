@@ -1,15 +1,15 @@
 
-As described in section \ref{sec:coding}, it is necessary to discover the exact
+As described in Section \ref{sec:coding}, it is necessary to discover the exact
 linear relationship between \gls{ANN} activations and \gls{SNN} activations. This section provides the empirical basis for the input and weight normalisation
 rates that are used in the remainder of the thesis.
 
-The code for the experiments and visualisations are available in Appendix
-\ref{app:verification}.
+The code for the experiments and visualisations are available in
+Appendix \ref{app:verification}.
 
 Figure \ref{fig:spike_rates} plots the spike count and spike rate against the
 constant input current, using the neuron parameters from Table \ref{tab:neuron_parameters}.
-120 simulations were performed with offset currents ranging from 0 to 12, 
-using a resolution of 0.1.
+120 simulations were performed with offset currents ranging from 0 to 12 nA, 
+using a resolution of 0.1 nA.
 
 \begin{figure}
   \centering
@@ -66,14 +66,14 @@ neurons, since the post-synaptic potentials accumulates.
 In the case of the NEST and BrainScaleS backends,\index{NEST}\index{BrainScales}
 the post-synaptic potentials are solely depending on the synaptic weights
 \cite{Gewaltig2007, Schmitt2017}.
-In other words, the energy of the spikes does not depend on the amount of post-synaptic
+In other words, the energy of the spikes does not depend on the number of post-synaptic
 neurons.
 For the post-synaptic neurons this means that the input potential for a neuron
 is linearly correlated with the number of pre-synaptic connections.
 
 A number of experiments have been conducted to find the appropriate scaling values,
 and, given a population of size $N^l$ and its preceding population of size $N^{l-1}$,
-a normalisation value of $w_{N^l} = 0.065 / N^{l-1}$
+a normalisation value of $w_{l} = 0.065 / N^{l-1}$
 has been shown to provide a stable linear approximation of spike rates in a
 network.
 Figure \ref{fig:spike_rates_chain} shows the same populations as in 

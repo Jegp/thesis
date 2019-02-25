@@ -42,9 +42,9 @@
   \AxiomC{$\Gamma \vdash e : \textbf{net}\ l\ r$}
   \AxiomC{$\Gamma [x : \textbf{net}\ l\ r] \vdash e' : \textbf{net}\ l'\ r'$}
   \RightLabel{\hskip10pt($e\arabic{ProofCounter}$)}
-  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ in\ e' : \textbf{net}\ l'\ r'$}
+  \BinaryInfC{$\Gamma \vdash \mathbf{let}\ x = e\ \textbf{in}\ e' : \textbf{net}\ l'\ r'$}
 \end{prooftree}
-  \caption{Evaluation rules in Volr.}
+  \caption{Type rules in Volr.}
   \label{fig:volr-rules}
 \end{figure}
 

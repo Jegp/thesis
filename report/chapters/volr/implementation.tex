@@ -50,7 +50,7 @@ data Term
 \end{minipage}
 
 The AST reflects the expressions given in the 
-specification (see section \ref{sec:volr}) and is
+specification (see Section \ref{sec:volr}) and is
 shown in Listing \ref{code:term}.
 It is accompanied by a simple type system (in Listing \ref{code:type})
 that similarly maps to the types given above.
@@ -72,7 +72,7 @@ If the model is malformed, an error is generated to explain why the
 model could not evaluate correctly.
 Tests for the type checks and the evaluator are written to ensure the
 correctness of the compilation.
-They are elaborated in section \ref{sec:verification} on page
+They are elaborated in Rection \ref{sec:verification} on page
 \pageref{sec:verification}.
 
 \begin{lstlisting}[language=Haskell,caption={Part of the type checking code in
@@ -186,7 +186,7 @@ abstractions into Futhark,\index{Futhark} is shown in Appendix
 
 \paragraph{Merge layer}
 The merge layer is significantly simpler than the replication layer,
-because it merely concatenates the inputs from two parallel layer into one single
+because it merely concatenates the inputs from two parallel layers into one single
 layer. 
 For that reason it also does not contain any weights.
 In the case of backprogapation, the errors are rerouted back to
@@ -226,7 +226,7 @@ The steps are decoupled to enforce the same semantics on the code
 generation for the neuromorphic and simulation backends.
 While PyNN is designed as a simulator-dependent \gls{API}, 
 it is unlikely that the backends will fully support it in the
-near future (see section \ref{sec:SNN-simulators}).
+near future (see Section \ref{sec:SNN-simulators}).
 
 \subsubsection{\gls{SNN} translation step}
 Before Python code for PyNN can be generated, a number of assumptions
@@ -236,11 +236,11 @@ and neuron models have to be described with a full set of neuron parameters.
 The modelling of this is in Haskell.
 The neuron parameters for a LIF\index{LIF} neuron can be seen in Listing
 \ref{lst:lif-cond-exp} with their corresponding default values
-below\footnote{
+below.\footnote{
 The current neuron models and their default parameters are taken from PyNN's
 standard models, available at
 \url{http://neuralensemble.org/docs/PyNN/standardmodels.html}.
-}.
+}
 
 \begin{lstlisting}[language=Haskell,caption={A LIF neuron with exponential decay and
   conductance-based synapses, modelled in Haskell.},label={lst:lif-cond-exp}]
@@ -311,7 +311,7 @@ do not change during the simulation.
 The model presented here allows to completely reproduce the connection
 graph of the \gls{DSL} description.
 The only difference between the two is the lack of biases and activation functions
-during the feedforward sted in \glspl{SNN}.
+during the feedforward step in \glspl{SNN}.
 
 \subsubsection{PyNN backend}
 The final step in the translation of the \gls{DSL} to PyNN code maps the
@@ -329,7 +329,7 @@ replicate layer, but because the connections appear through
 PyNN\index{PyNN} projections, the parallel layer can be omitted.
 
 Another divergence from the Futhark backend is the normalisation of the
-output data through a softmax\index{normalisation!softmax} normalisation
+output data through softmax\index{normalisation!softmax}
 (see Equation \ref{eq:softmax} on page \pageref{eq:softmax}).
 This is a commonly used technique for spiking networks to ensure that the 
 output stays positive, despite neurons that do not receive any inputs 
@@ -364,19 +364,18 @@ return backprop
 \end{lstlisting}
 
 Listing \ref{lst:mnist_pynn} shows an example of the network
-\texttt{\textbf{dense} 100 20 $\obar$ \textbf{dense} 20 10}, compiled to a PyNN model in Python.
+\texttt{\textbf{dense} 100 100 $\obar$ \textbf{dense} 100 10}, compiled to a PyNN model in Python.
 When activating the input node \texttt{node0} the connections are fed through
 the network to the \texttt{node2} output node.
 Each projection is initiated with random normal distributed weights, similar
-to the Futhark networks.
-\ref{app:implementation_volrpynn}.
+to the Futhark networks (see Appendix \ref{app:implementation_volrpynn}).
 
 \begin{lstlisting}[caption={A simple MNIST network in the PyNN backend from the network in figure
     \ref{fig:volr-examples} on page \pageref{fig:volr-examples}.
     The neuron parameters for the LIF populations have been
 omitted.},label={lst:mnist_pynn}]
 p1 = pynn.Population(100, pynn.IF_cond_exp())
-p3 = pynn.Population(20, pynn.IF_cond_exp())
+p3 = pynn.Population(100, pynn.IF_cond_exp())
 p5 = pynn.Population(10, pynn.IF_cond_exp())
 layer0 = v.Dense(p1, p3)
 layer1 = v.Dense(p3, p5)

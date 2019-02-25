@@ -2,7 +2,7 @@ This sections presents the implementation for the Volr \gls{DSL}. \index{Volr}
 The main purpose of Volr is to define clear and reproducible
 experiments whose semantics are retained regardless of
 the runtime environment.
-It is built for the concise specification and straight-forward
+It is built for the concise specification and straightforward
 translation of neural models into both artificial, as well as
 spiking, network models.
 Volr focuses solely on the topology of networks, thus
@@ -10,25 +10,25 @@ separating the network description from generation-specific
 properties of neurons or neuron populations.
 
 The first requirement on semantic consistency explained in the previous section is met through an unambiguous
-syntax, heavily inspired by lamdba calculus \cite{Pierce2002}.
+syntax, heavily inspired by lambda calculus \cite{Pierce2002}.
 Figure \ref{fig:volr-expr} shows the BNF notation for expressions, values and types
 in Volr. 
-Figure \ref{fig:volr-rules} lists evaluation rules for the correct
+Figure \ref{fig:volr-rules} lists typing rules for the correct
 interpretation of the expressions.
 
 \input{chapters/volr/expr.tex}
-\input{chapters/volr/evaluation.tex}
+\input{chapters/volr/typing.tex}
 
 The constant expression $n$ is an integer that evaluates to the type 
 \texttt{\textbf{int}} ($e1$). 
-Similar to traditional functional languages, the \texttt{\textbf{let}} binding binds
-the string constant $x$ to the expression $e$ when evaluating $e'$ \cite{Pierce2002}.
-That constant can later be referenced in the $e'$ expression 
+Similar to traditional functional languages, the \texttt{\textbf{let}} binding
+binds the string constant $x$ to the expression $e$ when evaluating
+$e'$ \cite{Pierce2002}.
+That can later be referenced in the $e'$ expression 
 through the string $x$ as shown in $e2$.
 
 The \texttt{\textbf{dense}} expression describes a fully connected
-neural network layer, and is the smallest building block for networks
-\gls{DSL}.
+neural network layer, and is the smallest building block in the language.
 This aligns with the previous understanding of a layer, where
 a \texttt{\textbf{dense}} network layer can be understood as a number of inputs,
 that are densely connected to a number of outputs (see Section
@@ -57,8 +57,8 @@ perform specialised functions, based on the same stimulus.
 In the context of neural systems such specialisations are frequently used
 to balance correctness with compactness: it is cheaper in terms of neurons,
 and more efficient in terms of accuracy,
-to allow two subnetworks to specialise than to have one large network 
-generalise \cite{Eliasmith2015}.
+to allow two subnetworks to specialise than to have one large
+generalised network \cite{Eliasmith2015}.
 
 The $\obar$ (sequential) operator binds two networks sequentially,
 such that the output layer of the first network becomes the input layer 

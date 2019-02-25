@@ -40,7 +40,7 @@ The Futhark backend was tested using unit tests (using \texttt{futhark-test}
 \cite{Elsman2018}) for each layer, activation function and loss function.
 Tests for the dense layer already existed in the library used (\cite{Minh2018}). Tests for the merge and
 replicate layers were added using manual calculations of the expected gradients, as shown in Listing
-\ref{lst:futhark-replicate-test}.The input should produce the expected weight
+\ref{lst:futhark-replicate-test}. The input should produce the expected weight
 gradients (\texttt{output}) here.
 Further tests for the different combinations of parallel layers were also added.
 

@@ -16,19 +16,20 @@ accompanied by code and test examples.
 A vast amount of work has been put into the development of software for simulating
 neural networks.
 This section covers recent work within the simulation of second and third
-generation \glspl{NN}, and extracts relevant findings for use in the section \ref{sec:requirements}, covering the requirements of the DSL.
+generation \glspl{NN}, and extracts relevant findings for use in 
+Section \ref{sec:requirements}, covering the requirements of the DSL.
 
 The following list does not claim completeness, due to the fragmented and 
 fast-paced nature of the field.
 To encompass as many relevant findings as possible, the subsequent
 references are based on a number of often-cited sources, primarily based on books
-(\cite{Bishop2006, Russel2007, Eliasmith2015, Lin2018, Nilsson2009, Pearl1988, Rojas1996, Rumelhart1988}), review papers 
-(\cite{Schmidhuber2014, Blundell2018, Markram2013, Walter2015, Hunsberger2015}),
+\cite{Bishop2006, Russel2007, Eliasmith2015, Lin2018, Nilsson2009, Pearl1988, Rojas1996, Rumelhart1988}, review papers 
+\cite{Schmidhuber2014, Blundell2018, Markram2013, Walter2015, Hunsberger2015},
 and articles, which will be referenced below.
 
 \subsection{Second generation}
 The perhaps most notable product for this type of networks is the Tensorflow \index{Tensorflow}
-framework.\cite{Abadi2016}
+framework \cite{Abadi2016}.
 Tensorflow is an \gls{API} for the description and execution of directed graph 
 structures,
 that connects varying activation functions and learning mechanisms through the common abstraction
@@ -51,7 +52,7 @@ including useful utilities for preprocessing data.
 Whereas scikit-learn, CNTK, Tensorflow and Theano target \glspl{NN} in general,
 PyTorch and Caffe are frameworks that specifically targets deep \glspl{NN}
 \cite{PyTorch2018, Caffe2018}.
-All of them, however, rely on second generation \gls{NN} architecture.
+However, they all rely on second generation \gls{NN} architecture.
 
 To provide a comparison between them, a number of examples are provided below.
 Listing \ref{code:caffe} shows a network with a single fully connected
@@ -63,7 +64,7 @@ Lasagne (Listing \ref{code:lasagne}), but provides additional
 configuration options for the setting of weights and biases in 
 individual layers.
 
-\lstset{caption={A network layer for the MNIST task in Caffe.}}
+\lstset{caption={A network layer for the MNIST task in Caffe.},label={code:caffe}}
 \begin{lstlisting}
 layer {
   name: "ip1"
@@ -78,27 +79,27 @@ layer {
   bottom: "pool2"
   top: "ip1"
 }
-\end{lstlisting} \label{code:caffe}
+\end{lstlisting}
 
-\lstset{language=Python,caption={MNIST network in PyTorch.}}
+\lstset{language=Python,caption={MNIST network in PyTorch.},label={code:pytorch}}
 \begin{lstlisting}{language=Python}
 self.fc1 = nn.Linear(28*28, 128)   # Topology
 self.fc2 = nn.Linear(128, 10)
 x = x.view(-1, 28, 28)             # Activations
 x = F.relu(self.fc1(x))
 X = self.fc2(x)
-\end{lstlisting} \label{code:pytorch}
+\end{lstlisting}
 
-\lstset{language=Python,caption={MNIST network in Tensorflow using the Keras API.}}
+\lstset{language=Python,caption={MNIST network in Tensorflow using the Keras API.},label={code:keras}}
 \begin{lstlisting}
 keras.Sequential([
   keras.layers.Flatten(input_shape=(28, 28)),
   keras.layers.Dense(128, activation=tf.nn.relu),
   keras.layers.Dense(10, activation=tf.nn.softmax)
 ])
-\end{lstlisting} \label{code:keras}
+\end{lstlisting}
 
-\lstset{language=Python, caption={MNIST network in Theano using the Lasagne API.}}
+\lstset{language=Python, caption={MNIST network in Theano using the Lasagne API.},label={code:lasagne}}
 \begin{lstlisting}
 l_in = lasagne.layers.InputLayer(shape=(None, 1, 28, 28),
            input_var=input_var)
@@ -107,7 +108,7 @@ l_hid = lasagne.layers.DenseLayer(l_in, num_units=128,
 l_out = lasagne.layers.DenseLayer(
            l_hid, num_units=10,
            nonlinearity=lasagne.nonlinearities.softmax)
-\end{lstlisting} \label{code:lasagne}
+\end{lstlisting}
 
 In terms of learning, the frameworks are diverse, although gradient descent 
 and auto-differentiation (where transformations are automatically registered and 
@@ -165,7 +166,7 @@ Technically PyNN is not a simulator but acts as an interface to any third genera
 backend \cite{Davison2009}.
 PyNN currently interfaces with Brian, NEST, BrainScaleS and SpiNNaker
 \index{Brian}\index{NEST}\index{BrainScaleS}\index{SpiNNaker}
-and is more than 10 years old, \cite{Davison2009} older
+and is more than 10 years old \cite{Davison2009}, older
 than most neuromorphic chips. 
 Their \gls{API}s were designed a priori and lacked a number of crucial
 elements, which the hardware designers sought
@@ -280,8 +281,8 @@ $\sim1.3 \cdot 10^5$ synapses, but with fixed synaptic weights
 
 \section{DSL requirements} \label{sec:requirements}
 This section elaborates on four functional requirements for a \gls{DSL} that will allow the testing of the thesis hypothesis.
-The requirements steer the specification as defined in section 
-\ref{sec:volr} and later the implementation details in section
+The requirements steer the specification as defined in Section 
+\ref{sec:volr} and later the implementation details in Section
 \ref{sec:implementation}.
 
 \paragraph{1. Semantic consistency}
@@ -292,9 +293,9 @@ In other words, a network described in the \gls{DSL} should carry
 the same semantic structure when translated to second or third generation
 implementations. 
 
-Because of the diverse and incompatible nature of spiking neural network
-landscape, this is a non-trivial requirement,
-but a necessary one if the models are to be validated across \gls{NN} paradigms.
+Because of the diverse and incompatible nature of the spiking neural network
+landscape, this is non-trivial but necessary if the models are to be
+validated across \gls{NN} paradigms.
 This requirement is approached empirically, by illustrating examples in
 both generations and validate whether they achieved the desired degree
 of external validity.
