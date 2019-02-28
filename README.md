@@ -14,7 +14,7 @@ A further challenge for SNNs is the relatively poor understanding of learning me
 Several different techniques have been applied to understand learning in SNNs [6, 7], but they are difficult to test because of the diverse implementations.
 
 This theses sets out to explore SNNs and their potential for the 
-field of machine learning, focusing on two major challenges for SNN: homogeneous modelling and learning.
+field of machine learning, focusing on two major challenges: homogeneous modelling and learning.
 To achieve this, a unified domain specific language (DSL), Volr, is developed to model both ANNs and SNNs. 
 The DSL aims to provide a concise description of neural networks and to ensure the correct translation into executable neural network models.
 
